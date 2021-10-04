@@ -1,0 +1,42 @@
+{
+  "$schema": "./node_modules/@angular/cli/lib/config/schema.json",
+  "cli": {
+    "analytics": "bf3e71d2-04b9-4b8a-825d-edd7670d7039"
+  },
+  "version": 1,
+  "newProjectRoot": "projects",
+  "projects": {
+    "monocle-ngx": {
+      "projectType": "library",
+      "root": "projects/monocle-ngx",
+      "sourceRoot": "projects/monocle-ngx/src",
+      "prefix": "lib",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-angular:ng-packagr",
+          "options": {
+            "project": "projects/monocle-ngx/ng-package.json"
+          },
+          "configurations": {
+            "production": {
+              "tsConfig": "projects/monocle-ngx/tsconfig.lib.prod.json"
+            },
+            "development": {
+              "tsConfig": "projects/monocle-ngx/tsconfig.lib.json"
+            }
+          },
+          "defaultConfiguration": "production"
+        },
+        "test": {
+          "builder": "@angular-devkit/build-angular:karma",
+          "options": {
+            "main": "projects/monocle-ngx/src/test.ts",
+            "tsConfig": "projects/monocle-ngx/tsconfig.spec.json",
+            "karmaConfig": "projects/monocle-ngx/karma.conf.js"
+          }
+        }
+      }
+    }
+  },
+  "defaultProject": "monocle-ngx"
+}
