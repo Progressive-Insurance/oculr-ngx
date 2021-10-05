@@ -19,8 +19,12 @@ describe('insertLocationParams', () => {
     const expected = {
       hitId: 1,
       url: '/hello/world',
+      hostName: '',
+      path: '',
+      queryString: '',
+      virtualPageName: '',
     };
-    expect(insertLocationParams(mockLocation, tokensToReplace, mockParamMap)).toEqual(expected as EventLocation);
+    expect(insertLocationParams(mockLocation, tokensToReplace, mockParamMap)).toEqual(expected as any);
   });
   it('ignores tokens not specified', () => {
     mockLocation = {
@@ -31,7 +35,11 @@ describe('insertLocationParams', () => {
     const expected = {
       hitId: 1,
       url: '/hello/:tokenTwo',
+      hostName: '',
+      path: '',
+      queryString: '',
+      virtualPageName: '',
     };
-    expect(insertLocationParams(mockLocation, tokensToReplace, mockParamMap)).toEqual(expected as EventLocation);
+    expect(insertLocationParams(mockLocation, tokensToReplace, mockParamMap)).toEqual(expected as any);
   });
 });

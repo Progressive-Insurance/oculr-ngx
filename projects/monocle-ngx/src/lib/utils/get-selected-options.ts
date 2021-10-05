@@ -1,5 +1,5 @@
 export const getSelectedOptions = ($event: Event): string => {
-  const options = ($event.target as HTMLSelectElement).options;
+  const options = ($event?.target as HTMLSelectElement)?.options;
   if (!options) {
     return '';
   }

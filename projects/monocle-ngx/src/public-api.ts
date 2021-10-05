@@ -1,6 +1,6 @@
 export { AnalyticsLibraryModule, ANALYTICS_BOOTSTRAP, provideAnalytics } from './lib/monocle-ngx.module';
 export { EVENT_IGNORE } from './lib/event-constants';
-export { getEmptyEventModel } from './lib/interceptors/constants';
+// TODO: export an interface export { getEmptyEventModel } from './lib/interceptors/constants';
 
 export {
   GOOGLE_TAG_MANAGER_STATE_TOKEN,

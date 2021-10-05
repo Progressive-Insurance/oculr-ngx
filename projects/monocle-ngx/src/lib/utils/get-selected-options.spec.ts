@@ -6,7 +6,7 @@ describe('getSelectedOptions', () => {
     element.innerHTML = '<option value="one">One</option><option value="two">Two</option>';
     element.options[0].selected = true;
     const $event = { target: element };
-    expect(getSelectedOptions($event)).toBe('One');
+    expect(getSelectedOptions($event as any)).toBe('One');
   });
 
   it('removes any white space before and after the actual label', () => {
@@ -14,7 +14,7 @@ describe('getSelectedOptions', () => {
     element.innerHTML = '<option value="one">    One  \n</option><option value="two">Two</option>';
     element.options[0].selected = true;
     const $event = { target: element };
-    expect(getSelectedOptions($event)).toBe('One');
+    expect(getSelectedOptions($event as any)).toBe('One');
   });
 
   it('returns ampersand-delimited string if multiple values are selected', () => {
@@ -24,15 +24,15 @@ describe('getSelectedOptions', () => {
     element.options[0].selected = true;
     element.options[1].selected = true;
     const $event = { target: element };
-    expect(getSelectedOptions($event)).toBe('One&Two');
+    expect(getSelectedOptions($event as any)).toBe('One&Two');
   });
   it('returns empty string if the $event is malformed', () => {
-    expect(getSelectedOptions(undefined)).toBe('');
+    expect(getSelectedOptions(undefined as any)).toBe('');
     const $event1 = {};
-    expect(getSelectedOptions($event1)).toBe('');
+    expect(getSelectedOptions($event1 as any)).toBe('');
     const $event2 = { target: {} };
-    expect(getSelectedOptions($event2)).toBe('');
+    expect(getSelectedOptions($event2 as any)).toBe('');
     const $event3 = { target: { options: [] } };
-    expect(getSelectedOptions($event3)).toBe('');
+    expect(getSelectedOptions($event3 as any)).toBe('');
   });
 });

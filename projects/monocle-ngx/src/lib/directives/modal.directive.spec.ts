@@ -1,5 +1,5 @@
-import { ModalDirective } from './modal.directive';
 import { EventModel } from '../models/event-model.class';
+import { ModalDirective } from './modal.directive';
 
 describe('ModalDirective', () => {
   let mockEventDispatchService: any;
@@ -13,7 +13,11 @@ describe('ModalDirective', () => {
       mockLocationTrackingService = jasmine.createSpyObj('', ['setModalRoute', 'setAngularRoute']);
       mockLocationTrackingService.location = {};
       mockRouterDispatchService = { virtualRoute: { next: (vpsItem: any) => undefined } };
-      modalDirective = new ModalDirective(mockEventDispatchService, mockLocationTrackingService, mockRouterDispatchService);
+      modalDirective = new ModalDirective(
+        mockEventDispatchService,
+        mockLocationTrackingService,
+        mockRouterDispatchService
+      );
     });
     describe('on modalOpened', () => {
       describe('when pa-modal-route is undefined', () => {
@@ -42,7 +46,9 @@ describe('ModalDirective', () => {
           it('calls setModalRoute with a default value', () => {
             modalDirective.modalOpened();
             expect(mockLocationTrackingService.setModalRoute).toHaveBeenCalledTimes(1);
-            expect(mockLocationTrackingService.setModalRoute.calls.argsFor(0)[0]).toBe(ModalDirective.defaultModalRoute);
+            expect(mockLocationTrackingService.setModalRoute.calls.argsFor(0)[0]).toBe(
+              ModalDirective.defaultModalRoute
+            );
             expect(mockLocationTrackingService.setModalRoute.calls.argsFor(0)[3]).toBe(true);
           });
         });
@@ -73,14 +79,23 @@ describe('ModalDirective', () => {
           modalDirective.paModalRoute = '/test-modal';
           modalDirective.modalOpened();
           expect(mockLocationTrackingService.setModalRoute).toHaveBeenCalledTimes(1);
-          expect(mockLocationTrackingService.setModalRoute).toHaveBeenCalledWith('/test-modal', undefined, undefined, true);
+          expect(mockLocationTrackingService.setModalRoute).toHaveBeenCalledWith(
+            '/test-modal',
+            undefined,
+            undefined,
+            true
+          );
         });
       });
       it('should push a new virtual page stack item with routerDispatchService', () => {
         modalDirective.paModalRoute = '/test-modal';
         spyOn(mockRouterDispatchService.virtualRoute, 'next');
         modalDirective.modalOpened();
-        expect(mockRouterDispatchService.virtualRoute.next).toHaveBeenCalledWith({ type: 'push', url: '/test-modal', shouldTrack: false });
+        expect(mockRouterDispatchService.virtualRoute.next).toHaveBeenCalledWith({
+          type: 'push',
+          url: '/test-modal',
+          shouldTrack: false,
+        });
       });
     });
     describe('on modalClosed', () => {
@@ -119,7 +134,12 @@ describe('ModalDirective', () => {
             modalDirective['underlyingPageRoute'] = '/parent-route';
             modalDirective.modalClosed();
             expect(mockLocationTrackingService.setAngularRoute).toHaveBeenCalledTimes(1);
-            expect(mockLocationTrackingService.setAngularRoute).toHaveBeenCalledWith('/parent-route', undefined, undefined, true);
+            expect(mockLocationTrackingService.setAngularRoute).toHaveBeenCalledWith(
+              '/parent-route',
+              undefined,
+              undefined,
+              true
+            );
           });
         });
       });
@@ -142,7 +162,12 @@ describe('ModalDirective', () => {
           modalDirective['underlyingPageRoute'] = '/parent-route';
           modalDirective.modalClosed();
           expect(mockLocationTrackingService.setAngularRoute).toHaveBeenCalledTimes(1);
-          expect(mockLocationTrackingService.setAngularRoute).toHaveBeenCalledWith('/parent-route', undefined, undefined, true);
+          expect(mockLocationTrackingService.setAngularRoute).toHaveBeenCalledWith(
+            '/parent-route',
+            undefined,
+            undefined,
+            true
+          );
         });
       });
       describe('when pa-modal-close-event is a valid model', () => {
@@ -150,7 +175,12 @@ describe('ModalDirective', () => {
           modalDirective['underlyingPageRoute'] = '/original-page';
           modalDirective.modalClosed();
           expect(mockLocationTrackingService.setAngularRoute).toHaveBeenCalledTimes(1);
-          expect(mockLocationTrackingService.setAngularRoute).toHaveBeenCalledWith('/original-page', undefined, undefined, true);
+          expect(mockLocationTrackingService.setAngularRoute).toHaveBeenCalledWith(
+            '/original-page',
+            undefined,
+            undefined,
+            true
+          );
         });
         describe('and not closed with the "Submit" or "Cancel" buttons', () => {
           it('dispatches an interaction action using the supplied close model', () => {
@@ -173,7 +203,7 @@ describe('ModalDirective', () => {
       it('should pop a virtual page stack item with routerDispatchService', () => {
         spyOn(mockRouterDispatchService.virtualRoute, 'next');
         modalDirective.modalClosed();
-        expect(mockRouterDispatchService.virtualRoute.next).toHaveBeenCalledWith({ type: 'pop', url: undefined });
+        expect(mockRouterDispatchService.virtualRoute.next).toHaveBeenCalledWith({ type: 'pop', url: '' });
       });
     });
   });
@@ -184,7 +214,11 @@ describe('ModalDirective', () => {
       mockLocationTrackingService = jasmine.createSpyObj('', ['setModalRoute', 'setAngularRoute']);
       mockLocationTrackingService.location = {};
       mockRouterDispatchService = null;
-      modalDirective = new ModalDirective(mockEventDispatchService, mockLocationTrackingService, mockRouterDispatchService);
+      modalDirective = new ModalDirective(
+        mockEventDispatchService,
+        mockLocationTrackingService,
+        mockRouterDispatchService
+      );
     });
 
     describe('on modalOpened', () => {

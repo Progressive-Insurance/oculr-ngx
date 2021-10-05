@@ -10,22 +10,20 @@ describe('Analytics Interceptor', () => {
   let analyticsInterceptor: AnalyticsInterceptor;
   const emptyEventModel = 'NonAnalyticEvent';
   const mockTimeService = {
-    now: () => 1
+    now: () => 1,
   };
 
   beforeEach(() => {
-    const mockGetEmptyEventModel = jasmine.createSpy('getEmptyEventModel').and.returnValue(emptyEventModel);
-    spyOnProperty(constants, 'getEmptyEventModel', 'get').and.returnValue(mockGetEmptyEventModel);
-
     mockEventDispatcher = jasmine.createSpyObj('mockEventDispatcher', [
       'trackApiStart',
       'trackApiSuccess',
       'trackApiFailure',
-      'trackApiComplete'
+      'trackApiComplete',
     ]);
     mockHandler = jasmine.createSpyObj('mockHandler', ['handle']);
     mockHandler.handle.and.callFake((request: any) => of(request));
     analyticsInterceptor = new AnalyticsInterceptor(mockEventDispatcher, mockTimeService);
+    spyOn(analyticsInterceptor, 'getEmptyEventModel').and.returnValue(emptyEventModel as any);
   });
   it('passes request onto next handler', () => {
     const request = new HttpRequest('GET', 'http//localhost/api/policies', {});
@@ -104,12 +102,11 @@ describe('Analytics Interceptor', () => {
         analyticsInterceptor.intercept(request, mockHandler).subscribe();
         expect(mockEventDispatcher.trackApiSuccess).toHaveBeenCalledTimes(1);
         expect(mockEventDispatcher.trackApiSuccess.calls.argsFor(0)[0].eventId).toBe('SUCCESS_HASH');
-
       });
     });
     describe('and an empty model was passed', () => {
       it('calls trackApiComplete with hasEventModelTag set to false', () => {
-        const params: any = { };
+        const params: any = {};
         const request = new HttpRequest('GET', 'http//localhost/policies', { params });
         analyticsInterceptor.intercept(request, mockHandler).subscribe();
         expect(mockEventDispatcher.trackApiComplete).toHaveBeenCalledTimes(1);
@@ -128,7 +125,7 @@ describe('Analytics Interceptor', () => {
       const params: any = { apiAnalyticsModels: {} };
       const request = new HttpRequest('GET', 'http//localhost/policies', { params });
       analyticsInterceptor.intercept(request, mockHandler).subscribe({
-        error: () => undefined
+        error: () => undefined,
       });
       expect(mockEventDispatcher.trackApiSuccess).not.toHaveBeenCalled();
     });
@@ -137,7 +134,7 @@ describe('Analytics Interceptor', () => {
         const params: any = { apiAnalyticsModels: {} };
         const request = new HttpRequest('GET', 'http//localhost/policies', { params });
         analyticsInterceptor.intercept(request, mockHandler).subscribe({
-          error: () => undefined
+          error: () => undefined,
         });
         expect(mockEventDispatcher.trackApiComplete).toHaveBeenCalledTimes(1);
         expect(mockEventDispatcher.trackApiComplete.calls.argsFor(0)[0]).toBe(emptyEventModel);
@@ -149,7 +146,7 @@ describe('Analytics Interceptor', () => {
         const params: any = { apiAnalyticsModels: { complete: { eventId: 'COMPLETE_HASH' } } };
         const request = new HttpRequest('GET', 'http//localhost/policies', { params });
         analyticsInterceptor.intercept(request, mockHandler).subscribe({
-          error: () => undefined
+          error: () => undefined,
         });
         expect(mockEventDispatcher.trackApiComplete).toHaveBeenCalledTimes(1);
         expect(mockEventDispatcher.trackApiComplete.calls.argsFor(0)[0].eventId).toBe('COMPLETE_HASH');
@@ -161,7 +158,7 @@ describe('Analytics Interceptor', () => {
         const params: any = { apiAnalyticsModels: {} };
         const request = new HttpRequest('GET', 'http//localhost/policies', { params });
         analyticsInterceptor.intercept(request, mockHandler).subscribe({
-          error: () => undefined
+          error: () => undefined,
         });
         expect(mockEventDispatcher.trackApiFailure).toHaveBeenCalledTimes(1);
         expect(mockEventDispatcher.trackApiFailure.calls.argsFor(0)[0]).toBe(emptyEventModel);
@@ -172,7 +169,7 @@ describe('Analytics Interceptor', () => {
         const params: any = { apiAnalyticsModels: { error: { eventId: 'ERROR_HASH' } } };
         const request = new HttpRequest('GET', 'http//localhost/policies', { params });
         analyticsInterceptor.intercept(request, mockHandler).subscribe({
-          error: () => undefined
+          error: () => undefined,
         });
         expect(mockEventDispatcher.trackApiFailure).toHaveBeenCalledTimes(1);
         expect(mockEventDispatcher.trackApiFailure.calls.argsFor(0)[0].eventId).toBe('ERROR_HASH');

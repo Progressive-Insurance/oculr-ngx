@@ -1,28 +1,30 @@
+import {
+  HttpErrorResponse, HttpEvent, HttpHandler, HttpInterceptor, HttpRequest,
+  HttpResponse
+} from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { HttpInterceptor, HttpRequest, HttpHandler, HttpEvent, HttpResponse, HttpErrorResponse } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { tap } from 'rxjs/operators';
 
 import { AnalyticsHttpParams } from '../models/analytics-http-params.class';
+import { EventModel } from '../models/event-model.class';
 import { EventDispatchService } from '../services/event-dispatch.service';
-import { getEmptyEventModel } from './constants';
 import { TimeService } from '../services/time.service';
 
 @Injectable()
 export class AnalyticsInterceptor implements HttpInterceptor {
-
-  constructor(private eventDispatchService: EventDispatchService, private timeService: TimeService) { }
+  constructor(private eventDispatchService: EventDispatchService, private timeService: TimeService) {}
 
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
     if (request.url && !request.url.includes('splunkservices')) {
       const params = (request.params || {}) as AnalyticsHttpParams;
       const apiAnalyticsModels = params.apiAnalyticsModels || {};
-      const emptyEventModel = getEmptyEventModel();
+      const emptyEventModel = this.getEmptyEventModel();
       const {
         start = emptyEventModel,
         success = emptyEventModel,
         error = emptyEventModel,
-        complete = emptyEventModel
+        complete = emptyEventModel,
       } = apiAnalyticsModels;
 
       // TODO: Remove the hasEventModelTag logic after Analytics 1.0 has been fully deprecated
@@ -42,7 +44,14 @@ export class AnalyticsInterceptor implements HttpInterceptor {
           (event: HttpEvent<any>) => {
             if (event instanceof HttpResponse) {
               const requestEndTime = this.timeService.now();
-              this.eventDispatchService.trackApiSuccess(success, event, requestStartTime, requestEndTime, request.url, request.method);
+              this.eventDispatchService.trackApiSuccess(
+                success,
+                event,
+                requestStartTime,
+                requestEndTime,
+                request.url,
+                request.method
+              );
               this.eventDispatchService.trackApiComplete(
                 complete,
                 event,
@@ -57,7 +66,14 @@ export class AnalyticsInterceptor implements HttpInterceptor {
           (err: any) => {
             if (err instanceof HttpErrorResponse) {
               const requestEndTime = this.timeService.now();
-              this.eventDispatchService.trackApiFailure(error, err, requestStartTime, requestEndTime, request.url, request.method);
+              this.eventDispatchService.trackApiFailure(
+                error,
+                err,
+                requestStartTime,
+                requestEndTime,
+                request.url,
+                request.method
+              );
               this.eventDispatchService.trackApiComplete(
                 complete,
                 err,
@@ -74,4 +90,9 @@ export class AnalyticsInterceptor implements HttpInterceptor {
     }
     return next.handle(request);
   }
+
+  // TODO: look into replace this with an interface
+  getEmptyEventModel = () => {
+    return new EventModel('', '', '', '', '', '', '', 0, {}, [], '', '', {});
+  };
 }
