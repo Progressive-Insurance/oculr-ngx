@@ -1,18 +1,18 @@
-import { Injectable } from '@angular/core';
 import { Location } from '@angular/common';
 import { HttpParams } from '@angular/common/http';
-import { ActivatedRouteSnapshot, Router, NavigationEnd, ParamMap, convertToParamMap } from '@angular/router';
-import { Subject, merge } from 'rxjs';
+import { Injectable } from '@angular/core';
+import { ActivatedRouteSnapshot, convertToParamMap, NavigationEnd, ParamMap, Router } from '@angular/router';
+import { merge, Subject } from 'rxjs';
 import { filter, map } from 'rxjs/operators';
 
-import { UpdateLocationPayload } from '../models/update-location-payload.interface';
 import { updateLocation } from '../actions/analytics.actions';
-import { SelectedItems } from '../models/selected-items.interface';
-import { WindowService } from '../utils/window.service';
-import { VariableData } from '../models/variable-data.interface';
 import { EventLocation } from '../models/event-location.interface';
+import { SelectedItems } from '../models/selected-items.interface';
+import { UpdateLocationPayload } from '../models/update-location-payload.interface';
+import { VariableData } from '../models/variable-data.interface';
 import { getSnapshotHierarchyAsArray } from '../utils/get-snapshot-hierarchy-as-array';
 import { insertLocationParams } from '../utils/insert-location-params';
+import { WindowService } from '../utils/window.service';
 import { AnalyticsEventBusService } from './analytics-event-bus.service';
 import { EventCacheService } from './event-cache.service';
 
@@ -33,13 +33,13 @@ export class LocationTrackingService {
     path: '',
     url: '',
     queryString: '',
-    virtualPageName: ''
+    virtualPageName: '',
   };
   private hostName: string;
   private angularRoutes$: Subject<{ route: string; paramMap: ParamMap; queryParamMap: ParamMap }>;
   private modalRoutes$: Subject<{ route: string; paramMap: ParamMap; queryParamMap: ParamMap }>;
-  private currentParamMap: ParamMap;
-  private currentQueryParamMap: ParamMap;
+  private currentParamMap: ParamMap = {} as ParamMap;
+  private currentQueryParamMap: ParamMap = {} as ParamMap;
 
   constructor(
     private locationService: Location,
@@ -57,26 +57,26 @@ export class LocationTrackingService {
 
     this.router.events
       .pipe(
-        filter(event => event instanceof NavigationEnd),
+        filter((event) => event instanceof NavigationEnd),
         map(() => ({
           route: this.getRouterRoute(),
           queryParamMap: this.router.routerState.root.snapshot.queryParamMap,
           paramMap: getSnapshotHierarchyAsArray([this.router.routerState.root.snapshot]).reduce(
             (acc, snapshotFragment) =>
               ({
-                paramMap: snapshotFragment.paramMap
+                paramMap: snapshotFragment.paramMap,
               } as ActivatedRouteSnapshot)
-          ).paramMap
+          ).paramMap,
         }))
       )
-      .subscribe(event => {
+      .subscribe((event) => {
         this.angularRoutes$.next(event);
       });
 
     merge(
-      this.angularRoutes$.pipe(map(event => ({event, isModal: false}))),
-      this.modalRoutes$.pipe(map(event => ({event, isModal: true })))
-    ).subscribe(({event, isModal}) => {
+      this.angularRoutes$.pipe(map((event) => ({ event, isModal: false }))),
+      this.modalRoutes$.pipe(map((event) => ({ event, isModal: true })))
+    ).subscribe(({ event, isModal }) => {
       const eventLocation = this.buildEventLocation(event.route, this.getFormattedQueryString(event.queryParamMap));
       this.currentLocation = { ...eventLocation };
       this.eventCache.setIsCurrentPageModal(isModal);
@@ -100,27 +100,37 @@ export class LocationTrackingService {
     virtualPageName: string,
     params: { [key: string]: string } = {},
     queryParams: { [key: string]: string } = {},
-    disableUpdateLocation: boolean = false) => {
-    this.angularRoutes$.next({ route: virtualPageName, paramMap: convertToParamMap(params), queryParamMap: convertToParamMap(queryParams) });
+    disableUpdateLocation: boolean = false
+  ) => {
+    this.angularRoutes$.next({
+      route: virtualPageName,
+      paramMap: convertToParamMap(params),
+      queryParamMap: convertToParamMap(queryParams),
+    });
     if (!disableUpdateLocation) {
       this.dispatchUpdateLocation(virtualPageName);
     }
-  }
+  };
 
   setModalRoute = (
     virtualPageName: string,
     params: { [key: string]: string } = {},
     queryParams: { [key: string]: string } = {},
-    disableUpdateLocation: boolean = false) => {
-    this.modalRoutes$.next({ route: virtualPageName, paramMap: convertToParamMap(params), queryParamMap: convertToParamMap(queryParams) });
+    disableUpdateLocation: boolean = false
+  ) => {
+    this.modalRoutes$.next({
+      route: virtualPageName,
+      paramMap: convertToParamMap(params),
+      queryParamMap: convertToParamMap(queryParams),
+    });
     if (!disableUpdateLocation) {
       this.dispatchUpdateLocation(virtualPageName);
     }
-  }
+  };
 
   updateRouteConfig = (config: { replaceParamTokens: string[] } = { replaceParamTokens: [] }) => {
     this.currentLocation = insertLocationParams(this.currentLocation, config.replaceParamTokens, this.currentParamMap);
-  }
+  };
 
   // DEPRECATED: dispatch old UPDATE_LOCATION event so host app can update location in its store
   // TODO: Remove when all modules are using new events and we don't need to rely on app's store
@@ -140,16 +150,16 @@ export class LocationTrackingService {
       fullPath: eventLocation.url,
       model: { details: { scopes } },
       customDimensions,
-      selectedItems
+      selectedItems,
     };
     const updateLocationAction = updateLocation(updateLocationPayload, shouldTrack);
     this.eventBus.dispatch(updateLocationAction);
-  }
+  };
 
   private getRouterRoute = () => {
     const rootSnapshot = this.router.routerState.root.snapshot;
     return this.getRouteFromSnapshot(rootSnapshot);
-  }
+  };
 
   private getFormattedQueryString = (queryParamMap: ParamMap): string => {
     let httpParams = new HttpParams();
@@ -157,19 +167,21 @@ export class LocationTrackingService {
     if (queryParamMap == null) {
       return '';
     }
-    queryParamMap.keys.forEach(function(key) {
+    queryParamMap.keys.forEach(function (key) {
       httpParams = httpParams.append(key, queryParamMap.get(key) || '');
     });
 
     return httpParams.toString() ? '?' + httpParams.toString() : '';
-  }
+  };
 
-  private getRouteFromSnapshot = function(snapshot: ActivatedRouteSnapshot) {
+  // TODO: double check null check here
+  private getRouteFromSnapshot = (snapshot: ActivatedRouteSnapshot | null): string => {
     if (snapshot == null) {
       return '';
+    } else {
+      const route = snapshot.routeConfig && snapshot.routeConfig.path ? '/' + snapshot.routeConfig.path : '';
+      return route + this.getRouteFromSnapshot(snapshot.firstChild);
     }
-    const route = snapshot.routeConfig && snapshot.routeConfig.path ? '/' + snapshot.routeConfig.path : '';
-    return route + this.getRouteFromSnapshot(snapshot.firstChild);
   };
 
   private buildEventLocation = (route: string, queryString: string = ''): any => {
@@ -181,7 +193,7 @@ export class LocationTrackingService {
       path: route + queryString,
       url: this.hostName + route + queryString,
       queryString,
-      virtualPageName
+      virtualPageName,
     };
-  }
+  };
 }

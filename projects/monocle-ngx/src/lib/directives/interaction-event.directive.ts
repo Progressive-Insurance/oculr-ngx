@@ -1,30 +1,34 @@
-import { Directive, ElementRef, Input, OnChanges, OnDestroy, SimpleChanges } from '@angular/core';
+import {
+  Directive, ElementRef, Input, OnChanges, OnDestroy,
+  SimpleChanges
+} from '@angular/core';
 
 import { EventModel } from '../models/event-model.class';
 import { EventDispatchService } from '../services/event-dispatch.service';
 import { WindowService } from '../utils/window.service';
 
 @Directive({
-  selector: '[pa-interaction-event]'
+  selector: '[pa-interaction-event]',
 })
 export class InteractionEventDirective implements OnChanges, OnDestroy {
   @Input('pa-interaction-event') eventModel: EventModel | undefined | null;
 
-  private handler: (event: any) => void;
-  private attachedEvent: string;
+  private handler?: (event: any) => void;
+  private attachedEvent: string = '';
 
   constructor(
     private elementRef: ElementRef,
     private eventDispatchService: EventDispatchService,
     private windowService: WindowService
-  ) { }
+  ) {}
 
   ngOnChanges(changes: SimpleChanges) {
-    if ((changes['eventModel'] &&
-      changes['eventModel'].currentValue)
-      &&
+    if (
+      changes['eventModel'] &&
+      changes['eventModel'].currentValue &&
       (!changes['eventModel'].previousValue ||
-        changes['eventModel'].currentValue.eventId !== changes['eventModel'].previousValue.eventId)) {
+        changes['eventModel'].currentValue.eventId !== changes['eventModel'].previousValue.eventId)
+    ) {
       this.setAttr();
       this.removeListener();
       this.addListener();
@@ -75,7 +79,7 @@ export class InteractionEventDirective implements OnChanges, OnDestroy {
         this.eventDispatchService.trackInteraction(this.eventModel, event);
       }
     }
-  }
+  };
 
   private addListener = () => {
     if (this.eventModel) {
@@ -87,20 +91,21 @@ export class InteractionEventDirective implements OnChanges, OnDestroy {
         element.addEventListener(this.attachedEvent, this.handleEvent);
       }
     }
-  }
+  };
 
   private removeListener = () => {
     if (this.attachedEvent !== undefined) {
       const element = this.elementRef.nativeElement;
-      const removeListener = this.attachedEvent === 'click' ?
-        () => element.removeEventListener('mousedown', this.handler) :
-        () => element.removeEventListener(this.attachedEvent, this.handler);
+      const removeListener =
+        this.attachedEvent === 'click'
+          ? () => element.removeEventListener('mousedown', this.handler)
+          : () => element.removeEventListener(this.attachedEvent, this.handler);
       setTimeout(removeListener, 0);
     }
-  }
+  };
 
   private setAttr = () => {
     const analyticsId = this.eventModel ? this.eventModel.eventId : '';
     this.elementRef.nativeElement.setAttribute('analytics-id', analyticsId);
-  }
+  };
 }

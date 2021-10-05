@@ -1,7 +1,8 @@
-export const getSelectedOptions = ($event: any): string => {
-  if (!$event || !$event.target || !$event.target.options) {
+export const getSelectedOptions = ($event: Event): string => {
+  const options = ($event.target as HTMLSelectElement).options;
+  if (!options) {
     return '';
   }
-  const selectedOptions = Array.from($event.target.options).filter((option: HTMLOptionElement) => option.selected) as HTMLOptionElement[];
+  const selectedOptions = Array.from(options).filter((option: HTMLOptionElement) => option.selected);
   return selectedOptions.map((option: any) => (option.text || '').replace(/^\s*/, '').replace(/\s*$/, '')).join('&');
 };

@@ -21,11 +21,11 @@ import { RouterDispatchService } from '../services/router-dispatch.service';
 export class ModalDirective {
   static defaultModalRoute = 'unknown modal';
 
-  @Input('pa-modal-route') paModalRoute: string;
-  @Input('pa-modal-close-event') paModalCloseEvent: EventModel;
+  @Input('pa-modal-route') paModalRoute: string = '';
+  @Input('pa-modal-close-event') paModalCloseEvent?: EventModel;
   @Input() virtualPageName?: string;
 
-  private underlyingPageRoute: string;
+  private underlyingPageRoute: string = '';
 
   constructor(
     private eventDispatchService: EventDispatchService,
@@ -69,7 +69,12 @@ export class ModalDirective {
         );
         this.eventDispatchService.trackAnalyticsError(error);
       }
-      if ($event.closeMethod !== 'confirm' && $event.closeMethod !== 'cancel' && isValidCloseModel) {
+      if (
+        $event.closeMethod !== 'confirm' &&
+        $event.closeMethod !== 'cancel' &&
+        isValidCloseModel &&
+        this.paModalCloseEvent
+      ) {
         this.eventDispatchService.trackInteraction(this.paModalCloseEvent);
       }
       this.locationTrackingService.setAngularRoute(this.underlyingPageRoute, undefined, undefined, true);

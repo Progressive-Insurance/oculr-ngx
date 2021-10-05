@@ -1,9 +1,9 @@
 import { Inject, Injectable, InjectionToken } from '@angular/core';
 
-import { EVENT_IGNORE } from '../event-constants';
 import { trackInteractionEvent } from '../actions/analytics.actions';
-import { AnalyticsEventModel } from '../models/analytics-event-model.interface';
+import { EVENT_IGNORE } from '../event-constants';
 import { AnalyticsEventModelMap } from '../models/analytics-event-model-map.interface';
+import { AnalyticsEventModel } from '../models/analytics-event-model.interface';
 import { InteractionEventPayload } from '../models/interaction-event-payload.interface';
 import { AnalyticsEventBusService } from './analytics-event-bus.service';
 import { EventDispatchService } from './event-dispatch.service';
@@ -13,7 +13,6 @@ export const ANALYTICS_ERROR_MODEL_ID = new InjectionToken('ANALYTICS_ERROR_MODE
 
 @Injectable()
 export class AnalyticsEventModelsService {
-
   private models: AnalyticsEventModelMap;
   private errorModelID: string;
 
@@ -55,15 +54,17 @@ export class AnalyticsEventModelsService {
           event: errorModel.details.event,
           id: this.errorModelID,
           model: errorModel,
-          customDimensions: { dataValue: eventId }
+          customDimensions: { dataValue: eventId },
         };
         this.eventBus.dispatch(trackInteractionEvent(error));
       } else {
         this.eventDispatch.trackAnalyticsError({
-          errorMessage: `Could not find event registered for ${eventId}`
+          errorMessage: `Could not find event registered for ${eventId}`,
         });
       }
     }
-  }
 
+    // TODO: look into alternative solution for fall through
+    return undefined;
+  }
 }

@@ -18,7 +18,7 @@ export class EventIdErrorDirective implements OnInit {
   /**
    * An event id that will be attached to the action this dispatches.
    */
-  @Input() psEventId: string;
+  @Input() psEventId: string = '';
 
   /**
    * Used to add extra data to an event..

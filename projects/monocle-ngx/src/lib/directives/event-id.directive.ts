@@ -20,15 +20,15 @@ export class EventIdDirective implements OnInit, OnDestroy {
   /**
    * An event id that will be attached to the action this dispatches.
    */
-  @Input() psEventId: string;
+  @Input() psEventId: string = '';
 
   /**
    * Used to add extra data to an event..
    */
   @Input() psEventExtras: EventExtras = {};
 
-  handler: (event: any) => void;
-  eventModel: AnalyticsEventModel;
+  handler?: (event: any) => void;
+  eventModel: AnalyticsEventModel = {} as AnalyticsEventModel;
 
   constructor(
     private elementRef: ElementRef,

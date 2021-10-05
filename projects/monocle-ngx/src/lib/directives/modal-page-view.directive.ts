@@ -17,10 +17,10 @@ import { RouterDispatchService } from '../services/router-dispatch.service';
   selector: `pui-modal[virtualPageName]`,
 })
 export class ModalPageViewDirective {
-  @Input() virtualPageName: string;
+  @Input() virtualPageName: string = '';
   @Input() excludeAppScope = false;
   @Input() additionalScopes: string[] = [];
-  @Input() closeEventId: string;
+  @Input() closeEventId: string = '';
   @Input() closeEventExtras: EventExtras = {};
   @Input() psEventExtras: EventExtras = {};
   @Input('pa-modal-route') paModalRoute?: string;

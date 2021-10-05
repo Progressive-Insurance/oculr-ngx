@@ -1,11 +1,12 @@
+// TODO: this should be an interface
 export class CommonErrorSchema {
-  brwsVerNam: string;
-  entrprCustId: string;
-  sysVerNbr: string;
-  errCd: string;
-  sSId: string;
+  brwsVerNam: string = '';
+  entrprCustId: string = '';
+  sysVerNbr: string = '';
+  errCd: string = '';
+  sSId: string = '';
   cretByUserId?: string;
-  appnam: string;
+  appnam: string = '';
   altSesnId?: string;
   polNbr?: string;
   polRenewCnt?: string;
@@ -14,17 +15,17 @@ export class CommonErrorSchema {
   prodCd?: string;
   agtCd?: string;
   agtPrfxCd?: string;
-  errTypTxt: string;
-  msgTxt: string;
+  errTypTxt: string = '';
+  msgTxt: string = '';
   stkTrcTxt?: string;
-  unqMsgId: string;
-  logLvlNam: string;
-  cmnSchmVerNbr: string;
+  unqMsgId: string = '';
+  logLvlNam: string = '';
+  cmnSchmVerNbr: string = '';
   ofrId?: string;
-  URLPthTxt: string;
+  URLPthTxt: string = '';
   InstrumentationLogDateTime: any;
-  LoggingComputerSystemName: string;
-  OriginUrl: string;
+  LoggingComputerSystemName: string = '';
+  OriginUrl: string = '';
   appEnvrnNam?: string;
   CustomFields: {
     AcssTypDesc?: string;
