@@ -8,7 +8,7 @@ import { EVENT_TYPES } from '../event-types';
 import { AnalyticsAction } from '../models/actions/analytics-action.enum';
 import { AnalyticsEventModelMap } from '../models/analytics-event-model-map.interface';
 import { AnalyticsEventModel } from '../models/analytics-event-model.interface';
-import { AnalyticsLibraryModule } from '../monocle-ngx.module';
+import { MonocleAngularModule } from '../monocle-ngx.module';
 import { AnalyticsEventBusService } from '../services/analytics-event-bus.service';
 import { AnalyticsEventModelsService } from '../services/analytics-event-models.service';
 import { AnalyticsService } from '../services/analytics.service';
@@ -166,7 +166,7 @@ describe('EventId Directive', () => {
 
     beforeEach(() => {
       TestBed.configureTestingModule({
-        imports: [CommonModule, RouterTestingModule.withRoutes([]), AnalyticsLibraryModule.forRoot([MODELS], 'ABC123')],
+        imports: [CommonModule, RouterTestingModule.withRoutes([]), MonocleAngularModule.forRoot([MODELS], 'ABC123')],
         declarations: [MouseUpDownTestComponent],
         providers: [
           AnalyticsEventModelsService,
@@ -205,7 +205,7 @@ describe('EventId Directive', () => {
     let fixture: ComponentFixture<NestedTestComponent>;
     beforeEach(() => {
       TestBed.configureTestingModule({
-        imports: [CommonModule, RouterTestingModule.withRoutes([]), AnalyticsLibraryModule.forRoot([MODELS], 'ABC123')],
+        imports: [CommonModule, RouterTestingModule.withRoutes([]), MonocleAngularModule.forRoot([MODELS], 'ABC123')],
         declarations: [NestedTestComponent],
         providers: [
           AnalyticsEventModelsService,
@@ -249,11 +249,7 @@ describe('EventId Directive', () => {
 
       beforeEach(() => {
         TestBed.configureTestingModule({
-          imports: [
-            CommonModule,
-            RouterTestingModule.withRoutes([]),
-            AnalyticsLibraryModule.forRoot([MODELS], 'ABC123'),
-          ],
+          imports: [CommonModule, RouterTestingModule.withRoutes([]), MonocleAngularModule.forRoot([MODELS], 'ABC123')],
           declarations: [TestComponent],
           providers: [
             AnalyticsEventModelsService,
@@ -320,7 +316,7 @@ describe('EventId Directive', () => {
     let fixture: ComponentFixture<TestComponent>;
     beforeEach(() => {
       TestBed.configureTestingModule({
-        imports: [CommonModule, RouterTestingModule.withRoutes([]), AnalyticsLibraryModule.forRoot([MODELS], 'ABC123')],
+        imports: [CommonModule, RouterTestingModule.withRoutes([]), MonocleAngularModule.forRoot([MODELS], 'ABC123')],
         declarations: [TestComponent],
         providers: [
           AnalyticsEventModelsService,
@@ -353,7 +349,7 @@ describe('EventId Directive', () => {
 
     beforeEach(() => {
       TestBed.configureTestingModule({
-        imports: [RouterTestingModule.withRoutes([]), CommonModule, AnalyticsLibraryModule.forRoot([MODELS], 'ABC123')],
+        imports: [RouterTestingModule.withRoutes([]), CommonModule, MonocleAngularModule.forRoot([MODELS], 'ABC123')],
         declarations: [BubbleTestComponent],
         providers: [
           AnalyticsEventModelsService,
@@ -405,7 +401,7 @@ describe('EventId Directive', () => {
 
     beforeEach(() => {
       TestBed.configureTestingModule({
-        imports: [CommonModule, RouterTestingModule.withRoutes([]), AnalyticsLibraryModule.forRoot([MODELS], 'ABC123')],
+        imports: [CommonModule, RouterTestingModule.withRoutes([]), MonocleAngularModule.forRoot([MODELS], 'ABC123')],
         declarations: [UndefinedEventExtrasTestComponent],
         providers: [
           AnalyticsEventModelsService,

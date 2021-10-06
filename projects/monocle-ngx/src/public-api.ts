@@ -1,4 +1,4 @@
-export { AnalyticsLibraryModule, ANALYTICS_BOOTSTRAP, provideAnalytics } from './lib/monocle-ngx.module';
+export { MonocleAngularModule, ANALYTICS_BOOTSTRAP, provideAnalytics } from './lib/monocle-ngx.module';
 export { EVENT_IGNORE } from './lib/event-constants';
 // TODO: export an interface export { getEmptyEventModel } from './lib/interceptors/constants';
 

@@ -5,7 +5,7 @@ import { By } from '@angular/platform-browser';
 import { RouterTestingModule } from '@angular/router/testing';
 import { Subject } from 'rxjs';
 
-import { AnalyticsLibraryModule } from '../monocle-ngx.module';
+import { MonocleAngularModule } from '../monocle-ngx.module';
 import { AnalyticsEventBusService } from '../services/analytics-event-bus.service';
 import { EventDispatchService } from '../services/event-dispatch.service';
 
@@ -59,7 +59,7 @@ describe('Display Event Directive', () => {
     };
 
     TestBed.configureTestingModule({
-      imports: [CommonModule, RouterTestingModule.withRoutes([]), AnalyticsLibraryModule.forRoot([], '')],
+      imports: [CommonModule, RouterTestingModule.withRoutes([]), MonocleAngularModule.forRoot([], '')],
       declarations: [TestComponent],
       providers: [
         { provide: EventDispatchService, useValue: mockEventDispatchService },

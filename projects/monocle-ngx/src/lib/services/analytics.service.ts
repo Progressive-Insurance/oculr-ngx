@@ -1,10 +1,10 @@
-import { Injectable, EventEmitter } from '@angular/core';
+import { EventEmitter, Injectable } from '@angular/core';
 
+import { trackInteractionEvent } from '../actions/analytics.actions';
+import { AnalyticsAction } from '../models/actions/analytics-action.enum';
 import { AnalyticsEventModel } from '../models/analytics-event-model.interface';
 import { InteractionEventPayload } from '../models/interaction-event-payload.interface';
 import { TrackInteractionPayload } from '../models/track-interaction-payload.interface';
-import { AnalyticsAction } from '../models//actions/analytics-action.enum';
-import { trackInteractionEvent } from '../actions/analytics.actions';
 import { AnalyticsEventModelsService } from '../services/analytics-event-models.service';
 import { replaceVars } from '../utils/replace-vars';
 import { AnalyticsEventBusService } from './analytics-event-bus.service';
@@ -18,10 +18,10 @@ export const updateEventDetails = (propName: string) => (value: any, evt: { payl
         ...evt.payload.model,
         details: {
           ...evt.payload.model.details,
-          [propName]: value
-        }
-      }
-    }
+          [propName]: value,
+        },
+      },
+    },
   };
 };
 
@@ -32,16 +32,13 @@ export const updateEventValue = updateEventDetails('eventValue');
 export class AnalyticsService {
   private dispatcher: EventEmitter<any> = new EventEmitter();
 
-  constructor(
-    private eventBus: AnalyticsEventBusService,
-    private analyticsEventModels: AnalyticsEventModelsService
-  ) {
+  constructor(private eventBus: AnalyticsEventBusService, private analyticsEventModels: AnalyticsEventModelsService) {
     this.setupDispatcher();
   }
 
   track = (event: any) => {
     this.dispatcher.next(event);
-  }
+  };
 
   trackInteraction = (trackInteractionPayload: TrackInteractionPayload) => {
     const event: InteractionEventPayload = {
@@ -50,11 +47,11 @@ export class AnalyticsService {
       model: trackInteractionPayload.model,
       customDimensions: trackInteractionPayload.customDimensions,
       selectedItems: trackInteractionPayload.selectedItems,
-      variableData: trackInteractionPayload.variableData
+      variableData: trackInteractionPayload.variableData,
     };
 
     this.dispatcher.next(trackInteractionEvent(event));
-  }
+  };
 
   private getModel = (id: string): AnalyticsEventModel | undefined => {
     let model: AnalyticsEventModel | undefined;
@@ -64,16 +61,16 @@ export class AnalyticsService {
     } catch (e) {
       console.warn(`pgr-ps/analytics: Error trying to retrieve model for eventId: ${id}`);
       console.warn(`Error:`, e);
-      console.warn(`Did you register the tracking model with the AnalyticsLibraryModule? `);
+      console.warn(`Did you register the tracking model with the MonocleAngularModule? `);
       console.warn(`Example:`);
       // using a string literal ` keeps white-space that I don't want in the error message. Want more control over the display
       // of it.
-      console.warn('@NgModule({\n' + '    imports[ AnalyticsLibraryModule.forChild([TEST_API_EVENTS]) ]\n' + '})');
+      console.warn('@NgModule({\n' + '    imports[ MonocleAngularModule.forChild([TEST_API_EVENTS]) ]\n' + '})');
       console.warn();
     }
 
     return model;
-  }
+  };
   private setupDispatcher = () => {
     this.dispatcher.subscribe((evt: any) => {
       const eventId = evt && evt.payload && evt.payload.id;
@@ -83,8 +80,8 @@ export class AnalyticsService {
           ...evt,
           payload: {
             ...evt.payload,
-            model: this.getModel(eventId)
-          }
+            model: this.getModel(eventId),
+          },
         };
       }
 
@@ -96,5 +93,5 @@ export class AnalyticsService {
 
       this.eventBus.dispatch(evt);
     });
-  }
+  };
 }
