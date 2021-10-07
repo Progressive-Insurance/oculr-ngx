@@ -99,34 +99,47 @@ describe('AnalyticsEventModelsService', () => {
     });
   });
 
-  it('will dismiss the TRACK_ERROR action when the eventID is "IGNORE"', () => {
-    const mockModel: any = { '12345': 'test' };
-    const mockError = '00000003';
-    const service = new AnalyticsEventModelsService(
-      mockAnalyticsEventBusService,
-      mockEventDispatchService,
-      [mockModel],
-      mockError
-    );
+  describe('getModal()', () => {
+    beforeEach(() => {
+      TestBed.configureTestingModule({
+        providers: [
+          { provide: ANALYTICS_EVENT_MODEL_MAPS, useValue: [MOCK_MODEL_A], multi: true },
+          { provide: ANALYTICS_ERROR_MODEL_ID, useValue: '00000003', multi: false },
+          { provide: AnalyticsEventBusService, useValue: mockAnalyticsEventBusService },
+          { provide: EventDispatchService, useValue: mockEventDispatchService },
+          AnalyticsEventModelsService,
+        ],
+      });
+      analyticsEventModelsService = TestBed.inject(AnalyticsEventModelsService);
+    });
 
-    const response = service.getModel(EVENT_IGNORE);
+    it('will dismiss the TRACK_ERROR action when the eventID is "IGNORE"', () => {
+      const response = analyticsEventModelsService.getModel(EVENT_IGNORE);
 
-    expect(mockEventDispatchService.trackAnalyticsError).not.toHaveBeenCalled();
-    expect(response).toEqual(undefined);
+      expect(mockEventDispatchService.trackAnalyticsError).not.toHaveBeenCalled();
+      expect(response).toEqual(undefined);
+    });
   });
 
-  it('dispatches a TRACK_ERROR action when the error event is not found', () => {
-    const mockModel: any = { '12345': 'test' };
-    const expectedArgs = { errorMessage: 'Could not find event registered for notFound' };
-    const service = new AnalyticsEventModelsService(
-      mockAnalyticsEventBusService,
-      mockEventDispatchService,
-      [mockModel],
-      'IDONTEXIST'
-    );
+  describe('getModal()', () => {
+    beforeEach(() => {
+      TestBed.configureTestingModule({
+        providers: [
+          { provide: ANALYTICS_EVENT_MODEL_MAPS, useValue: [MOCK_MODEL_A], multi: true },
+          { provide: ANALYTICS_ERROR_MODEL_ID, useValue: 'IDONTEXIST', multi: false },
+          { provide: AnalyticsEventBusService, useValue: mockAnalyticsEventBusService },
+          { provide: EventDispatchService, useValue: mockEventDispatchService },
+          AnalyticsEventModelsService,
+        ],
+      });
+      analyticsEventModelsService = TestBed.inject(AnalyticsEventModelsService);
+    });
 
-    service.getModel('notFound');
+    it('will dismiss the TRACK_ERROR action when the eventID is "IGNORE"', () => {
+      const expectedArgs = { errorMessage: 'Could not find event registered for notFound' };
+      const response = analyticsEventModelsService.getModel('notFound');
 
-    expect(mockEventDispatchService.trackAnalyticsError).toHaveBeenCalledWith(expectedArgs);
+      expect(mockEventDispatchService.trackAnalyticsError).toHaveBeenCalledWith(expectedArgs);
+    });
   });
 });

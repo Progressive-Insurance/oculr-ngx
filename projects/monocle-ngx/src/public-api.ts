@@ -1,7 +1,12 @@
+// TODO: remove export of bootstrap and provideAnalytics
 export { MonocleAngularModule, ANALYTICS_BOOTSTRAP, provideAnalytics } from './lib/monocle-ngx.module';
+// TODO: look to remove/may already be deprecated, maybe replace with issue to be worked on later for a runtime ignore feature
 export { EVENT_IGNORE } from './lib/event-constants';
 // TODO: export an interface export { getEmptyEventModel } from './lib/interceptors/constants';
 
+// TODO: configurable service (api calls), e.g. Splunk, Google Tag. Don't expose service that does calls, handled by lib
+// TODO: have default services for Splunk and Google
+// TODO: don't want to hook into state management, observable providers?
 export {
   GOOGLE_TAG_MANAGER_STATE_TOKEN,
   GOOGLE_TAG_MANAGER_TRANSFORM_TOKEN,
@@ -20,6 +25,8 @@ export {
   SPLUNK_STANDARD_LOGGING_SERVICE_STATE_TOKEN,
 } from './lib/destinations/splunk-standard-logging/splunk-standard-logging.service';
 
+// TODO: remove EventId directives bc don't have a viable business meaning
+// TODO: remove the old modal directive that is deprecated, still needed to handle modals as pages
 export { DisplayEventDirective } from './lib/directives/display-event.directive';
 export { EventIdErrorDirective } from './lib/directives/event-id-error.directive';
 export { EventIdDirective } from './lib/directives/event-id.directive';
@@ -29,6 +36,7 @@ export { ModalPageViewDirective } from './lib/directives/modal-page-view.directi
 
 export { AnalyticsInterceptor } from './lib/interceptors/analytics.interceptor';
 
+// TODO: to review expose, lean towards interfaces
 export { AccessType } from './lib/models/access-type.type';
 export { AccessMode } from './lib/models/access-mode.type';
 export { AnalyticsEventModel } from './lib/models/analytics-event-model.interface';

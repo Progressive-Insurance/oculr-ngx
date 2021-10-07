@@ -1,4 +1,5 @@
 // This file is required by karma.conf.js and loads recursively all the .spec and framework files
+// Do not format this file, zone.js must be imported before the @angular packages
 
 import 'zone.js';
 import 'zone.js/testing';
