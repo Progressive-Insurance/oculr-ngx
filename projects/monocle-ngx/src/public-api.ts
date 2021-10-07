@@ -25,11 +25,8 @@ export {
   SPLUNK_STANDARD_LOGGING_SERVICE_STATE_TOKEN,
 } from './lib/destinations/splunk-standard-logging/splunk-standard-logging.service';
 
-// TODO: remove EventId directives bc don't have a viable business meaning
 // TODO: remove the old modal directive that is deprecated, still needed to handle modals as pages
 export { DisplayEventDirective } from './lib/directives/display-event.directive';
-export { EventIdErrorDirective } from './lib/directives/event-id-error.directive';
-export { EventIdDirective } from './lib/directives/event-id.directive';
 export { InteractionEventDirective } from './lib/directives/interaction-event.directive';
 export { ModalDirective } from './lib/directives/modal.directive';
 export { ModalPageViewDirective } from './lib/directives/modal-page-view.directive';

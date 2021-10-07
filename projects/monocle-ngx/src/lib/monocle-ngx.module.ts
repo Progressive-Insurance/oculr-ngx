@@ -13,8 +13,6 @@ import { SPLUNK_ANALYTICS_SERVICE_STATE_TOKEN, SPLUNK_ANALYTICS_TRANSFORM_TOKEN,
 import { createSplunkStandardLoggingService } from './destinations/splunk-standard-logging/create-splunk-standard-logging-service';
 import { SPLUNK_STANDARD_LOGGING_SERVICE_STATE_TOKEN, SPLUNK_STANDARD_LOGGING_TRANSFORM_TOKEN, splunkStandardLoggingApiKey, splunkStandardLoggingEndpoint, SplunkStandardLoggingService } from './destinations/splunk-standard-logging/splunk-standard-logging.service';
 import { DisplayEventDirective } from './directives/display-event.directive';
-import { EventIdErrorDirective } from './directives/event-id-error.directive';
-import { EventIdDirective } from './directives/event-id.directive';
 import { InteractionEventDirective } from './directives/interaction-event.directive';
 import { ModalPageViewDirective } from './directives/modal-page-view.directive';
 import { ModalDirective } from './directives/modal.directive';
@@ -46,22 +44,8 @@ export function provideAnalytics(injector: Injector) {
 
 @NgModule({
   imports: [CommonModule],
-  declarations: [
-    EventIdDirective,
-    EventIdErrorDirective,
-    DisplayEventDirective,
-    InteractionEventDirective,
-    ModalDirective,
-    ModalPageViewDirective,
-  ],
-  exports: [
-    EventIdDirective,
-    EventIdErrorDirective,
-    DisplayEventDirective,
-    InteractionEventDirective,
-    ModalDirective,
-    ModalPageViewDirective,
-  ],
+  declarations: [DisplayEventDirective, InteractionEventDirective, ModalDirective, ModalPageViewDirective],
+  exports: [DisplayEventDirective, InteractionEventDirective, ModalDirective, ModalPageViewDirective],
   providers: [],
 })
 export class MonocleAngularModule {
