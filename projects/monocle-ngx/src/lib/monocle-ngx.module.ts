@@ -14,7 +14,6 @@ import { createSplunkStandardLoggingService } from './destinations/splunk-standa
 import { SPLUNK_STANDARD_LOGGING_SERVICE_STATE_TOKEN, SPLUNK_STANDARD_LOGGING_TRANSFORM_TOKEN, splunkStandardLoggingApiKey, splunkStandardLoggingEndpoint, SplunkStandardLoggingService } from './destinations/splunk-standard-logging/splunk-standard-logging.service';
 import { DisplayEventDirective } from './directives/display-event.directive';
 import { InteractionEventDirective } from './directives/interaction-event.directive';
-import { ModalPageViewDirective } from './directives/modal-page-view.directive';
 import { ModalDirective } from './directives/modal.directive';
 import { AnalyticsInterceptor } from './interceptors/analytics.interceptor';
 import { AnalyticsEventModelMap } from './models/analytics-event-model-map.interface';
@@ -44,8 +43,8 @@ export function provideAnalytics(injector: Injector) {
 
 @NgModule({
   imports: [CommonModule],
-  declarations: [DisplayEventDirective, InteractionEventDirective, ModalDirective, ModalPageViewDirective],
-  exports: [DisplayEventDirective, InteractionEventDirective, ModalDirective, ModalPageViewDirective],
+  declarations: [DisplayEventDirective, InteractionEventDirective, ModalDirective],
+  exports: [DisplayEventDirective, InteractionEventDirective, ModalDirective],
   providers: [],
 })
 export class MonocleAngularModule {

@@ -1,5 +1,4 @@
-// TODO: remove export of bootstrap and provideAnalytics
-export { MonocleAngularModule, ANALYTICS_BOOTSTRAP, provideAnalytics } from './lib/monocle-ngx.module';
+export { MonocleAngularModule } from './lib/monocle-ngx.module';
 // TODO: look to remove/may already be deprecated, maybe replace with issue to be worked on later for a runtime ignore feature
 export { EVENT_IGNORE } from './lib/event-constants';
 // TODO: export an interface export { getEmptyEventModel } from './lib/interceptors/constants';
@@ -29,7 +28,6 @@ export {
 export { DisplayEventDirective } from './lib/directives/display-event.directive';
 export { InteractionEventDirective } from './lib/directives/interaction-event.directive';
 export { ModalDirective } from './lib/directives/modal.directive';
-export { ModalPageViewDirective } from './lib/directives/modal-page-view.directive';
 
 export { AnalyticsInterceptor } from './lib/interceptors/analytics.interceptor';
 
