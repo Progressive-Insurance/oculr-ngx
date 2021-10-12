@@ -1,7 +1,8 @@
 {
   "$schema": "./node_modules/@angular/cli/lib/config/schema.json",
   "cli": {
-    "analytics": "bf3e71d2-04b9-4b8a-825d-edd7670d7039"
+    "analytics": "bf3e71d2-04b9-4b8a-825d-edd7670d7039",
+    "defaultCollection": "@angular-eslint/schematics"
   },
   "version": 1,
   "newProjectRoot": "projects",
@@ -33,6 +34,15 @@
             "main": "projects/monocle-ngx/src/test.ts",
             "tsConfig": "projects/monocle-ngx/tsconfig.spec.json",
             "karmaConfig": "projects/monocle-ngx/karma.conf.js"
+          }
+        },
+        "lint": {
+          "builder": "@angular-eslint/builder:lint",
+          "options": {
+            "lintFilePatterns": [
+              "projects/monocle-ngx/**/*.ts",
+              "projects/monocle-ngx/**/*.html"
+            ]
           }
         }
       }
