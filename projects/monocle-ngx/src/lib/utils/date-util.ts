@@ -1,4 +1,4 @@
-const pad = (num: number, size: number = 2): string => {
+const pad = (num: number, size = 2): string => {
   let result: string = num.toString();
   while (result.length < size) {
     result = '0' + result;

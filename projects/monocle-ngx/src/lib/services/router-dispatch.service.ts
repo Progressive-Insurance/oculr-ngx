@@ -143,13 +143,13 @@ export class RouterDispatchService {
       merge(clearEvents$),
       map((event) => this.normalizeUrl(event)),
       scan<VirtualPageStackAction, VirtualPageStack[]>(virtualPageStackReducer, [] as VirtualPageStack[]),
-      map((n) => (n[n.length - 1] as VirtualPageStack) || { location: undefined, additionalScopes: undefined }),
+      map((n) => (n[n.length - 1] ) || { location: undefined, additionalScopes: undefined }),
       distinctUntilChanged((a, b) => a.location === b.location),
       withLatestFrom(routerEvents$, (vps, routerEvent): RouterEvent => {
         const result: RouterEvent = {
           location: vps.location || routerEvent.location,
           currentHostName: routerEvent.currentHostName,
-          url: !!vps.location ? routerEvent.currentHostName + vps.location : routerEvent.url,
+          url: vps.location ? routerEvent.currentHostName + vps.location : routerEvent.url,
           domain: routerEvent.domain,
           additionalScopes: vps.additionalScopes || (routerEvent.additionalScopes as string[]),
           selectedItems: vps.selectedItems || routerEvent.selectedItems,
@@ -167,7 +167,7 @@ export class RouterDispatchService {
       map(({ location, currentHostName, url, domain, additionalScopes, selectedItems, customDimensions, shouldTrack, shouldIncludeAppScope }) => {
         const routeWithQueryString = location;
         const angularRoute = location.substr(0, location.indexOf('?')) || location;
-        const scopes = !!shouldIncludeAppScope ? ['AppLevelScope', ...additionalScopes] : [...additionalScopes];
+        const scopes = shouldIncludeAppScope ? ['AppLevelScope', ...additionalScopes] : [...additionalScopes];
         const payload: UpdateLocationPayload = {
           angularRoute,
           routeWithQueryString,

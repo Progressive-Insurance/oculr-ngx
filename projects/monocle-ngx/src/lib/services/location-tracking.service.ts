@@ -100,7 +100,7 @@ export class LocationTrackingService {
     virtualPageName: string,
     params: { [key: string]: string } = {},
     queryParams: { [key: string]: string } = {},
-    disableUpdateLocation: boolean = false
+    disableUpdateLocation = false
   ) => {
     this.angularRoutes$.next({
       route: virtualPageName,
@@ -116,7 +116,7 @@ export class LocationTrackingService {
     virtualPageName: string,
     params: { [key: string]: string } = {},
     queryParams: { [key: string]: string } = {},
-    disableUpdateLocation: boolean = false
+    disableUpdateLocation = false
   ) => {
     this.modalRoutes$.next({
       route: virtualPageName,
@@ -184,7 +184,7 @@ export class LocationTrackingService {
     }
   };
 
-  private buildEventLocation = (route: string, queryString: string = ''): any => {
+  private buildEventLocation = (route: string, queryString = ''): any => {
     const virtualPageName = route.substr(0, route.indexOf('?')) || route;
 
     return {

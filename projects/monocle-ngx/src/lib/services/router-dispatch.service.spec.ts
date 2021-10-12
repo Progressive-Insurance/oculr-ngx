@@ -5,7 +5,7 @@ import { Subject } from 'rxjs';
 import { EVENT_TYPES } from '../event-types';
 import { RouterDispatchService } from './router-dispatch.service';
 
-const makeExpectedAction = (path: string, scopes: string[] = [], selectedItems: any = {}, customDimensions?: any, shouldTrack: boolean = true) => {
+const makeExpectedAction = (path: string, scopes: string[] = [], selectedItems: any = {}, customDimensions?: any, shouldTrack = true) => {
   return {
     type: '@pgr/analytics/UPDATE_LOCATION',
     payload: {

@@ -57,7 +57,7 @@ export class AnalyticsService {
     let model: AnalyticsEventModel | undefined;
 
     try {
-      model = !!id ? this.analyticsEventModels.getModel(id) : undefined;
+      model = id ? this.analyticsEventModels.getModel(id) : undefined;
     } catch (e) {
       console.warn(`pgr-ps/analytics: Error trying to retrieve model for eventId: ${id}`);
       console.warn(`Error:`, e);

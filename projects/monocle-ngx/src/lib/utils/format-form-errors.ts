@@ -1,7 +1,7 @@
 import { FormGroup } from '@angular/forms';
 
 export const formatFormErrors = (formGroup: FormGroup): { errorMessages: string; errorCount: number } => {
-  let formErrors: { errorMessages: string[]; errorCount: number } = { errorMessages: [], errorCount: 0 };
+  const formErrors: { errorMessages: string[]; errorCount: number } = { errorMessages: [], errorCount: 0 };
   Object.keys(formGroup.controls)
     .filter((controlName) => formGroup.controls[controlName].errors !== null)
     .forEach((controlName) => {

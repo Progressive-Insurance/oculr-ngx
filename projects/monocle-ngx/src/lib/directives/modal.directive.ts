@@ -21,11 +21,11 @@ import { RouterDispatchService } from '../services/router-dispatch.service';
 export class ModalDirective {
   static defaultModalRoute = 'unknown modal';
 
-  @Input('pa-modal-route') paModalRoute: string = '';
+  @Input('pa-modal-route') paModalRoute = '';
   @Input('pa-modal-close-event') paModalCloseEvent?: EventModel;
   @Input() virtualPageName?: string;
 
-  private underlyingPageRoute: string = '';
+  private underlyingPageRoute = '';
 
   constructor(
     private eventDispatchService: EventDispatchService,

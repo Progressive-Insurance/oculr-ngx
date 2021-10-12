@@ -14,7 +14,7 @@ export class InteractionEventDirective implements OnChanges, OnDestroy {
   @Input('pa-interaction-event') eventModel: EventModel | undefined | null;
 
   private handler?: (event: any) => void;
-  private attachedEvent: string = '';
+  private attachedEvent = '';
 
   constructor(
     private elementRef: ElementRef,

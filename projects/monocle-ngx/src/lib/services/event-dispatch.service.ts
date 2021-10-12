@@ -145,7 +145,7 @@ export class EventDispatchService {
     requestEndTime: number,
     apiEndpoint: string,
     httpMethod: string,
-    hasEventModelTag: boolean = true
+    hasEventModelTag = true
   ) => {
     const duration = Math.round(requestEndTime - requestStartTime);
     const httpStatus = response instanceof HttpResponseBase
