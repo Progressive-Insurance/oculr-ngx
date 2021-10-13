@@ -12,7 +12,7 @@ describe('ModalDirective', () => {
       mockEventDispatchService = jasmine.createSpyObj('', ['trackAnalyticsError', 'trackInteraction']);
       mockLocationTrackingService = jasmine.createSpyObj('', ['setModalRoute', 'setAngularRoute']);
       mockLocationTrackingService.location = {};
-      mockRouterDispatchService = { virtualRoute: { next: (vpsItem: any) => undefined } };
+      mockRouterDispatchService = { virtualRoute: { next: () => undefined } };
       modalDirective = new ModalDirective(
         mockEventDispatchService,
         mockLocationTrackingService,

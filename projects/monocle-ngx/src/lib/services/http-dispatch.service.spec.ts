@@ -20,15 +20,14 @@ const resultAction = jasmine.objectContaining({
   payload: jasmine.objectContaining({
     requestStartTime: jasmine.any(Number),
     requestEndTime: jasmine.any(Number),
-    variableData: { duration: jasmine.any(Number), statusCode: undefined }
-  })
+    variableData: { duration: jasmine.any(Number), statusCode: undefined },
+  }),
 });
 
 const completedAction = jasmine.objectContaining({ type: AnalyticsAction.API_COMPLETED });
 
 // TODO Rewrite tests to be more readable with less setup
 describe('The HttpDispatchService', () => {
-
   const defaultIds: HttpDispatchRequestOptions = {
     startId: 'startId',
     successId: 'successId',
@@ -36,25 +35,24 @@ describe('The HttpDispatchService', () => {
     completedId: 'completedId',
     customDimensions: { dataValue: 'isChecked' },
     selectedItems: { policyNumber: '123456789' },
-    variableData: { policyIndex: 1 }
+    variableData: { policyIndex: 1 },
   };
 
   type ObservableMutate = (modifier: Observable<any>) => Observable<any>;
 
-  const testSetup = (options: HttpDispatchRequestOptions = defaultIds,
-    modifier?: ObservableMutate) => {
+  const testSetup = (options: HttpDispatchRequestOptions = defaultIds, modifier?: ObservableMutate) => {
     const mockAnalyticsEventBusService: any = {
-      dispatch: () => ({})
+      dispatch: () => ({}),
     };
 
     const mockAnalyticsModel: any = {
-      getModel: (id: string) => ({ id, details: { eventLabel: 'dummy label', eventValue: 0 } })
+      getModel: (id: string) => ({ id, details: { eventLabel: 'dummy label', eventValue: 0 } }),
     };
 
     const analyticsService = new AnalyticsService(mockAnalyticsEventBusService, mockAnalyticsModel);
     const timeService = new TimeService();
 
-    const source$ = of({ type: 'TEST DATA' }).pipe(obs => modifier ? modifier(obs) : obs);
+    const source$ = of({ type: 'TEST DATA' }).pipe((obs) => (modifier ? modifier(obs) : obs));
     const service = new HttpDispatchService(analyticsService, timeService);
     const dispatch = spyOn(mockAnalyticsEventBusService, 'dispatch');
     const request = HttpDispatchService.createRequest(options);
@@ -66,12 +64,13 @@ describe('The HttpDispatchService', () => {
       service,
       request,
       dispatched$,
-      dispatch
+      dispatch,
     };
   };
 
   const setupSuccess = (eventIds?: HttpDispatchRequestOptions) => testSetup(eventIds);
-  const setupError = (eventIds?: HttpDispatchRequestOptions) => testSetup(eventIds, obs => obs.pipe(mergeMap(() => throwError('Ooops'))));
+  const setupError = (eventIds?: HttpDispatchRequestOptions) =>
+    testSetup(eventIds, (obs) => obs.pipe(mergeMap(() => throwError('Ooops'))));
 
   beforeEach(fakeAsync(() => {
     discardPeriodicTasks();
@@ -79,14 +78,14 @@ describe('The HttpDispatchService', () => {
 
   it('should dispatch once an observable sequence starts', fakeAsync(() => {
     const { dispatched$, dispatch } = setupSuccess();
-    dispatched$.pipe(take(1)).subscribe(() => ((): undefined => undefined));
+    dispatched$.pipe(take(1)).subscribe(() => (): undefined => undefined);
     tick();
     expect(dispatch).toHaveBeenCalledWith(startAction);
   }));
 
   it('should dispatch once an observable sequence succeeds', fakeAsync(() => {
     const { dispatched$, dispatch } = setupSuccess();
-    dispatched$.pipe(take(1)).subscribe(() => ((): undefined => undefined));
+    dispatched$.pipe(take(1)).subscribe(() => (): undefined => undefined);
     tick();
     expect(dispatch).toHaveBeenCalledTimes(3);
     expect(dispatch).toHaveBeenCalledWith(successAction);
@@ -94,7 +93,7 @@ describe('The HttpDispatchService', () => {
 
   it('should dispatch a completed event on success', fakeAsync(() => {
     const { dispatched$, dispatch } = setupSuccess();
-    dispatched$.pipe(take(1)).subscribe(() => ((): undefined => undefined));
+    dispatched$.pipe(take(1)).subscribe(() => (): undefined => undefined);
     tick();
     expect(dispatch).toHaveBeenCalledTimes(3);
     expect(dispatch).toHaveBeenCalledWith(completedAction);
@@ -102,27 +101,30 @@ describe('The HttpDispatchService', () => {
 
   it('should dispatch once an observable sequence errors', fakeAsync(() => {
     const { dispatched$, dispatch } = setupError();
-    dispatched$.pipe(
-      take(1),
-      catchError(() => {
-        return of('handled');
-      })
-    ).subscribe(() => ((): undefined => undefined));
+    dispatched$
+      .pipe(
+        take(1),
+        catchError(() => {
+          return of('handled');
+        })
+      )
+      .subscribe(() => (): undefined => undefined);
     tick();
     expect(dispatch).toHaveBeenCalledTimes(3);
     expect(dispatch).toHaveBeenCalledWith(unhandledErrorAction);
   }));
 
   it('should dispatch a completed action if it errors also', fakeAsync(() => {
-
     const { dispatched$, dispatch } = setupError();
 
-    dispatched$.pipe(
-      take(1),
-      catchError(() => {
-        return of('handled');
-      })
-    ).subscribe(() => ((): undefined => undefined));
+    dispatched$
+      .pipe(
+        take(1),
+        catchError(() => {
+          return of('handled');
+        })
+      )
+      .subscribe(() => (): undefined => undefined);
     tick();
     expect(dispatch).toHaveBeenCalledTimes(3);
     expect(dispatch).toHaveBeenCalledWith(completedAction);
@@ -130,7 +132,7 @@ describe('The HttpDispatchService', () => {
 
   it('should track start, end time, and duration of a successful request', fakeAsync(() => {
     const { dispatched$, dispatch } = setupSuccess();
-    dispatched$.pipe(take(1)).subscribe(() => ((): undefined => undefined));
+    dispatched$.pipe(take(1)).subscribe(() => (): undefined => undefined);
     tick();
 
     expect(dispatch).toHaveBeenCalledWith(resultAction);
@@ -138,19 +140,21 @@ describe('The HttpDispatchService', () => {
 
   it('should track start, end time, and duration of a failed request', fakeAsync(() => {
     const { dispatched$, dispatch } = setupError();
-    dispatched$.pipe(
-      take(1),
-      catchError(() => {
-        return of('handled');
-      })
-    ).subscribe(() => ((): undefined => undefined));
+    dispatched$
+      .pipe(
+        take(1),
+        catchError(() => {
+          return of('handled');
+        })
+      )
+      .subscribe(() => (): undefined => undefined);
     tick();
     expect(dispatch).toHaveBeenCalledWith(resultAction);
   }));
 
   it('should track start and end time of a successful request', fakeAsync(() => {
     const { dispatched$, dispatch } = setupSuccess();
-    dispatched$.pipe(take(1)).subscribe(() => ((): undefined => undefined));
+    dispatched$.pipe(take(1)).subscribe(() => (): undefined => undefined);
     tick();
 
     const actualSuccessAction = dispatch.calls.argsFor(SUCCESS_ACTION) as any;
@@ -172,7 +176,7 @@ describe('The HttpDispatchService', () => {
 
   it('should have model provided if there is a startId', fakeAsync(() => {
     const { dispatched$, dispatch } = setupSuccess();
-    dispatched$.pipe(take(1)).subscribe(() => ((): undefined => undefined));
+    dispatched$.pipe(take(1)).subscribe(() => (): undefined => undefined);
     tick();
     const actualStartAction = dispatch.calls.argsFor(START_ACTION)[0] as any;
     expect(actualStartAction.payload.model.id).toBe('startId');
@@ -180,7 +184,7 @@ describe('The HttpDispatchService', () => {
 
   it('should have model provided if there is a successId', fakeAsync(() => {
     const { dispatched$, dispatch } = setupSuccess();
-    dispatched$.pipe(take(1)).subscribe(() => ((): undefined => undefined));
+    dispatched$.pipe(take(1)).subscribe(() => (): undefined => undefined);
     tick();
     const actualSuccessAction = dispatch.calls.argsFor(SUCCESS_ACTION)[0] as any;
 
@@ -189,96 +193,108 @@ describe('The HttpDispatchService', () => {
 
   it('should have model provided if there is a errorId', fakeAsync(() => {
     const { dispatched$, dispatch } = setupError();
-    dispatched$.pipe(
-      take(1),
-      catchError(() => {
-        return of('handled');
-      })
-    ).subscribe(() => ((): undefined => undefined));
+    dispatched$
+      .pipe(
+        take(1),
+        catchError(() => {
+          return of('handled');
+        })
+      )
+      .subscribe(() => (): undefined => undefined);
     tick();
     const actualErrorAction = dispatch.calls.argsFor(ERROR_ACTION)[0] as any;
 
     expect(actualErrorAction.payload.model.id).toBe('errorId');
   }));
 
-  it('should have action type API_UNHANDLED_ERROR if status doesn\'t match provided mapping', fakeAsync(() => {
+  it("should have action type API_UNHANDLED_ERROR if status doesn't match provided mapping", fakeAsync(() => {
     const errorResponse = new HttpResponse<any>({
       body: { test: 'data' },
-      status: 400
+      status: 400,
     });
 
-    const { dispatched$, dispatch } = testSetup(undefined, obs => obs.pipe(switchMap(n => throwError(errorResponse))));
-    dispatched$.pipe(take(1)).subscribe(res => {
-      expect(1).toBe(2);
-    }, err => {
-      tick();
-      expect(dispatch).toHaveBeenCalledTimes(3);
-      const actualAction = dispatch.calls.argsFor(ERROR_ACTION)[0] as any;
-      expect(actualAction.type).toBe(AnalyticsAction.API_UNHANDLED_ERROR);
-    }, () => {
-      expect(3).toBe(4);
-    });
+    const { dispatched$, dispatch } = testSetup(undefined, (obs) =>
+      obs.pipe(switchMap(() => throwError(errorResponse)))
+    );
+    dispatched$.pipe(take(1)).subscribe(
+      () => {
+        expect(1).toBe(2);
+      },
+      () => {
+        tick();
+        expect(dispatch).toHaveBeenCalledTimes(3);
+        const actualAction = dispatch.calls.argsFor(ERROR_ACTION)[0] as any;
+        expect(actualAction.type).toBe(AnalyticsAction.API_UNHANDLED_ERROR);
+      },
+      () => {
+        expect(3).toBe(4);
+      }
+    );
   }));
 
   it('should have action type API_HANDLED_ERROR if status matches provided mapping', fakeAsync(() => {
     const errorResponse = new HttpResponse({
       body: { test: 'data' },
-      status: 400
+      status: 400,
     });
 
     const testOptions: HttpDispatchRequestOptions = {
       errorId: 'errorId',
       isErrorCodeSuccess: {
-        '400': true
+        '400': true,
       },
       customDimensions: { dataValue: 'isError' },
       selectedItems: { policyNumber: '123456789' },
-      variableData: { policyIndex: 1 }
+      variableData: { policyIndex: 1 },
     };
 
-    const { dispatched$, dispatch } = testSetup(testOptions, obs => obs.pipe(switchMap(n => throwError(errorResponse))));
-    dispatched$.pipe(take(1)).subscribe(res => {
-      fail('should not have reached happy path');
-    }, err => {
-      tick();
-      const actualAction = dispatch.calls.argsFor(ERROR_ACTION)[0] as any;
-      expect(dispatch).toHaveBeenCalledTimes(3);
-      expect(actualAction.type).toBe(AnalyticsAction.API_HANDLED_ERROR);
-    });
+    const { dispatched$, dispatch } = testSetup(testOptions, (obs) =>
+      obs.pipe(switchMap(() => throwError(errorResponse)))
+    );
+    dispatched$.pipe(take(1)).subscribe(
+      () => {
+        fail('should not have reached happy path');
+      },
+      () => {
+        tick();
+        const actualAction = dispatch.calls.argsFor(ERROR_ACTION)[0] as any;
+        expect(dispatch).toHaveBeenCalledTimes(3);
+        expect(actualAction.type).toBe(AnalyticsAction.API_HANDLED_ERROR);
+      }
+    );
   }));
-
 });
 
 describe('Integration tests for HttpDispatchService', () => {
   class SomeApiService {
-    constructor(private http: HttpClient, private httpDispatch: HttpDispatchService) { }
+    constructor(private http: HttpClient, private httpDispatch: HttpDispatchService) {}
 
-    getSuccessWithStartIdSuccessId(id: string) {
+    getSuccessWithStartIdSuccessId() {
       const options: HttpDispatchRequestOptions = {
         startId: 'startId',
         successId: 'successId',
-        errorId: 'errorId'
+        errorId: 'errorId',
       };
       const dispatchRequest = HttpDispatchService.createRequest(options);
       const httpRequest = this.http.get('data') as Observable<HttpResponse<any>>;
       return this.httpDispatch.dispatchObservable(httpRequest, dispatchRequest);
     }
 
-    getUnhandledError(id: string) {
+    getUnhandledError() {
       const options: HttpDispatchRequestOptions = {
-        errorId: 'errorId'
+        errorId: 'errorId',
       };
       const dispatchRequest = HttpDispatchService.createRequest(options);
       const httpRequest = this.http.get('data') as Observable<HttpResponse<any>>;
       return this.httpDispatch.dispatchObservable(httpRequest, dispatchRequest);
     }
 
-    getHandledError(id: string) {
+    getHandledError() {
       const options: HttpDispatchRequestOptions = {
         errorId: 'errorId',
         isErrorCodeSuccess: {
-          305: true
-        }
+          305: true,
+        },
       };
       const dispatchRequest = HttpDispatchService.createRequest(options);
       const httpRequest = this.http.get('data') as Observable<HttpResponse<any>>;
@@ -289,7 +305,7 @@ describe('Integration tests for HttpDispatchService', () => {
       const options: HttpDispatchRequestOptions = {
         startId: 'startId',
         successId: 'successId',
-        errorId: 'errorId'
+        errorId: 'errorId',
       };
 
       return this.httpDispatch.dispatchObservable(this.http.get('data') as Observable<HttpResponse<any>>, options);
@@ -301,18 +317,18 @@ describe('Integration tests for HttpDispatchService', () => {
       get: () => {
         const httpResponse = new HttpResponse({
           body: { test: 'data' },
-          status: 200
+          status: 200,
         });
 
         return of(httpResponse);
-      }
+      },
     };
     const mockAnalyticsEventBusService: any = {
-      dispatch: () => ({})
+      dispatch: () => ({}),
     };
 
     const mockAnalyticsModel: any = {
-      getModel: (id: string) => ({ id, details: { eventLabel: 'dummy label', eventValue: 0 } })
+      getModel: (id: string) => ({ id, details: { eventLabel: 'dummy label', eventValue: 0 } }),
     };
 
     const dispatch = spyOn(mockAnalyticsEventBusService, 'dispatch');
@@ -330,18 +346,22 @@ describe('Integration tests for HttpDispatchService', () => {
       mockHttp,
       subscribeSpy,
       errorSpy,
-      completedSpy
+      completedSpy,
     };
   };
 
   it('should emit start and success events', fakeAsync(() => {
     const { service, dispatch, subscribeSpy, errorSpy } = testSetup();
-    service.getSuccessWithStartIdSuccessId('1234')
-      .pipe(map(response => response.body))
-      .subscribe(n => {
-        subscribeSpy();
-        expect(n).toEqual({ test: 'data' });
-      }, err => errorSpy());
+    service
+      .getSuccessWithStartIdSuccessId()
+      .pipe(map((response) => response.body))
+      .subscribe(
+        (n) => {
+          subscribeSpy();
+          expect(n).toEqual({ test: 'data' });
+        },
+        () => errorSpy()
+      );
     tick();
     expect(dispatch).toHaveBeenCalledTimes(3);
     expect(subscribeSpy).toHaveBeenCalled();
@@ -353,21 +373,28 @@ describe('Integration tests for HttpDispatchService', () => {
     spyOn(mockHttp, 'get').and.callFake(() => {
       const httpResponse = new HttpResponse({
         body: { test: 'data' },
-        status: 305
+        status: 305,
       });
 
       return throwError(httpResponse);
     });
 
-    service.getUnhandledError('1234').pipe(map(response => response.body)).subscribe(n => {
-      subscribeSpy();
-    }, err => {
-      errorSpy();
-      tick();
-      const actualAction = dispatch.calls.argsFor(ERROR_ACTION)[0] as any;
-      expect(dispatch).toHaveBeenCalledTimes(3);
-      expect(actualAction.type).toBe(AnalyticsAction.API_UNHANDLED_ERROR);
-    }, () => completedSpy());
+    service
+      .getUnhandledError()
+      .pipe(map((response) => response.body))
+      .subscribe(
+        () => {
+          subscribeSpy();
+        },
+        () => {
+          errorSpy();
+          tick();
+          const actualAction = dispatch.calls.argsFor(ERROR_ACTION)[0] as any;
+          expect(dispatch).toHaveBeenCalledTimes(3);
+          expect(actualAction.type).toBe(AnalyticsAction.API_UNHANDLED_ERROR);
+        },
+        () => completedSpy()
+      );
     expect(subscribeSpy).not.toHaveBeenCalled();
     expect(errorSpy).toHaveBeenCalled();
   }));
@@ -377,19 +404,25 @@ describe('Integration tests for HttpDispatchService', () => {
     spyOn(mockHttp, 'get').and.callFake(() => {
       const httpResponse = new HttpResponse({
         body: { test: 'data' },
-        status: 305
+        status: 305,
       });
       return throwError(httpResponse);
     });
-    service.getHandledError('1234').pipe(map(response => response.body)).subscribe(n => {
-      subscribeSpy();
-    }, err => {
-      errorSpy();
-      tick();
-      const actualAction = dispatch.calls.argsFor(ERROR_ACTION)[0] as any;
-      expect(dispatch).toHaveBeenCalledTimes(3);
-      expect(actualAction.type).toBe(AnalyticsAction.API_HANDLED_ERROR);
-    });
+    service
+      .getHandledError()
+      .pipe(map((response) => response.body))
+      .subscribe(
+        () => {
+          subscribeSpy();
+        },
+        () => {
+          errorSpy();
+          tick();
+          const actualAction = dispatch.calls.argsFor(ERROR_ACTION)[0] as any;
+          expect(dispatch).toHaveBeenCalledTimes(3);
+          expect(actualAction.type).toBe(AnalyticsAction.API_HANDLED_ERROR);
+        }
+      );
     expect(subscribeSpy).not.toHaveBeenCalled();
     expect(errorSpy).toHaveBeenCalled();
   }));
@@ -397,10 +430,16 @@ describe('Integration tests for HttpDispatchService', () => {
   it('should emit start and end events if service is only provided with config options', fakeAsync(() => {
     const { service, dispatch, subscribeSpy, errorSpy } = testSetup();
 
-    service.getByPassingOptions().pipe(map(response => response.body)).subscribe(n => {
-      subscribeSpy();
-      expect(n).toEqual({ test: 'data' });
-    }, err => errorSpy());
+    service
+      .getByPassingOptions()
+      .pipe(map((response) => response.body))
+      .subscribe(
+        (n) => {
+          subscribeSpy();
+          expect(n).toEqual({ test: 'data' });
+        },
+        () => errorSpy()
+      );
     tick();
     expect(dispatch).toHaveBeenCalledTimes(3);
     expect(dispatch).toHaveBeenCalledWith(startAction);
@@ -408,5 +447,4 @@ describe('Integration tests for HttpDispatchService', () => {
     expect(subscribeSpy).toHaveBeenCalled();
     expect(errorSpy).not.toHaveBeenCalled();
   }));
-
 });

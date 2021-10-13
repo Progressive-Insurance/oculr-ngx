@@ -10,20 +10,7 @@ import { AnalyticsEventBusService } from '../services/analytics-event-bus.servic
 import { EventDispatchService } from '../services/event-dispatch.service';
 
 @Component({
-  template: `
-    <div id="tileContainer">
-      <div id="tile1" *ngIf="shouldDisplayTile | async" [pa-display-event]="tileDisplayEvent"></div>
-    </div>
-    <div [pa-display-event] *ngIf="shouldDisplayPromo | async">Promo</div>
-    <h1 [pa-display-event]="headingDisplayEvent" *ngIf="shouldDisplayHeading | async"></h1>
-    <p [pa-display-event]="paragraphDisplayEvent" *ngIf="shouldDisplayParagraph | async">Body text</p>
-    <button
-      id="button1"
-      value="Next"
-      [pa-display-event]="buttonDisplayEvent"
-      *ngIf="shouldDisplayButton | async"
-    ></button>
-  `,
+  templateUrl: './display-event.template.html',
 })
 class TestComponent {
   tileDisplayEvent = { trackOn: 'custom', eventId: 'TILE1HASH', eventKey: 'TileDisplay' };

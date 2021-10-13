@@ -2,7 +2,6 @@ import { HttpErrorResponse, HttpRequest, HttpResponse } from '@angular/common/ht
 import { of, throwError } from 'rxjs';
 
 import { AnalyticsInterceptor } from './analytics.interceptor';
-import * as constants from './constants';
 
 describe('Analytics Interceptor', () => {
   let mockEventDispatcher: any;
@@ -56,7 +55,7 @@ describe('Analytics Interceptor', () => {
   describe('when the api completes successfully', () => {
     beforeEach(() => {
       const response = new HttpResponse({ status: 200 });
-      mockHandler.handle.and.callFake((request: any) => {
+      mockHandler.handle.and.callFake(() => {
         return of(response);
       });
     });
@@ -117,7 +116,7 @@ describe('Analytics Interceptor', () => {
   describe('when the api errors', () => {
     beforeEach(() => {
       const response = new HttpErrorResponse({ status: 200 });
-      mockHandler.handle.and.callFake((request: any) => {
+      mockHandler.handle.and.callFake(() => {
         return throwError(response);
       });
     });
