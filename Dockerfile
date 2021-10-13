@@ -27,7 +27,7 @@ RUN curl -o /etc/pki/ca-trust/source/anchors/ca.crt http://crl3.prci.com/Progres
 # TODO Temporary workaround until esbuild can fix the issue or we can upgrade nodejs (https://github.com/netlify/cli/issues/1870)
 RUN npm install --unsafe-perm=true
 RUN npm run build
-RUN npm run test
+RUN npm run test:ci
 
 WORKDIR /opt/app-root/src/dist/monocle-ngx
 RUN if [ "$PUBLISH" = "true" ] ; then npm publish --registry https://$ARTIFACTORY_USER:$ARTIFACTORY_TOKEN@progressive.jfrog.io/progressive/api/npm/pgr-npm ; fi

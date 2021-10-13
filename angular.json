@@ -34,6 +34,11 @@
             "main": "projects/monocle-ngx/src/test.ts",
             "tsConfig": "projects/monocle-ngx/tsconfig.spec.json",
             "karmaConfig": "projects/monocle-ngx/karma.conf.js"
+          },
+          "configurations": {
+            "production": {
+              "karmaConfig": "projects/monocle-ngx/karma-ci.conf.js"
+            }
           }
         },
         "lint": {
