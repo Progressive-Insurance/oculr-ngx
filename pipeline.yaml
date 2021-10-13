@@ -1,0 +1,81 @@
+# Copyright (c) 2021 Progressive Casualty Insurance Company. All rights reserved.
+#
+# Progressive-owned, no external contributions.
+
+# Variables defined in WebUI:
+#   Artifactory.Publish
+
+name: monocle-ngx_$(Date:yyyy-MM-dd)_$(Rev:.rr)
+resources:
+  - repo: self
+pr:
+  - main
+  - feature/*
+trigger:
+  batch: true
+  branches:
+    include:
+      - main
+pool:
+  name: On Premises Dynamic Pool
+stages:
+  - stage: pr_validation
+    displayName: PR Validation
+    condition: eq(variables['Build.Reason'], 'PullRequest')
+    jobs:
+      - job: build_image
+        displayName: Build Image
+        timeoutInMinutes: 15
+        cancelTimeoutInMinutes: 15
+        continueOnError: false
+        variables:
+          - group: artifactory-saas
+          - name: NPM_AUTH
+            value: $(NPM_CONFIG__auth) # From variable group artifactory-saas
+        steps:
+          - bash: |
+              unset HISTFILE && \
+              sudo podman build --format=docker --security-opt label=disable --build-arg NPM_CONFIG__auth=$(NPM_AUTH) -f 'Dockerfile'
+            displayName: Build Image
+  - stage: build_and_publish
+    displayName: Build and Publish
+    condition: and(ne(variables['Build.Reason'], 'PullRequest'), eq(variables['Artifactory.Publish'], 'true'))
+    variables:
+      - name: HTTP_PROXY
+        value: http://servercache.prci.com:55000
+      - name: HTTPS_PROXY
+        value: http://servercache.prci.com:55000
+      - name: no_proxy
+        value: .prci.com
+    jobs:
+      - job: build_and_publish
+        displayName: Build and Publish
+        timeoutInMinutes: 15
+        cancelTimeoutInMinutes: 15
+        continueOnError: false
+        variables:
+          - group: artifactory-saas
+          - group: edv-core-openshift
+          - name: APP_NAME
+            value: monocle-ngx
+          - name: PROJECT
+            value: edv-core-prod
+          - name: REGISTRY
+            value: docker-registry-default.ocp-openstack.prci.com
+          - name: IMAGE_NAME
+            value: $(APP_NAME):$(Build.SourceBranchName)-$(Build.SourceVersion)
+          - name: IMAGE_TAG
+            value: $(REGISTRY)/$(PROJECT)/$(IMAGE_NAME)
+          - name: TOKEN
+            value: $(OPENSHIFT_TOKEN_PROD) # From variable group edv-core-openshift
+          - name: NPM_AUTH
+            value: $(NPM_CONFIG__auth) # From variable group artifactory-saas
+          - name: AUTH
+            value: /tmp/zidbuild/podman-auth.json
+        steps:
+          - bash: |
+              unset HISTFILE && \
+              sudo podman build --format=docker --security-opt label=disable --build-arg NPM_CONFIG__auth=$(NPM_AUTH) --build-arg PUBLISH=true -f 'Dockerfile' -t $(IMAGE_TAG) && \
+              echo $(TOKEN) | sudo podman login --authfile=$(AUTH) --password-stdin -u unused $(REGISTRY) && \
+              sudo podman push --authfile=$(AUTH) $(IMAGE_TAG)
+            displayName: 'Build and Publish'
