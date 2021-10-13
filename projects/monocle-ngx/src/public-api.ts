@@ -103,8 +103,4 @@ export { getSelectedOptions } from './lib/utils/get-selected-options';
 export { hitDate } from './lib/utils/hit-date';
 export { htmlToText } from './lib/utils/html-to-text';
 export { removeHtmlEntities } from './lib/utils/remove-html-entities';
-export { screenResolution } from './lib/utils/screen-resolution';
-export { windowSize } from './lib/utils/window-size';
 export { WindowService } from './lib/utils/window.service';
-
-export { Validators } from './lib/validators/validators';
