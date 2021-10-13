@@ -12,7 +12,7 @@ import { createSplunkAnalyticsService } from './destinations/splunk-analytics/cr
 import { SPLUNK_ANALYTICS_SERVICE_STATE_TOKEN, SPLUNK_ANALYTICS_TRANSFORM_TOKEN, splunkAnalyticsApiKey, splunkAnalyticsEndpoint, SplunkAnalyticsService } from './destinations/splunk-analytics/splunk-analytics.service';
 import { createSplunkStandardLoggingService } from './destinations/splunk-standard-logging/create-splunk-standard-logging-service';
 import { SPLUNK_STANDARD_LOGGING_SERVICE_STATE_TOKEN, SPLUNK_STANDARD_LOGGING_TRANSFORM_TOKEN, splunkStandardLoggingApiKey, splunkStandardLoggingEndpoint, SplunkStandardLoggingService } from './destinations/splunk-standard-logging/splunk-standard-logging.service';
-import { DisplayEventDirective } from './directives/display-event.directive';
+import { DisplayDirective } from './directives/display.directive';
 import { InteractionEventDirective } from './directives/interaction-event.directive';
 import { ModalDirective } from './directives/modal.directive';
 import { AnalyticsInterceptor } from './interceptors/analytics.interceptor';
@@ -43,8 +43,8 @@ export function provideAnalytics(injector: Injector) {
 
 @NgModule({
   imports: [CommonModule],
-  declarations: [DisplayEventDirective, InteractionEventDirective, ModalDirective],
-  exports: [DisplayEventDirective, InteractionEventDirective, ModalDirective],
+  declarations: [DisplayDirective, InteractionEventDirective, ModalDirective],
+  exports: [DisplayDirective, InteractionEventDirective, ModalDirective],
   providers: [],
 })
 export class MonocleAngularModule {

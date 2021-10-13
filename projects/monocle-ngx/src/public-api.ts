@@ -25,7 +25,7 @@ export {
 } from './lib/destinations/splunk-standard-logging/splunk-standard-logging.service';
 
 // TODO: remove the old modal directive that is deprecated, still needed to handle modals as pages
-export { DisplayEventDirective } from './lib/directives/display-event.directive';
+export { DisplayDirective } from './lib/directives/display.directive';
 export { InteractionEventDirective } from './lib/directives/interaction-event.directive';
 export { ModalDirective } from './lib/directives/modal.directive';
 
