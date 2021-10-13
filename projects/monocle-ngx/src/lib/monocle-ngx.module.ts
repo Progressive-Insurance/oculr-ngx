@@ -67,6 +67,10 @@ export class MonocleAngularModule {
         AnalyticsService,
         TimeService,
         {
+          provide: Window,
+          useValue: window,
+        },
+        {
           provide: ANALYTICS_BOOTSTRAP,
           useFactory: provideAnalytics,
           deps: [Injector],
