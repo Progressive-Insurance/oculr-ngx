@@ -9,39 +9,7 @@ import { AnalyticsEventBusService } from '../services/analytics-event-bus.servic
 import { EventDispatchService } from '../services/event-dispatch.service';
 
 @Component({
-  template: `
-    <div id="tileContainer">
-      <div id="tile1">
-        <div>
-          <header id="header1" [pa-interaction-event]="header1Event">
-            Happy Paths <span [pa-interaction-event]="tooltip1Event"><img id="tooltip1" src="" /></span>
-          </header>
-        </div>
-        <div>
-          <article>Body text with <a id="link1" [pa-interaction-event]="link1Event">link</a></article>
-          <button id="button1" value="Next"></button>
-        </div>
-      </div>
-      <div id="tile2">
-        <div>
-          <header id="header2" [pa-interaction-event]>
-            Unhappy Paths <img id="tooltip2" [pa-interaction-event]="tooltip2Event" src="" />
-          </header>
-        </div>
-        <div>
-          <article>Body text with <a id="link2" [pa-interaction-event]="link2Event">link</a></article>
-          <button id="button2" [pa-interaction-event]="button2Event" value="Next"></button>
-        </div>
-        <div>
-          <select id="select1" [pa-interaction-event]="select1Event">
-            <option></option>
-            <option value="1" pui-option>One</option>
-            <option value="2" pui-option>Two</option>
-          </select>
-        </div>
-      </div>
-    </div>
-  `,
+  templateUrl: './interaction-event.template.html',
 })
 class TestComponent {
   header1Event = { trackOn: 'click', eventId: 'HEADER1HASH', eventKey: 'Header1Click', customDimensions: {} };

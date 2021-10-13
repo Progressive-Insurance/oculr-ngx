@@ -6,7 +6,7 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { MonocleAngularModule } from './monocle-ngx.module';
 import { RouterDispatchService } from './services/router-dispatch.service';
 
-@Component({ selector: 'ps-bootstrappable-component', template: '' })
+@Component({ selector: 'mncl-bootstrappable-component', template: '' })
 class BootstrappableComponent {}
 
 @NgModule({
@@ -33,7 +33,7 @@ describe('the analytics library module', () => {
   });
 
   beforeEach(inject([DOCUMENT], function (doc: HTMLDocument) {
-    const elBootComp = doc.createElement('ps-bootstrappable-component');
+    const elBootComp = doc.createElement('mncl-bootstrappable-component');
     doc.body.appendChild(elBootComp);
   }));
 

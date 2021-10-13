@@ -1,6 +1,5 @@
 import { convertToParamMap } from '@angular/router';
 
-import { EventLocation } from '../models/event-location.interface';
 import { insertLocationParams } from './insert-location-params';
 
 describe('insertLocationParams', () => {

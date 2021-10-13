@@ -3,12 +3,11 @@ import { FormGroup, FormControl } from '@angular/forms';
 import { Validators } from './validators';
 
 describe('Validators wrapper', () => {
-
   describe('valid values should not produce errors', () => {
     it('min', () => {
       const unexpectedValidationMessage = 'You need a BIGGER value!';
       const formGroup = new FormGroup({
-        formField: new FormControl(4, Validators.min(2, unexpectedValidationMessage))
+        formField: new FormControl(4, Validators.min(2, unexpectedValidationMessage)),
       });
       expect(formGroup.controls.formField.errors).toBeNull();
     });
@@ -16,7 +15,7 @@ describe('Validators wrapper', () => {
     it('max', () => {
       const unexpectedValidationMessage = 'You need a SMALLER value!';
       const formGroup = new FormGroup({
-        formField: new FormControl(4, Validators.max(10, unexpectedValidationMessage))
+        formField: new FormControl(4, Validators.max(10, unexpectedValidationMessage)),
       });
       expect(formGroup.controls.formField.errors).toBeNull();
     });
@@ -24,7 +23,7 @@ describe('Validators wrapper', () => {
     it('required', () => {
       const unexpectedValidationMessage = 'You need to provide a value!';
       const formGroup = new FormGroup({
-        formField: new FormControl('Some Data', Validators.required(unexpectedValidationMessage))
+        formField: new FormControl('Some Data', Validators.required(unexpectedValidationMessage)),
       });
       expect(formGroup.controls.formField.errors).toBeNull();
     });
@@ -32,7 +31,7 @@ describe('Validators wrapper', () => {
     it('requiredTrue', () => {
       const unexpectedValidationMessage = 'You need to provide a TRUE value!';
       const formGroup = new FormGroup({
-        formField: new FormControl(true, Validators.requiredTrue(unexpectedValidationMessage))
+        formField: new FormControl(true, Validators.requiredTrue(unexpectedValidationMessage)),
       });
       expect(formGroup.controls.formField.errors).toBeNull();
     });
@@ -40,7 +39,7 @@ describe('Validators wrapper', () => {
     it('email', () => {
       const unexpectedValidationMessage = 'You need to provide a VALID EMAIL!';
       const formGroup = new FormGroup({
-        formField: new FormControl('test@test.com', Validators.email(unexpectedValidationMessage))
+        formField: new FormControl('test@test.com', Validators.email(unexpectedValidationMessage)),
       });
       expect(formGroup.controls.formField.errors).toBeNull();
     });
@@ -48,7 +47,7 @@ describe('Validators wrapper', () => {
     it('minLength', () => {
       const unexpectedValidationMessage = 'You need MORE characters in there!';
       const formGroup = new FormGroup({
-        formField: new FormControl('Regular Length Name', Validators.minLength(2, unexpectedValidationMessage))
+        formField: new FormControl('Regular Length Name', Validators.minLength(2, unexpectedValidationMessage)),
       });
       expect(formGroup.controls.formField.errors).toBeNull();
     });
@@ -56,7 +55,7 @@ describe('Validators wrapper', () => {
     it('maxLength', () => {
       const unexpectedValidationMessage = 'You need MORE characters in there!';
       const formGroup = new FormGroup({
-        formField: new FormControl('Regular Length Name', Validators.maxLength(20, unexpectedValidationMessage))
+        formField: new FormControl('Regular Length Name', Validators.maxLength(20, unexpectedValidationMessage)),
       });
       expect(formGroup.controls.formField.errors).toBeNull();
     });
@@ -64,7 +63,10 @@ describe('Validators wrapper', () => {
     it('pattern', () => {
       const unexpectedValidationMessage = 'You need to provide a VALID thing!';
       const formGroup = new FormGroup({
-        formField: new FormControl('THE_RIGHT_THING', Validators.pattern('THE_RIGHT_THING', unexpectedValidationMessage))
+        formField: new FormControl(
+          'THE_RIGHT_THING',
+          Validators.pattern('THE_RIGHT_THING', unexpectedValidationMessage)
+        ),
       });
       expect(formGroup.controls.formField.errors).toBeNull();
     });
@@ -75,7 +77,7 @@ describe('Validators wrapper', () => {
       const expectedValidationMessage = 'You need a BIGGER value!';
       const expected = { min: { message: expectedValidationMessage } };
       const formGroup = new FormGroup({
-        formField: new FormControl(1, Validators.min(2, expectedValidationMessage))
+        formField: new FormControl(1, Validators.min(2, expectedValidationMessage)),
       });
       expect(formGroup.controls.formField.errors).toEqual(expected);
     });
@@ -84,7 +86,7 @@ describe('Validators wrapper', () => {
       const expectedValidationMessage = 'You need a SMALLER value!';
       const expected = { max: { message: expectedValidationMessage } };
       const formGroup = new FormGroup({
-        formField: new FormControl(11, Validators.max(10, expectedValidationMessage))
+        formField: new FormControl(11, Validators.max(10, expectedValidationMessage)),
       });
       expect(formGroup.controls.formField.errors).toEqual(expected);
     });
@@ -93,7 +95,7 @@ describe('Validators wrapper', () => {
       const expectedValidationMessage = 'You need to provide a value!';
       const expected = { required: { message: expectedValidationMessage } };
       const formGroup = new FormGroup({
-        formField: new FormControl(null, Validators.required(expectedValidationMessage))
+        formField: new FormControl(null, Validators.required(expectedValidationMessage)),
       });
       expect(formGroup.controls.formField.errors).toEqual(expected);
     });
@@ -102,7 +104,7 @@ describe('Validators wrapper', () => {
       const expectedValidationMessage = 'You need to provide a TRUE value!';
       const expected = { required: { message: expectedValidationMessage } };
       const formGroup = new FormGroup({
-        formField: new FormControl(false, Validators.requiredTrue(expectedValidationMessage))
+        formField: new FormControl(false, Validators.requiredTrue(expectedValidationMessage)),
       });
       expect(formGroup.controls.formField.errors).toEqual(expected);
     });
@@ -111,7 +113,7 @@ describe('Validators wrapper', () => {
       const expectedValidationMessage = 'You need to provide a VALID EMAIL!';
       const expected = { email: { message: expectedValidationMessage } };
       const formGroup = new FormGroup({
-        formField: new FormControl('123 Fake St.', Validators.email(expectedValidationMessage))
+        formField: new FormControl('123 Fake St.', Validators.email(expectedValidationMessage)),
       });
       expect(formGroup.controls.formField.errors).toEqual(expected);
     });
@@ -120,7 +122,7 @@ describe('Validators wrapper', () => {
       const expectedValidationMessage = 'You need MORE characters in there!';
       const expected = { minlength: { message: expectedValidationMessage } };
       const formGroup = new FormGroup({
-        formField: new FormControl('a', Validators.minLength(2, expectedValidationMessage))
+        formField: new FormControl('a', Validators.minLength(2, expectedValidationMessage)),
       });
       expect(formGroup.controls.formField.errors).toEqual(expected);
     });
@@ -129,7 +131,7 @@ describe('Validators wrapper', () => {
       const expectedValidationMessage = 'You need MORE characters in there!';
       const expected = { maxlength: { message: expectedValidationMessage } };
       const formGroup = new FormGroup({
-        formField: new FormControl('THIS_IS_A_REALLY_LONG_STRING', Validators.maxLength(4, expectedValidationMessage))
+        formField: new FormControl('THIS_IS_A_REALLY_LONG_STRING', Validators.maxLength(4, expectedValidationMessage)),
       });
       expect(formGroup.controls.formField.errors).toEqual(expected);
     });
@@ -138,7 +140,10 @@ describe('Validators wrapper', () => {
       const expectedValidationMessage = 'You need to provide a VALID thing!';
       const expected = { pattern: { message: expectedValidationMessage } };
       const formGroup = new FormGroup({
-        formField: new FormControl('NOT_THE_RIGHT_THING', Validators.pattern('THE_RIGHT_THING', expectedValidationMessage))
+        formField: new FormControl(
+          'NOT_THE_RIGHT_THING',
+          Validators.pattern('THE_RIGHT_THING', expectedValidationMessage)
+        ),
       });
       expect(formGroup.controls.formField.errors).toEqual(expected);
     });
@@ -147,15 +152,15 @@ describe('Validators wrapper', () => {
   describe('wrapValidator', () => {
     describe('should return a ValidatorFn', () => {
       it('that returns null when no errors are returned', () => {
-        const mockValidator = (control: any) => null;
+        const mockValidator = () => null;
 
         const wrappedValidator = Validators.wrapValidator(mockValidator, 'This message SHOULD NOT be seen!');
         expect(wrappedValidator(new FormControl())).toBeNull();
       });
 
       it('that returns restructured errors when a single error exist on the control', () => {
-        const mockValidator = (control: any) => ({
-          errorKey1: true
+        const mockValidator = () => ({
+          errorKey1: true,
         });
         const expectedValidationMessage = 'This message SHOULD be seen!';
 
@@ -165,22 +170,22 @@ describe('Validators wrapper', () => {
       });
 
       it('that returns restructured errors when multiple errors exist on the control', () => {
-        const mockValidator = (control: any) => ({
+        const mockValidator = () => ({
           errorKey1: true,
-          errorKey2: true
+          errorKey2: true,
         });
         const expectedValidationMessage = 'Same VALIDATION Message';
 
         const expected = {
           errorKey1: { message: expectedValidationMessage },
-          errorKey2: { message: expectedValidationMessage }
+          errorKey2: { message: expectedValidationMessage },
         };
         const wrappedValidator = Validators.wrapValidator(mockValidator, expectedValidationMessage);
         expect(wrappedValidator(new FormControl())).toEqual(expected);
       });
 
       it('that returns an empty object when an empty object is provided', () => {
-        const mockValidator = (control: any) => ({});
+        const mockValidator = () => ({});
         const unexpectedValidationMessage = 'You should not see this message!';
 
         const wrappedValidator = Validators.wrapValidator(mockValidator, unexpectedValidationMessage);

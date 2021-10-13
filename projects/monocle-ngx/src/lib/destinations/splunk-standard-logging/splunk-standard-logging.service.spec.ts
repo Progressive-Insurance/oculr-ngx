@@ -14,23 +14,27 @@ describe('SplunkStandardLoggingService', () => {
   let mockSplunkStandardService: SplunkStandardLoggingService;
 
   beforeEach(() => {
-    mockZone = { runOutsideAngular: (arg: Function) => arg() };
+    mockZone = { runOutsideAngular: (arg: () => unknown) => arg() };
 
     mockSplunkEndpoint = () => 'https://fakesplunkendpoint.progressive.com';
     mockSplunkApiKey = () => 'fakeApiKey';
 
-    mockStateProvider = () => { return new BehaviorSubject('Bruce Wayne'); };
+    mockStateProvider = () => {
+      return new BehaviorSubject('Bruce Wayne');
+    };
     mockHttp = jasmine.createSpyObj('mockHttp', ['post']);
     mockAnalyticsEventBusService = {
-      events$: of('something')
+      events$: of('something'),
     };
     mockEventDispatchService = {
-      trackAnalyticsError: jasmine.createSpy('trackAnalyticsError')
+      trackAnalyticsError: jasmine.createSpy('trackAnalyticsError'),
     };
   });
 
   it('should throw an error when transform function fails', (done) => {
-    mockTransform = () => { throw 'it was an exception but we caught it'; };
+    mockTransform = () => {
+      throw 'it was an exception but we caught it';
+    };
 
     mockSplunkStandardService = new SplunkStandardLoggingService(
       mockHttp,
@@ -46,33 +50,37 @@ describe('SplunkStandardLoggingService', () => {
     mockSplunkStandardService.init();
     mockAnalyticsEventBusService.events$.subscribe({
       complete: () => {
-        expect(mockEventDispatchService.trackAnalyticsError).toHaveBeenCalledWith('it was an exception but we caught it');
+        expect(mockEventDispatchService.trackAnalyticsError).toHaveBeenCalledWith(
+          'it was an exception but we caught it'
+        );
         expect(mockSplunkStandardService.log).not.toHaveBeenCalled();
         done();
-      }
+      },
     });
   });
 
   it('should return an event transform function if successful', (done) => {
     const mockObj = {
       event: {
-        mockEventId: '123'
+        mockEventId: '123',
       },
       appState: {
-        appName: 'test app'
-      }
+        appName: 'test app',
+      },
     };
-    mockTransform = () => { return mockObj; };
-    mockSplunkStandardService = new SplunkStandardLoggingService
-      (mockHttp,
-        mockZone,
-        mockAnalyticsEventBusService,
-        mockEventDispatchService,
-        mockSplunkEndpoint,
-        mockSplunkApiKey,
-        mockTransform,
-        mockStateProvider
-      );
+    mockTransform = () => {
+      return mockObj;
+    };
+    mockSplunkStandardService = new SplunkStandardLoggingService(
+      mockHttp,
+      mockZone,
+      mockAnalyticsEventBusService,
+      mockEventDispatchService,
+      mockSplunkEndpoint,
+      mockSplunkApiKey,
+      mockTransform,
+      mockStateProvider
+    );
     spyOn(mockSplunkStandardService, 'log');
     mockSplunkStandardService.init();
     mockAnalyticsEventBusService.events$.subscribe({
@@ -80,7 +88,7 @@ describe('SplunkStandardLoggingService', () => {
         expect(mockEventDispatchService.trackAnalyticsError).not.toHaveBeenCalled();
         expect(mockSplunkStandardService.log).toHaveBeenCalledTimes(1);
         done();
-      }
+      },
     });
   });
 });
