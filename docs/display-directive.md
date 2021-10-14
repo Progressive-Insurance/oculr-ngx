@@ -4,6 +4,18 @@
 
 A directive that dispatches a display event when an element is rendered.
 
+## Selector
+
+```
+mnclDisplay
+```
+
+## Properties
+
+| Property             | Description                                                                                           |
+| -------------------- | ----------------------------------------------------------------------------------------------------- |
+| `mcnlDisplay: Event` | **optional** </br> [Event]() holds useful indefiers and data determined by the consuming application. |
+
 ## Quick start
 
 Add the directive `mnclDisplay` to a host element in an Angular component's template.
