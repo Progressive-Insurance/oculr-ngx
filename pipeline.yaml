@@ -35,7 +35,7 @@ stages:
         steps:
           - bash: |
               unset HISTFILE && \
-              sudo podman build --format=docker --security-opt seccomp=chrome-ci.json label=disable --build-arg NPM_CONFIG__auth=$(NPM_AUTH) -f 'Dockerfile'
+              sudo podman build --format=docker --security-opt seccomp=chrome-ci.json --security-opt label=disable --build-arg NPM_CONFIG__auth=$(NPM_AUTH) -f 'Dockerfile'
             displayName: Build Image
   - stage: build_and_publish
     displayName: Build and Publish
@@ -75,7 +75,7 @@ stages:
         steps:
           - bash: |
               unset HISTFILE && \
-              sudo podman build --format=docker --security-opt seccomp=chrome-ci.json label=disable --build-arg NPM_CONFIG__auth=$(NPM_AUTH) --build-arg PUBLISH=true -f 'Dockerfile' -t $(IMAGE_TAG) && \
+              sudo podman build --format=docker --security-opt seccomp=chrome-ci.json --security-opt label=disable --build-arg NPM_CONFIG__auth=$(NPM_AUTH) --build-arg PUBLISH=true -f 'Dockerfile' -t $(IMAGE_TAG) && \
               echo $(TOKEN) | sudo podman login --authfile=$(AUTH) --password-stdin -u unused $(REGISTRY) && \
               sudo podman push --authfile=$(AUTH) $(IMAGE_TAG)
             displayName: 'Build and Publish'
