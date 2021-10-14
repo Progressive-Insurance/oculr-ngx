@@ -14,9 +14,9 @@ mnclDisplay
 
 ## Properties
 
-| Property             | Description                                                                                           |
-| -------------------- | ----------------------------------------------------------------------------------------------------- |
-| `mcnlDisplay: Event` | **optional** </br> [Event]() holds useful indefiers and data determined by the consuming application. |
+| Property             | Description                                                                                             |
+| -------------------- | ------------------------------------------------------------------------------------------------------- |
+| `mcnlDisplay: Event` | **optional** </br> [Event]() holds useful identifiers and data determined by the consuming application. |
 
 ## Quick start
 
