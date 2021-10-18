@@ -10,11 +10,10 @@ import { EventLocation } from '../models/event-location.interface';
 import { SelectedItems } from '../models/selected-items.interface';
 import { UpdateLocationPayload } from '../models/update-location-payload.interface';
 import { VariableData } from '../models/variable-data.interface';
-import { getSnapshotHierarchyAsArray } from '../utils/get-snapshot-hierarchy-as-array';
-import { insertLocationParams } from '../utils/insert-location-params';
-import { WindowService } from '../utils/window.service';
+import { WindowService } from './window.service';
 import { AnalyticsEventBusService } from './analytics-event-bus.service';
 import { EventCacheService } from './event-cache.service';
+import { RouterUtilityService } from './router-utility.service';
 
 /**
  * LocationTrackingService keeps track of current location (either angular route or modal "virtual route")
@@ -46,7 +45,8 @@ export class LocationTrackingService {
     private windowService: WindowService,
     private router: Router,
     private eventBus: AnalyticsEventBusService,
-    private eventCache: EventCacheService
+    private eventCache: EventCacheService,
+    private routerUtility: RouterUtilityService
   ) {
     this.hostName = Location.stripTrailingSlash(
       this.windowService.url.substring(0, this.windowService.url.length - this.locationService.path(true).length)
@@ -61,7 +61,7 @@ export class LocationTrackingService {
         map(() => ({
           route: this.getRouterRoute(),
           queryParamMap: this.router.routerState.root.snapshot.queryParamMap,
-          paramMap: getSnapshotHierarchyAsArray([this.router.routerState.root.snapshot]).reduce(
+          paramMap: this.routerUtility.getSnapshotHierarchyAsArray([this.router.routerState.root.snapshot]).reduce(
             (acc, snapshotFragment) =>
               ({
                 paramMap: snapshotFragment.paramMap,
@@ -129,7 +129,11 @@ export class LocationTrackingService {
   };
 
   updateRouteConfig = (config: { replaceParamTokens: string[] } = { replaceParamTokens: [] }) => {
-    this.currentLocation = insertLocationParams(this.currentLocation, config.replaceParamTokens, this.currentParamMap);
+    this.currentLocation = this.routerUtility.insertLocationParams(
+      this.currentLocation,
+      config.replaceParamTokens,
+      this.currentParamMap
+    );
   };
 
   // DEPRECATED: dispatch old UPDATE_LOCATION event so host app can update location in its store

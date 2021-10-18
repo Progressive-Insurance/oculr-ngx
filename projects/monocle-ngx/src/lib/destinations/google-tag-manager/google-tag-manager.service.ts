@@ -7,14 +7,13 @@ import { StateProvider } from '../../models/state-provider.type';
 import { GoogleTagManagerBasePayload } from '../../models/destinations/google-tag-manager-base-payload.interface';
 import { AnalyticsEventBusService } from '../../services/analytics-event-bus.service';
 import { EventDispatchService } from '../../services/event-dispatch.service';
-import { WindowService } from '../../utils/window.service';
+import { WindowService } from '../../services/window.service';
 
 export const GOOGLE_TAG_MANAGER_STATE_TOKEN = new InjectionToken<StateProvider>('Google Tag Manager State');
 export const GOOGLE_TAG_MANAGER_TRANSFORM_TOKEN = new InjectionToken<Transform>('Google Tag Manager Transform');
 
 @Injectable()
 export class GoogleTagManagerService {
-
   constructor(
     private window: WindowService,
     private eventBus: AnalyticsEventBusService,
@@ -37,20 +36,22 @@ export class GoogleTagManagerService {
   }
 
   init() {
-    this.eventBus.events$.pipe(
-      withLatestFrom(this.appStateFn$()),
-      switchMap(([inputAction, appState]) => {
-        return of(inputAction).pipe(
-          map(action => this.transform(action, appState)),
-          catchError(error => {
-            this.eventDispatchService.trackAnalyticsError(error);
-            return EMPTY;
-          })
-        );
-      }),
-      filter(event => !!event),
-      tap(event => this.log(event)),
-      ignoreElements()
-    ).subscribe();
+    this.eventBus.events$
+      .pipe(
+        withLatestFrom(this.appStateFn$()),
+        switchMap(([inputAction, appState]) => {
+          return of(inputAction).pipe(
+            map((action) => this.transform(action, appState)),
+            catchError((error) => {
+              this.eventDispatchService.trackAnalyticsError(error);
+              return EMPTY;
+            })
+          );
+        }),
+        filter((event) => !!event),
+        tap((event) => this.log(event)),
+        ignoreElements()
+      )
+      .subscribe();
   }
 }

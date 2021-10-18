@@ -1,11 +1,8 @@
-import {
-  Directive, ElementRef, Input, OnChanges, OnDestroy,
-  SimpleChanges
-} from '@angular/core';
+import { Directive, ElementRef, Input, OnChanges, OnDestroy, SimpleChanges } from '@angular/core';
 
 import { EventModel } from '../models/event-model.class';
 import { EventDispatchService } from '../services/event-dispatch.service';
-import { WindowService } from '../utils/window.service';
+import { WindowService } from '../services/window.service';
 
 @Directive({
   selector: '[pa-interaction-event]',

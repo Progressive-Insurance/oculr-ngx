@@ -5,7 +5,13 @@ import { Subject } from 'rxjs';
 import { EVENT_TYPES } from '../event-types';
 import { RouterDispatchService } from './router-dispatch.service';
 
-const makeExpectedAction = (path: string, scopes: string[] = [], selectedItems: any = {}, customDimensions?: any, shouldTrack = true) => {
+const makeExpectedAction = (
+  path: string,
+  scopes: string[] = [],
+  selectedItems: any = {},
+  customDimensions?: any,
+  shouldTrack = true
+) => {
   return {
     type: '@pgr/analytics/UPDATE_LOCATION',
     payload: {
@@ -16,12 +22,12 @@ const makeExpectedAction = (path: string, scopes: string[] = [], selectedItems: 
       model: { details: { scopes: ['AppLevelScope', ...scopes] } },
       domain: 'test.domain',
       selectedItems: selectedItems,
-      customDimensions
+      customDimensions,
     },
     meta: {
       track: shouldTrack,
-      trackAs: EVENT_TYPES.page
-    }
+      trackAs: EVENT_TYPES.page,
+    },
   };
 };
 
@@ -32,6 +38,7 @@ describe('Router Dispatch Service', () => {
   let mockWindowService: any;
   let mockEventBusService: any;
   let mockEventCacheService: any;
+  let mockRouterUtilityService: any;
   let url: string;
 
   beforeEach(() => {
@@ -42,13 +49,13 @@ describe('Router Dispatch Service', () => {
       },
       get hostName() {
         return 'test.domain';
-      }
+      },
     };
     mockEventBusService = {
-      dispatch: jasmine.createSpy('dispatch')
+      dispatch: jasmine.createSpy('dispatch'),
     };
     mockEventCacheService = {
-      cacheEvent: jasmine.createSpy('cacheEvent')
+      cacheEvent: jasmine.createSpy('cacheEvent'),
     };
 
     mockRouter = {
@@ -58,21 +65,31 @@ describe('Router Dispatch Service', () => {
           snapshot: {
             firstChild: {
               data: {},
-              paramMap: convertToParamMap({})
-            }
-          }
-        }
-      }
+              paramMap: convertToParamMap({}),
+            },
+          },
+        },
+      },
     };
     mockLocation = {
-      path: () => '/my/path'
+      path: () => '/my/path',
     };
+    mockRouterUtilityService = {
+      getSnapshotHierarchyAsArray: () => {
+        return [{ routeConfig: { path: 'account-home' }, paramMap: convertToParamMap({}) }];
+      },
+      replaceTokensWithValuesFromParamMap: () => {
+        return '';
+      },
+    };
+
     service = new RouterDispatchService(
       mockRouter as Router,
       mockLocation as Location,
       mockWindowService,
       mockEventBusService,
-      mockEventCacheService
+      mockEventCacheService,
+      mockRouterUtilityService
     );
   });
 
@@ -92,12 +109,12 @@ describe('Router Dispatch Service', () => {
         model: { details: { scopes: ['AppLevelScope'] } },
         domain: 'test.domain',
         selectedItems: {},
-        customDimensions: undefined
+        customDimensions: undefined,
       },
       meta: {
         track: true,
-        trackAs: EVENT_TYPES.page
-      }
+        trackAs: EVENT_TYPES.page,
+      },
     });
   });
 
@@ -117,12 +134,12 @@ describe('Router Dispatch Service', () => {
         model: { details: { scopes: ['AppLevelScope'] } },
         domain: 'test.domain',
         selectedItems: {},
-        customDimensions: undefined
+        customDimensions: undefined,
       },
       meta: {
         track: true,
-        trackAs: EVENT_TYPES.page
-      }
+        trackAs: EVENT_TYPES.page,
+      },
     });
   });
 
@@ -133,7 +150,7 @@ describe('Router Dispatch Service', () => {
       },
       get hostName() {
         return 'test.domain';
-      }
+      },
     };
     spyOn(mockLocation, 'path').and.returnValue('/my/path?name=batman&realName=xxx');
 
@@ -142,7 +159,8 @@ describe('Router Dispatch Service', () => {
       mockLocation as Location,
       mockWindowService,
       mockEventBusService,
-      mockEventCacheService
+      mockEventCacheService,
+      mockRouterUtilityService
     );
 
     service.initialize();
@@ -159,12 +177,12 @@ describe('Router Dispatch Service', () => {
         model: { details: { scopes: ['AppLevelScope'] } },
         domain: 'test.domain',
         selectedItems: {},
-        customDimensions: undefined
+        customDimensions: undefined,
       },
       meta: {
         track: true,
-        trackAs: EVENT_TYPES.page
-      }
+        trackAs: EVENT_TYPES.page,
+      },
     });
   });
 
@@ -212,7 +230,9 @@ describe('Router Dispatch Service', () => {
     service.virtualRoute.next({ type: 'push', url: '/some/modal', shouldTrack: false });
 
     expect(mockEventBusService.dispatch).toHaveBeenCalledWith(makeExpectedAction('/my/path', [], {}));
-    expect(mockEventBusService.dispatch).toHaveBeenCalledWith(makeExpectedAction('/some/modal', [], {}, undefined, false));
+    expect(mockEventBusService.dispatch).toHaveBeenCalledWith(
+      makeExpectedAction('/some/modal', [], {}, undefined, false)
+    );
   });
 
   it('should dispatch UPDATE_LOCATION with shouldTrack value true when not preset on virtual page stack item', () => {
@@ -240,15 +260,21 @@ describe('Router Dispatch Service', () => {
       url: 'my/test/url',
       selectedItems: {
         policyNumber: '123456789',
-        emailSelected: 'current'
-      }
+        emailSelected: 'current',
+      },
     });
 
     expect(mockEventBusService.dispatch).toHaveBeenCalledWith(
-      makeExpectedAction('/my/test/url', [], {
-        policyNumber: '123456789',
-        emailSelected: 'current'
-      }, undefined, true)
+      makeExpectedAction(
+        '/my/test/url',
+        [],
+        {
+          policyNumber: '123456789',
+          emailSelected: 'current',
+        },
+        undefined,
+        true
+      )
     );
   });
 
@@ -263,13 +289,19 @@ describe('Router Dispatch Service', () => {
       type: 'push',
       url: 'my/test/url',
       selectedItems: {},
-      customDimensions: { dataValue: 'top' }
+      customDimensions: { dataValue: 'top' },
     });
 
     expect(mockEventBusService.dispatch).toHaveBeenCalledWith(
-      makeExpectedAction('/my/test/url', [], {}, {
-        dataValue: 'top'
-      }, true)
+      makeExpectedAction(
+        '/my/test/url',
+        [],
+        {},
+        {
+          dataValue: 'top',
+        },
+        true
+      )
     );
   });
 
@@ -282,8 +314,12 @@ describe('Router Dispatch Service', () => {
     service.virtualRoute.next({ type: 'push', url: '/test/url2' });
 
     expect(mockEventBusService.dispatch.calls.argsFor(0)).toEqual([makeExpectedAction('/my/path', [], {})]);
-    expect(mockEventBusService.dispatch.calls.argsFor(1)).toEqual([makeExpectedAction('/test/url', [], {}, undefined, true)]);
-    expect(mockEventBusService.dispatch.calls.argsFor(2)).toEqual([makeExpectedAction('/test/url2', [], {}, undefined, true)]);
+    expect(mockEventBusService.dispatch.calls.argsFor(1)).toEqual([
+      makeExpectedAction('/test/url', [], {}, undefined, true),
+    ]);
+    expect(mockEventBusService.dispatch.calls.argsFor(2)).toEqual([
+      makeExpectedAction('/test/url2', [], {}, undefined, true),
+    ]);
   });
 
   it('should dispatch event for the last virtual page stack if there any left', () => {
@@ -296,9 +332,15 @@ describe('Router Dispatch Service', () => {
     service.virtualRoute.next({ type: 'pop', url: '/test/url2' });
 
     expect(mockEventBusService.dispatch.calls.argsFor(0)).toEqual([makeExpectedAction('/my/path', [], {})]);
-    expect(mockEventBusService.dispatch.calls.argsFor(1)).toEqual([makeExpectedAction('/test/url', [], {}, undefined, true)]);
-    expect(mockEventBusService.dispatch.calls.argsFor(2)).toEqual([makeExpectedAction('/test/url2', [], {}, undefined, true)]);
-    expect(mockEventBusService.dispatch.calls.argsFor(3)).toEqual([makeExpectedAction('/test/url', [], {}, undefined, true)]);
+    expect(mockEventBusService.dispatch.calls.argsFor(1)).toEqual([
+      makeExpectedAction('/test/url', [], {}, undefined, true),
+    ]);
+    expect(mockEventBusService.dispatch.calls.argsFor(2)).toEqual([
+      makeExpectedAction('/test/url2', [], {}, undefined, true),
+    ]);
+    expect(mockEventBusService.dispatch.calls.argsFor(3)).toEqual([
+      makeExpectedAction('/test/url', [], {}, undefined, true),
+    ]);
   });
 
   it('should fall back to the last real navigation event if no more virtual page stacks exist', () => {
@@ -313,9 +355,15 @@ describe('Router Dispatch Service', () => {
     service.virtualRoute.next({ type: 'pop' });
 
     expect(mockEventBusService.dispatch.calls.argsFor(0)).toEqual([makeExpectedAction('/my/path', [], {})]);
-    expect(mockEventBusService.dispatch.calls.argsFor(1)).toEqual([makeExpectedAction('/test/url', [], {}, undefined, true)]);
-    expect(mockEventBusService.dispatch.calls.argsFor(2)).toEqual([makeExpectedAction('/test/url2', [], {}, undefined, true)]);
-    expect(mockEventBusService.dispatch.calls.argsFor(3)).toEqual([makeExpectedAction('/test/url', [], {}, undefined, true)]);
+    expect(mockEventBusService.dispatch.calls.argsFor(1)).toEqual([
+      makeExpectedAction('/test/url', [], {}, undefined, true),
+    ]);
+    expect(mockEventBusService.dispatch.calls.argsFor(2)).toEqual([
+      makeExpectedAction('/test/url2', [], {}, undefined, true),
+    ]);
+    expect(mockEventBusService.dispatch.calls.argsFor(3)).toEqual([
+      makeExpectedAction('/test/url', [], {}, undefined, true),
+    ]);
     expect(mockEventBusService.dispatch.calls.argsFor(4)).toEqual([makeExpectedAction('/my/path')]);
   });
 
@@ -329,8 +377,12 @@ describe('Router Dispatch Service', () => {
     service.virtualRoute.next({ type: 'push', url: '/test/url2' });
     mockRouter.events.next(new NavigationEnd(1, '123', '123'));
     expect(mockEventBusService.dispatch.calls.argsFor(0)).toEqual([makeExpectedAction('/my/path', [], {})]);
-    expect(mockEventBusService.dispatch.calls.argsFor(1)).toEqual([makeExpectedAction('/test/url', [], {}, undefined, true)]);
-    expect(mockEventBusService.dispatch.calls.argsFor(2)).toEqual([makeExpectedAction('/test/url2', [], {}, undefined, true)]);
+    expect(mockEventBusService.dispatch.calls.argsFor(1)).toEqual([
+      makeExpectedAction('/test/url', [], {}, undefined, true),
+    ]);
+    expect(mockEventBusService.dispatch.calls.argsFor(2)).toEqual([
+      makeExpectedAction('/test/url2', [], {}, undefined, true),
+    ]);
     expect(mockEventBusService.dispatch.calls.argsFor(3)).toEqual([makeExpectedAction('/my/path')]);
   });
 
@@ -347,10 +399,16 @@ describe('Router Dispatch Service', () => {
 
   it('should use additional page scopes and selected items in virtual route, if provided', () => {
     const expectedRealAction = makeExpectedAction('/my/path', [], {});
-    const expectedVirtualAction = makeExpectedAction('/test/url', ['Additional Scope'], {
-      policyNumber: '123456789',
-      emailSelected: 'current'
-    }, undefined, true);
+    const expectedVirtualAction = makeExpectedAction(
+      '/test/url',
+      ['Additional Scope'],
+      {
+        policyNumber: '123456789',
+        emailSelected: 'current',
+      },
+      undefined,
+      true
+    );
 
     service.initialize();
 
@@ -363,8 +421,8 @@ describe('Router Dispatch Service', () => {
       additionalScopes: ['Additional Scope'],
       selectedItems: {
         policyNumber: '123456789',
-        emailSelected: 'current'
-      }
+        emailSelected: 'current',
+      },
     });
 
     expect(mockEventBusService.dispatch).toHaveBeenCalledWith(expectedRealAction);
@@ -379,13 +437,13 @@ describe('Router Dispatch Service', () => {
             firstChild: {
               data: {
                 analytics: {
-                  additionalScopes: ['Additional Scope']
-                }
-              }
-            }
-          }
-        }
-      }
+                  additionalScopes: ['Additional Scope'],
+                },
+              },
+            },
+          },
+        },
+      },
     };
     const expected = ['Additional Scope'];
     const actual = service.getAdditionalScopes(mockRouterData);
@@ -397,10 +455,10 @@ describe('Router Dispatch Service', () => {
       routerState: {
         root: {
           snapshot: {
-            firstChild: {}
-          }
-        }
-      }
+            firstChild: {},
+          },
+        },
+      },
     };
 
     const expected: string[] = [];
@@ -414,11 +472,11 @@ describe('Router Dispatch Service', () => {
         root: {
           snapshot: {
             firstChild: {
-              data: {}
-            }
-          }
-        }
-      }
+              data: {},
+            },
+          },
+        },
+      },
     };
 
     const expected: string[] = [];
@@ -436,9 +494,7 @@ describe('Router Dispatch Service', () => {
   });
 
   describe('getPrettyRouteName', () => {
-
     describe('when the route is eagerly loaded', () => {
-
       it('should return undefined if there are no params', () => {
         const mockRouterData: any = {
           routerState: {
@@ -447,25 +503,25 @@ describe('Router Dispatch Service', () => {
                 firstChild: {
                   paramMap: convertToParamMap({}),
                   routeConfig: {
-                    path: ''
+                    path: '',
                   },
                   firstChild: {
                     paramMap: convertToParamMap({}),
                     routeConfig: {
-                      path: 'account-home'
+                      path: 'account-home',
                     },
                     firstChild: {
                       paramMap: convertToParamMap({}),
                       routeConfig: {
-                        path: 'account-options'
+                        path: 'account-options',
                       },
-                      firstChild: null
-                    }
-                  }
-                }
-              }
-            }
-          }
+                      firstChild: null,
+                    },
+                  },
+                },
+              },
+            },
+          },
         };
 
         expect(service.getPrettyRouteName(mockRouterData)).toBeUndefined();
@@ -473,6 +529,10 @@ describe('Router Dispatch Service', () => {
 
       describe('when the route has params', () => {
         it('should return the route config path with NO params inserted if the route DOES NOT have preservedParams keys', () => {
+          const paramMap = {
+            policyNumber: '622059871',
+            termId: '0',
+          };
           const mockRouterData: any = {
             routerState: {
               root: {
@@ -480,36 +540,44 @@ describe('Router Dispatch Service', () => {
                   firstChild: {
                     paramMap: convertToParamMap({}),
                     routeConfig: {
-                      path: ''
+                      path: '',
                     },
                     firstChild: {
                       paramMap: convertToParamMap({}),
                       routeConfig: {
-                        path: 'id-card-hub'
+                        path: 'id-card-hub',
                       },
                       firstChild: {
-                        paramMap: convertToParamMap({
-                          policyNumber: '622059871',
-                          termId: '0'
-                        }),
+                        paramMap: convertToParamMap(paramMap),
                         routeConfig: {
-                          path: ':policyNumber/:termId/id-card'
+                          path: ':policyNumber/:termId/id-card',
                         },
-                        firstChild: null
-                      }
-                    }
-                  }
-                }
-              }
-            }
+                        firstChild: null,
+                      },
+                    },
+                  },
+                },
+              },
+            },
+          };
+          mockRouterUtilityService.getSnapshotHierarchyAsArray = () => {
+            return [
+              { routeConfig: { path: '' }, paramMap: convertToParamMap({}) },
+              { routeConfig: { path: 'id-card-hub' }, paramMap: convertToParamMap({}) },
+              { routeConfig: { path: ':policyNumber/:termId/id-card' }, paramMap: convertToParamMap(paramMap) },
+            ];
           };
 
-          const expected = '/id-card-hub/:policyNumber/:termId/id-card';
+          const expected = `/id-card-hub/:policyNumber/:termId/id-card`;
           const actual = service.getPrettyRouteName(mockRouterData);
           expect(actual).toEqual(expected);
         });
 
         it('should return the route config path with params inserted if the route has replaceParamTokens keys', () => {
+          const paramMap = {
+            policyNumber: '622059871',
+            termId: '0',
+          };
           const mockRouterData: any = {
             routerState: {
               root: {
@@ -517,45 +585,55 @@ describe('Router Dispatch Service', () => {
                   firstChild: {
                     paramMap: convertToParamMap({}),
                     routeConfig: {
-                      path: ''
+                      path: '',
                     },
                     firstChild: {
                       paramMap: convertToParamMap({}),
                       routeConfig: {
-                        path: 'id-card-hub'
+                        path: 'id-card-hub',
                       },
                       firstChild: {
-                        paramMap: convertToParamMap({
-                          policyNumber: '622059871',
-                          termId: '0'
-                        }),
+                        paramMap: convertToParamMap(paramMap),
                         routeConfig: {
                           data: {
                             analytics: {
-                              replaceParamTokens: ['termId']
-                            }
+                              replaceParamTokens: ['termId'],
+                            },
                           },
-                          path: ':policyNumber/:termId/id-card'
+                          path: ':policyNumber/:termId/id-card',
                         },
-                        firstChild: null
-                      }
-                    }
-                  }
-                }
-              }
-            }
+                        firstChild: null,
+                      },
+                    },
+                  },
+                },
+              },
+            },
           };
 
           const expected = '/id-card-hub/:policyNumber/0/id-card';
+          mockRouterUtilityService.getSnapshotHierarchyAsArray = () => {
+            return [
+              { routeConfig: { path: '' }, paramMap: convertToParamMap({}) },
+              { routeConfig: { path: 'id-card-hub' }, paramMap: convertToParamMap({}) },
+              {
+                routeConfig: {
+                  path: ':policyNumber/:termId/id-card',
+                  data: { analytics: { replaceParamTokens: ['termId'] } },
+                },
+                paramMap: convertToParamMap(paramMap),
+              },
+            ];
+          };
+          mockRouterUtilityService.replaceTokensWithValuesFromParamMap = () => expected;
+
           const actual = service.getPrettyRouteName(mockRouterData);
           expect(actual).toEqual(expected);
         });
       });
-
     });
 
     describe('when the route is lazy loaded', () => {
-
       it('should return undefined if there are no params', () => {
         const mockRouterData: any = {
           routerState: {
@@ -564,33 +642,35 @@ describe('Router Dispatch Service', () => {
                 firstChild: {
                   paramMap: convertToParamMap({}),
                   routeConfig: {
-                    path: ''
+                    path: '',
                   },
                   firstChild: {
                     paramMap: convertToParamMap({}),
                     routeConfig: {
-                      path: 'account-home'
+                      path: 'account-home',
                     },
                     firstChild: {
                       paramMap: convertToParamMap({}),
                       routeConfig: {
-                        path: ''
+                        path: '',
                       },
-                      firstChild: null
-                    }
-                  }
-                }
-              }
-            }
-          }
+                      firstChild: null,
+                    },
+                  },
+                },
+              },
+            },
+          },
         };
 
         expect(service.getPrettyRouteName(mockRouterData)).toBeUndefined();
       });
 
       describe('when the route has params', () => {
-
         it('should return the route config path with NO params inserted if the route DOES NOT have preservedParams keys', () => {
+          const paramMap = {
+            policyNumber: '622059871',
+          };
           const mockRouterData: any = {
             routerState: {
               root: {
@@ -598,27 +678,38 @@ describe('Router Dispatch Service', () => {
                   firstChild: {
                     paramMap: convertToParamMap({}),
                     routeConfig: {
-                      path: ''
+                      path: '',
                     },
                     firstChild: {
                       paramMap: convertToParamMap({}),
                       routeConfig: {
-                        path: 'account-home'
+                        path: 'account-home',
                       },
                       firstChild: {
-                        paramMap: convertToParamMap({
-                          policyNumber: '622059871'
-                        }),
+                        paramMap: convertToParamMap(paramMap),
                         routeConfig: {
-                          path: ':policyNumber'
+                          path: ':policyNumber',
                         },
-                        firstChild: null
-                      }
-                    }
-                  }
-                }
-              }
-            }
+                        firstChild: null,
+                      },
+                    },
+                  },
+                },
+              },
+            },
+          };
+
+          mockRouterUtilityService.getSnapshotHierarchyAsArray = () => {
+            return [
+              { routeConfig: { path: '' }, paramMap: convertToParamMap({}) },
+              { routeConfig: { path: 'account-home' }, paramMap: convertToParamMap({}) },
+              {
+                routeConfig: {
+                  path: ':policyNumber',
+                },
+                paramMap: convertToParamMap(paramMap),
+              },
+            ];
           };
 
           const expected = '/account-home/:policyNumber';
@@ -627,6 +718,9 @@ describe('Router Dispatch Service', () => {
         });
 
         it('should return the route config path with params inserted if the route has replaceParamTokens keys', () => {
+          const paramMap = {
+            policyNumber: '622059871',
+          };
           const mockRouterData: any = {
             routerState: {
               root: {
@@ -634,42 +728,52 @@ describe('Router Dispatch Service', () => {
                   firstChild: {
                     paramMap: convertToParamMap({}),
                     routeConfig: {
-                      path: ''
+                      path: '',
                     },
                     firstChild: {
                       paramMap: convertToParamMap({}),
                       routeConfig: {
-                        path: 'account-home'
+                        path: 'account-home',
                       },
                       firstChild: {
-                        paramMap: convertToParamMap({
-                          policyNumber: '622059871'
-                        }),
+                        paramMap: convertToParamMap(paramMap),
                         routeConfig: {
                           data: {
                             analytics: {
-                              replaceParamTokens: ['policyNumber']
-                            }
+                              replaceParamTokens: ['policyNumber'],
+                            },
                           },
-                          path: 'policy-options/:policyNumber'
+                          path: 'policy-options/:policyNumber',
                         },
-                        firstChild: null
-                      }
-                    }
-                  }
-                }
-              }
-            }
+                        firstChild: null,
+                      },
+                    },
+                  },
+                },
+              },
+            },
           };
 
           const expected = '/account-home/policy-options/622059871';
+          mockRouterUtilityService.getSnapshotHierarchyAsArray = () => {
+            return [
+              { routeConfig: { path: '' }, paramMap: convertToParamMap({}) },
+              { routeConfig: { path: 'account-home' }, paramMap: convertToParamMap({}) },
+              {
+                routeConfig: {
+                  path: 'policy-options/:policyNumber',
+                  data: { analytics: { replaceParamTokens: ['policyNumber'] } },
+                },
+                paramMap: convertToParamMap(paramMap),
+              },
+            ];
+          };
+          mockRouterUtilityService.replaceTokensWithValuesFromParamMap = () => expected;
           const actual = service.getPrettyRouteName(mockRouterData);
           expect(actual).toEqual(expected);
         });
-
       });
     });
-
   });
 
   it('should use the routeConfig path for logging if route has params', () => {
@@ -685,18 +789,18 @@ describe('Router Dispatch Service', () => {
     it('returns selected params from the routing object when params are populated', () => {
       const params: Params = {
         claimNumber: '20173876099',
-        policyNumber: '622018883'
+        policyNumber: '622018883',
       };
       const mockRouterData: Router = {
         routerState: {
           root: {
             snapshot: {
               firstChild: {
-                paramMap: convertToParamMap(params)
-              }
-            }
-          }
-        }
+                paramMap: convertToParamMap(params),
+              },
+            },
+          },
+        },
       } as Router;
 
       expect(service.getSelectedRouteParamsItems(mockRouterData)).toEqual(params);
@@ -709,11 +813,11 @@ describe('Router Dispatch Service', () => {
           root: {
             snapshot: {
               firstChild: {
-                paramMap: convertToParamMap(params)
-              }
-            }
-          }
-        }
+                paramMap: convertToParamMap(params),
+              },
+            },
+          },
+        },
       } as Router;
 
       expect(service.getSelectedRouteParamsItems(mockRouterData)).toEqual(params);
@@ -725,9 +829,9 @@ describe('Router Dispatch Service', () => {
       const router: any = {
         routerState: {
           root: {
-            snapshot: {}
-          }
-        }
+            snapshot: {},
+          },
+        },
       };
       expect(service.shouldTrack(router)).toBeTruthy();
     });
@@ -735,9 +839,9 @@ describe('Router Dispatch Service', () => {
       const router: any = {
         routerState: {
           root: {
-            snapshot: { data: {} }
-          }
-        }
+            snapshot: { data: {} },
+          },
+        },
       };
       expect(service.shouldTrack(router)).toBeTruthy();
     });
@@ -747,11 +851,11 @@ describe('Router Dispatch Service', () => {
           root: {
             snapshot: {
               data: {
-                analytics: {}
-              }
-            }
-          }
-        }
+                analytics: {},
+              },
+            },
+          },
+        },
       };
       expect(service.shouldTrack(router)).toBeTruthy();
     });
@@ -759,9 +863,9 @@ describe('Router Dispatch Service', () => {
       const router: any = {
         routerState: {
           root: {
-            snapshot: { data: { analytics: { disableAutoPageViewEvent: false } } }
-          }
-        }
+            snapshot: { data: { analytics: { disableAutoPageViewEvent: false } } },
+          },
+        },
       };
       expect(service.shouldTrack(router)).toBeTruthy();
     });
@@ -769,9 +873,9 @@ describe('Router Dispatch Service', () => {
       const router: any = {
         routerState: {
           root: {
-            snapshot: { data: { analytics: { disableAutoPageViewEvent: true } } }
-          }
-        }
+            snapshot: { data: { analytics: { disableAutoPageViewEvent: true } } },
+          },
+        },
       };
       expect(service.shouldTrack(router)).toBeFalsy();
     });
@@ -782,9 +886,9 @@ describe('Router Dispatch Service', () => {
       const router: any = {
         routerState: {
           root: {
-            snapshot: {}
-          }
-        }
+            snapshot: {},
+          },
+        },
       };
       expect(service.shouldIncludeAppScope(router)).toBeTruthy();
     });
@@ -792,9 +896,9 @@ describe('Router Dispatch Service', () => {
       const router: any = {
         routerState: {
           root: {
-            snapshot: { data: {} }
-          }
-        }
+            snapshot: { data: {} },
+          },
+        },
       };
       expect(service.shouldIncludeAppScope(router)).toBeTruthy();
     });
@@ -804,11 +908,11 @@ describe('Router Dispatch Service', () => {
           root: {
             snapshot: {
               data: {
-                analytics: {}
-              }
-            }
-          }
-        }
+                analytics: {},
+              },
+            },
+          },
+        },
       };
       expect(service.shouldIncludeAppScope(router)).toBeTruthy();
     });
@@ -816,9 +920,9 @@ describe('Router Dispatch Service', () => {
       const router: any = {
         routerState: {
           root: {
-            snapshot: { data: { analytics: { excludeAppScope: false } } }
-          }
-        }
+            snapshot: { data: { analytics: { excludeAppScope: false } } },
+          },
+        },
       };
       expect(service.shouldIncludeAppScope(router)).toBeTruthy();
     });
@@ -826,9 +930,9 @@ describe('Router Dispatch Service', () => {
       const router: any = {
         routerState: {
           root: {
-            snapshot: { data: { analytics: { excludeAppScope: true } } }
-          }
-        }
+            snapshot: { data: { analytics: { excludeAppScope: true } } },
+          },
+        },
       };
       expect(service.shouldIncludeAppScope(router)).toBeFalsy();
     });
