@@ -1,17 +1,30 @@
 import { CommonModule } from '@angular/common';
 import { HTTP_INTERCEPTORS, HttpClient } from '@angular/common/http';
-import {
-  APP_INITIALIZER, InjectionToken, Injector, ModuleWithProviders, NgModule,
-  NgZone
-} from '@angular/core';
+import { APP_INITIALIZER, InjectionToken, Injector, ModuleWithProviders, NgModule, NgZone } from '@angular/core';
 
 import { EventLoggerService } from './destinations/event-logger/event-logger.service';
 import { createGoogleTagManagerService } from './destinations/google-tag-manager/create-google-tag-manager.service';
-import { GOOGLE_TAG_MANAGER_STATE_TOKEN, GOOGLE_TAG_MANAGER_TRANSFORM_TOKEN, GoogleTagManagerService } from './destinations/google-tag-manager/google-tag-manager.service';
+import {
+  GOOGLE_TAG_MANAGER_STATE_TOKEN,
+  GOOGLE_TAG_MANAGER_TRANSFORM_TOKEN,
+  GoogleTagManagerService,
+} from './destinations/google-tag-manager/google-tag-manager.service';
 import { createSplunkAnalyticsService } from './destinations/splunk-analytics/create-splunk-analytics-service';
-import { SPLUNK_ANALYTICS_SERVICE_STATE_TOKEN, SPLUNK_ANALYTICS_TRANSFORM_TOKEN, splunkAnalyticsApiKey, splunkAnalyticsEndpoint, SplunkAnalyticsService } from './destinations/splunk-analytics/splunk-analytics.service';
+import {
+  SPLUNK_ANALYTICS_SERVICE_STATE_TOKEN,
+  SPLUNK_ANALYTICS_TRANSFORM_TOKEN,
+  splunkAnalyticsApiKey,
+  splunkAnalyticsEndpoint,
+  SplunkAnalyticsService,
+} from './destinations/splunk-analytics/splunk-analytics.service';
 import { createSplunkStandardLoggingService } from './destinations/splunk-standard-logging/create-splunk-standard-logging-service';
-import { SPLUNK_STANDARD_LOGGING_SERVICE_STATE_TOKEN, SPLUNK_STANDARD_LOGGING_TRANSFORM_TOKEN, splunkStandardLoggingApiKey, splunkStandardLoggingEndpoint, SplunkStandardLoggingService } from './destinations/splunk-standard-logging/splunk-standard-logging.service';
+import {
+  SPLUNK_STANDARD_LOGGING_SERVICE_STATE_TOKEN,
+  SPLUNK_STANDARD_LOGGING_TRANSFORM_TOKEN,
+  splunkStandardLoggingApiKey,
+  splunkStandardLoggingEndpoint,
+  SplunkStandardLoggingService,
+} from './destinations/splunk-standard-logging/splunk-standard-logging.service';
 import { DisplayDirective } from './directives/display.directive';
 import { InteractionEventDirective } from './directives/interaction-event.directive';
 import { ModalDirective } from './directives/modal.directive';
@@ -21,7 +34,11 @@ import { StateProvider } from './models/state-provider.type';
 import { StringSelector } from './models/string-selector.interface';
 import { Transform } from './models/transform.interface';
 import { AnalyticsEventBusService } from './services/analytics-event-bus.service';
-import { ANALYTICS_ERROR_MODEL_ID, ANALYTICS_EVENT_MODEL_MAPS, AnalyticsEventModelsService } from './services/analytics-event-models.service';
+import {
+  ANALYTICS_ERROR_MODEL_ID,
+  ANALYTICS_EVENT_MODEL_MAPS,
+  AnalyticsEventModelsService,
+} from './services/analytics-event-models.service';
 import { AnalyticsService } from './services/analytics.service';
 import { EventCacheService } from './services/event-cache.service';
 import { EventDispatchService } from './services/event-dispatch.service';
@@ -29,7 +46,7 @@ import { HttpDispatchService } from './services/http-dispatch.service';
 import { LocationTrackingService } from './services/location-tracking.service';
 import { RouterDispatchService } from './services/router-dispatch.service';
 import { TimeService } from './services/time.service';
-import { WindowService } from './utils/window.service';
+import { WindowService } from './services/window.service';
 
 export const ANALYTICS_BOOTSTRAP = new InjectionToken<void>('Analytics Bootstrap');
 

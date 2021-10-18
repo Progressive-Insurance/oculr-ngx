@@ -11,12 +11,28 @@ describe('LocationTrackingService', () => {
   let mockRouter: any;
   let mockAnalyticsEventBusService: any;
   let mockEventCacheService: any;
+  let mockRouterUtilityService: any;
   let mockQueryParamMap: any;
 
   beforeEach(() => {
     mockAnalyticsEventBusService = jasmine.createSpyObj('mockAnalyticsEventBusService', ['dispatch']);
     mockEventCacheService = jasmine.createSpyObj('mockEventCacheService', ['setIsCurrentPageModal']);
     mockLocation = jasmine.createSpyObj('mockLocation', ['path']);
+    mockRouterUtilityService = {
+      getSnapshotHierarchyAsArray: () => {
+        return [{ routeConfig: { path: '/home' }, paramMap: {} }];
+      },
+      insertLocationParams: () => {
+        return {
+          hitId: 1,
+          hostName: 'https://example.org/slot5/src',
+          path: '/new-modal/123?term=current',
+          url: 'https://example.org/slot5/src/new-modal/123?term=current',
+          queryString: '?term=current',
+          virtualPageName: '/new-modal/123',
+        };
+      },
+    };
   });
 
   describe('constructor', () => {
@@ -33,10 +49,10 @@ describe('LocationTrackingService', () => {
               snapshot: {
                 routeConfig: null,
                 firstChild: null,
-                queryParamMap: mockQueryParamMap
-              }
-            }
-          }
+                queryParamMap: mockQueryParamMap,
+              },
+            },
+          },
         };
 
         locationTrackingService = new LocationTrackingService(
@@ -44,14 +60,15 @@ describe('LocationTrackingService', () => {
           mockWindowService,
           mockRouter,
           mockAnalyticsEventBusService,
-          mockEventCacheService
+          mockEventCacheService,
+          mockRouterUtilityService
         );
 
         const routerEvent = new NavigationEnd(1, '', '/access/login');
         mockRouter.routerState.root.snapshot.firstChild = {
           routeConfig: {
-            path: 'access/login'
-          }
+            path: 'access/login',
+          },
         };
         mockLocation.path.and.returnValue('/access/login');
         mockWindowService.url = 'https://example.org/access/login';
@@ -72,10 +89,10 @@ describe('LocationTrackingService', () => {
               snapshot: {
                 routeConfig: null,
                 firstChild: null,
-                queryParamMap: mockQueryParamMap
-              }
-            }
-          }
+                queryParamMap: mockQueryParamMap,
+              },
+            },
+          },
         };
 
         locationTrackingService = new LocationTrackingService(
@@ -83,14 +100,15 @@ describe('LocationTrackingService', () => {
           mockWindowService,
           mockRouter,
           mockAnalyticsEventBusService,
-          mockEventCacheService
+          mockEventCacheService,
+          mockRouterUtilityService
         );
 
         const routerEvent = new NavigationEnd(1, '', '/access/login');
         mockRouter.routerState.root.snapshot.firstChild = {
           routeConfig: {
-            path: 'access/login'
-          }
+            path: 'access/login',
+          },
         };
         mockLocation.path.and.returnValue('/access/login');
         mockWindowService.url = 'https://example.org/access/login';
@@ -112,10 +130,10 @@ describe('LocationTrackingService', () => {
               snapshot: {
                 routeConfig: null,
                 firstChild: null,
-                queryParamMap: mockQueryParamMap
-              }
-            }
-          }
+                queryParamMap: mockQueryParamMap,
+              },
+            },
+          },
         };
 
         locationTrackingService = new LocationTrackingService(
@@ -123,14 +141,15 @@ describe('LocationTrackingService', () => {
           mockWindowService,
           mockRouter,
           mockAnalyticsEventBusService,
-          mockEventCacheService
+          mockEventCacheService,
+          mockRouterUtilityService
         );
 
         const routerEvent = new NavigationEnd(1, '?brand=Progressive', '/access/login?brand=Progressive');
         mockRouter.routerState.root.snapshot.firstChild = {
           routeConfig: {
-            path: '/access/login'
-          }
+            path: '/access/login',
+          },
         };
         mockLocation.path.and.returnValue('/access/login?brand=Progressive');
         mockWindowService.url = 'https://example.org/access/login?brand=Progressive';
@@ -150,10 +169,10 @@ describe('LocationTrackingService', () => {
               snapshot: {
                 routeConfig: null,
                 firstChild: null,
-                queryParamMap: mockQueryParamMap
-              }
-            }
-          }
+                queryParamMap: mockQueryParamMap,
+              },
+            },
+          },
         };
 
         locationTrackingService = new LocationTrackingService(
@@ -161,14 +180,15 @@ describe('LocationTrackingService', () => {
           mockWindowService,
           mockRouter,
           mockAnalyticsEventBusService,
-          mockEventCacheService
+          mockEventCacheService,
+          mockRouterUtilityService
         );
 
         const routerEvent = new NavigationEnd(1, '/?brand=Progressive', '/access/login?brand=Progressive');
         mockRouter.routerState.root.snapshot.firstChild = {
           routeConfig: {
-            path: '/access/login'
-          }
+            path: '/access/login',
+          },
         };
         mockLocation.path.and.returnValue('/access/login?brand=Progressive');
         mockWindowService.url = 'https://example.org/access/login?brand=Progressive';
@@ -191,10 +211,10 @@ describe('LocationTrackingService', () => {
               snapshot: {
                 routeConfig: null,
                 firstChild: null,
-                queryParamMap: mockQueryParamMap
-              }
-            }
-          }
+                queryParamMap: mockQueryParamMap,
+              },
+            },
+          },
         };
 
         locationTrackingService = new LocationTrackingService(
@@ -202,14 +222,15 @@ describe('LocationTrackingService', () => {
           mockWindowService,
           mockRouter,
           mockAnalyticsEventBusService,
-          mockEventCacheService
+          mockEventCacheService,
+          mockRouterUtilityService
         );
 
         const routerEvent = new NavigationEnd(1, '#top', '/access/login#top');
         mockRouter.routerState.root.snapshot.firstChild = {
           routeConfig: {
-            path: '/access/login'
-          }
+            path: '/access/login',
+          },
         };
         mockLocation.path.and.returnValue('/access/login#top');
         mockWindowService.url = 'https://example.org/access/login#top';
@@ -229,10 +250,10 @@ describe('LocationTrackingService', () => {
               snapshot: {
                 routeConfig: null,
                 firstChild: null,
-                queryParamMap: mockQueryParamMap
-              }
-            }
-          }
+                queryParamMap: mockQueryParamMap,
+              },
+            },
+          },
         };
 
         locationTrackingService = new LocationTrackingService(
@@ -240,14 +261,15 @@ describe('LocationTrackingService', () => {
           mockWindowService,
           mockRouter,
           mockAnalyticsEventBusService,
-          mockEventCacheService
+          mockEventCacheService,
+          mockRouterUtilityService
         );
 
         const routerEvent = new NavigationEnd(1, '/#top', '/access/login#top');
         mockRouter.routerState.root.snapshot.firstChild = {
           routeConfig: {
-            path: '/access/login'
-          }
+            path: '/access/login',
+          },
         };
         mockLocation.path.and.returnValue('/access/login#top');
         mockWindowService.url = 'https://example.org/access/login#top';
@@ -270,10 +292,10 @@ describe('LocationTrackingService', () => {
               snapshot: {
                 routeConfig: null,
                 firstChild: null,
-                queryParamMap: mockQueryParamMap
-              }
-            }
-          }
+                queryParamMap: mockQueryParamMap,
+              },
+            },
+          },
         };
 
         locationTrackingService = new LocationTrackingService(
@@ -281,14 +303,15 @@ describe('LocationTrackingService', () => {
           mockWindowService,
           mockRouter,
           mockAnalyticsEventBusService,
-          mockEventCacheService
+          mockEventCacheService,
+          mockRouterUtilityService
         );
 
         const routerEvent = new NavigationEnd(1, '?brand=Progressive#top', '/access/login?brand=Progressive#top');
         mockRouter.routerState.root.snapshot.firstChild = {
           routeConfig: {
-            path: '/access/login'
-          }
+            path: '/access/login',
+          },
         };
         mockLocation.path.and.returnValue('/access/login?brand=Progressive#top');
         mockWindowService.url = 'https://example.org/access/login?brand=Progressive#top';
@@ -308,10 +331,10 @@ describe('LocationTrackingService', () => {
               snapshot: {
                 routeConfig: null,
                 firstChild: null,
-                queryParamMap: mockQueryParamMap
-              }
-            }
-          }
+                queryParamMap: mockQueryParamMap,
+              },
+            },
+          },
         };
 
         locationTrackingService = new LocationTrackingService(
@@ -319,14 +342,15 @@ describe('LocationTrackingService', () => {
           mockWindowService,
           mockRouter,
           mockAnalyticsEventBusService,
-          mockEventCacheService
+          mockEventCacheService,
+          mockRouterUtilityService
         );
 
         const routerEvent = new NavigationEnd(1, '/?brand=Progressive#top', '/access/login?brand=Progressive#top');
         mockRouter.routerState.root.snapshot.firstChild = {
           routeConfig: {
-            path: '/access/login'
-          }
+            path: '/access/login',
+          },
         };
         mockLocation.path.and.returnValue('/access/login?brand=Progressive#top');
         mockWindowService.url = 'https://example.org/access/login?brand=Progressive#top';
@@ -351,14 +375,14 @@ describe('LocationTrackingService', () => {
               routeConfig: null,
               firstChild: {
                 routeConfig: {
-                  path: 'home'
+                  path: 'home',
                 },
-                firstChild: null
+                firstChild: null,
               },
-              queryParamMap: mockQueryParamMap
-            }
-          }
-        }
+              queryParamMap: mockQueryParamMap,
+            },
+          },
+        },
       };
 
       locationTrackingService = new LocationTrackingService(
@@ -366,22 +390,27 @@ describe('LocationTrackingService', () => {
         mockWindowService,
         mockRouter,
         mockAnalyticsEventBusService,
-        mockEventCacheService
+        mockEventCacheService,
+        mockRouterUtilityService
       );
     });
     describe('when changing to a new location via Angular Router', () => {
       beforeEach(() => {
-        const routerEvent = new NavigationEnd(1, '/id-card-hub/12345678/id-card?term=current', '/id-card-hub/12345678/id-card?term=current');
+        const routerEvent = new NavigationEnd(
+          1,
+          '/id-card-hub/12345678/id-card?term=current',
+          '/id-card-hub/12345678/id-card?term=current'
+        );
         mockRouter.routerState.root.snapshot.firstChild = {
           routeConfig: {
-            path: 'id-card-hub'
+            path: 'id-card-hub',
           },
           firstChild: {
             routeConfig: {
-              path: ':policyNumber/id-card'
+              path: ':policyNumber/id-card',
             },
-            firstChild: null
-          }
+            firstChild: null,
+          },
         };
         mockLocation.path.and.returnValue('/id-card-hub/12345678/id-card');
         mockWindowService.url = 'https://example.org/slot5/src/id-card-hub/12345678/id-card?term=current';
@@ -394,7 +423,7 @@ describe('LocationTrackingService', () => {
           path: '/id-card-hub/:policyNumber/id-card?term=current',
           url: 'https://example.org/slot5/src/id-card-hub/:policyNumber/id-card?term=current',
           queryString: '?term=current',
-          virtualPageName: '/id-card-hub/:policyNumber/id-card'
+          virtualPageName: '/id-card-hub/:policyNumber/id-card',
         };
         expect(locationTrackingService.location).toEqual(expectedLocation);
       });
@@ -416,7 +445,7 @@ describe('LocationTrackingService', () => {
           path: '/new-modal/:idCard?term=current',
           url: 'https://example.org/slot5/src/new-modal/:idCard?term=current',
           queryString: '?term=current',
-          virtualPageName: '/new-modal/:idCard'
+          virtualPageName: '/new-modal/:idCard',
         };
         expect(locationTrackingService.location).toEqual(expectedLocation);
       });
@@ -424,16 +453,19 @@ describe('LocationTrackingService', () => {
         expect(mockEventCacheService.setIsCurrentPageModal).toHaveBeenCalledWith(true);
       });
       it('issues an updateLocation action', () => {
-        const expectedPayload = updateLocation({
-          angularRoute: '/new-modal/:idCard',
-          routeWithQueryString: '/new-modal/:idCard',
-          hostName: 'https://example.org/slot5/src',
-          domain: '',
-          fullPath: 'https://example.org/slot5/src/new-modal/:idCard',
-          model: { details: { scopes: [] } },
-          customDimensions: {},
-          selectedItems: {}
-        }, false);
+        const expectedPayload = updateLocation(
+          {
+            angularRoute: '/new-modal/:idCard',
+            routeWithQueryString: '/new-modal/:idCard',
+            hostName: 'https://example.org/slot5/src',
+            domain: '',
+            fullPath: 'https://example.org/slot5/src/new-modal/:idCard',
+            model: { details: { scopes: [] } },
+            customDimensions: {},
+            selectedItems: {},
+          },
+          false
+        );
         expect(mockAnalyticsEventBusService.dispatch).toHaveBeenCalledTimes(1);
         expect(mockAnalyticsEventBusService.dispatch.calls.argsFor(0)[0]).toEqual(expectedPayload);
       });
@@ -460,7 +492,7 @@ describe('LocationTrackingService', () => {
             path,
             url,
             queryString,
-            virtualPageName
+            virtualPageName,
           });
         });
       });
@@ -469,14 +501,14 @@ describe('LocationTrackingService', () => {
       beforeEach(() => {
         mockRouter.routerState.root.snapshot.firstChild = {
           routeConfig: {
-            path: 'id-card-hub'
+            path: 'id-card-hub',
           },
           firstChild: {
             routeConfig: {
-              path: ':policyNumber/id-card'
+              path: ':policyNumber/id-card',
             },
-            firstChild: null
-          }
+            firstChild: null,
+          },
         };
         mockRouter.routerState.root.snapshot.queryParamMap = convertToParamMap({});
         mockLocation.path.and.returnValue('/id-card-hub/12345678/id-card');
@@ -494,7 +526,7 @@ describe('LocationTrackingService', () => {
             path: '/id-card-hub/:policyNumber/id-card',
             url: 'https://example.org/slot5/src/id-card-hub/:policyNumber/id-card',
             queryString: '',
-            virtualPageName: '/id-card-hub/:policyNumber/id-card'
+            virtualPageName: '/id-card-hub/:policyNumber/id-card',
           };
           expect(locationTrackingService.location).toEqual(expectedLocation);
         });
@@ -513,7 +545,7 @@ describe('LocationTrackingService', () => {
             path: '/new-modal/:idCard',
             url: 'https://example.org/slot5/src/new-modal/:idCard',
             queryString: '',
-            virtualPageName: '/new-modal/:idCard'
+            virtualPageName: '/new-modal/:idCard',
           };
           expect(locationTrackingService.location).toEqual(expectedLocation);
         });
@@ -522,24 +554,38 @@ describe('LocationTrackingService', () => {
 
     describe('updateRouteConfig', () => {
       beforeEach(() => {
-        const routerEvent = new NavigationEnd(1, '/id-card-hub/12345678/id-card?term=current', '/id-card-hub/12345678/id-card?term=current');
+        const routerEvent = new NavigationEnd(
+          1,
+          '/id-card-hub/12345678/id-card?term=current',
+          '/id-card-hub/12345678/id-card?term=current'
+        );
         mockRouter.routerState.root.snapshot.firstChild = {
           routeConfig: {
-            path: 'id-card-hub'
+            path: 'id-card-hub',
           },
           firstChild: {
             routeConfig: {
-              path: ':policyNumber/id-card'
+              path: ':policyNumber/id-card',
             },
             paramMap: convertToParamMap({ policyNumber: '12345678' }),
-            firstChild: null
-          }
+            firstChild: null,
+          },
         };
         mockLocation.path.and.returnValue('/id-card-hub/12345678/id-card?term=current');
         mockWindowService.url = 'https://example.org/slot5/src/id-card-hub/12345678/id-card?term=current';
         mockRouter.events.next(routerEvent);
       });
       it('updates the location based on pre-loaded paramMap and config provided', () => {
+        mockRouterUtilityService.insertLocationParams = () => {
+          return {
+            hitId: 1,
+            hostName: 'https://example.org/slot5/src',
+            path: '/id-card-hub/12345678/id-card?term=current',
+            url: 'https://example.org/slot5/src/id-card-hub/12345678/id-card?term=current',
+            queryString: '?term=current',
+            virtualPageName: '/id-card-hub/12345678/id-card',
+          };
+        };
         const config = { replaceParamTokens: ['policyNumber'] };
         const expectedLocation = {
           hitId: 1,
@@ -547,19 +593,29 @@ describe('LocationTrackingService', () => {
           path: '/id-card-hub/12345678/id-card?term=current',
           url: 'https://example.org/slot5/src/id-card-hub/12345678/id-card?term=current',
           queryString: '?term=current',
-          virtualPageName: '/id-card-hub/12345678/id-card'
+          virtualPageName: '/id-card-hub/12345678/id-card',
         };
         locationTrackingService.updateRouteConfig(config);
         expect(locationTrackingService.location).toEqual(expectedLocation);
       });
       it('updates nothing if config is empty', () => {
+        mockRouterUtilityService.insertLocationParams = () => {
+          return {
+            hitId: 1,
+            hostName: 'https://example.org/slot5/src',
+            path: '/id-card-hub/:policyNumber/id-card?term=current',
+            url: 'https://example.org/slot5/src/id-card-hub/:policyNumber/id-card?term=current',
+            queryString: '?term=current',
+            virtualPageName: '/id-card-hub/:policyNumber/id-card',
+          };
+        };
         const expectedLocation = {
           hitId: 1,
           hostName: 'https://example.org/slot5/src',
           path: '/id-card-hub/:policyNumber/id-card?term=current',
           url: 'https://example.org/slot5/src/id-card-hub/:policyNumber/id-card?term=current',
           queryString: '?term=current',
-          virtualPageName: '/id-card-hub/:policyNumber/id-card'
+          virtualPageName: '/id-card-hub/:policyNumber/id-card',
         };
         locationTrackingService.updateRouteConfig(undefined);
         expect(locationTrackingService.location).toEqual(expectedLocation);

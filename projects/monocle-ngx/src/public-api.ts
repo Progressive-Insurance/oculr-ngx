@@ -49,13 +49,5 @@ export { EventDispatchService } from './lib/services/event-dispatch.service';
 export { EventLoggerService } from './lib/destinations/event-logger/event-logger.service';
 export { HttpDispatchService } from './lib/services/http-dispatch.service';
 export { LocationTrackingService } from './lib/services/location-tracking.service';
-
-export { formatCifDate, formatDateWithTimezoneOffset } from './lib/utils/date-util';
-export { formatFormErrors } from './lib/utils/format-form-errors';
-export { getCheckboxState } from './lib/utils/get-checkbox-state';
-export { getCookieDomain } from './lib/utils/get-cookie-domain';
-export { getInputLabel } from './lib/utils/get-input-label';
-export { getSelectedOptions } from './lib/utils/get-selected-options';
-export { hitDate } from './lib/utils/hit-date';
-export { htmlToText } from './lib/utils/html-to-text';
-export { removeHtmlEntities } from './lib/utils/remove-html-entities';
+// TODO: This may or may not need to be exposed. Leaving here for now to match existing exposure.
+export { FormattingService } from './lib/services/formatting.service';

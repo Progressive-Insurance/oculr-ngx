@@ -23,7 +23,7 @@ module.exports = function (config) {
       suppressAll: true // removes the duplicated traces
     },
     reporters: ['progress', 'kjhtml'],
-    browsers: ['Chrome'],
+    browsers: ['ChromeHeadless'],
     restartOnFileChange: true
   });
 };

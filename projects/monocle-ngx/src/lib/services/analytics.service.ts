@@ -6,7 +6,6 @@ import { AnalyticsEventModel } from '../models/analytics-event-model.interface';
 import { InteractionEventPayload } from '../models/interaction-event-payload.interface';
 import { TrackInteractionPayload } from '../models/track-interaction-payload.interface';
 import { AnalyticsEventModelsService } from '../services/analytics-event-models.service';
-import { replaceVars } from '../utils/replace-vars';
 import { AnalyticsEventBusService } from './analytics-event-bus.service';
 
 export const updateEventDetails = (propName: string) => (value: any, evt: { payload: { model: { details: any } } }) => {
@@ -71,6 +70,7 @@ export class AnalyticsService {
 
     return model;
   };
+
   private setupDispatcher = () => {
     this.dispatcher.subscribe((evt: any) => {
       const eventId = evt && evt.payload && evt.payload.id;
@@ -87,11 +87,43 @@ export class AnalyticsService {
 
       if (evt.payload.model && evt.payload.variableData) {
         const { eventLabel, eventValue } = evt.payload.model.details;
-        evt = updateEventLabel(replaceVars(eventLabel, evt.payload.variableData), evt);
-        evt = updateEventValue(parseInt(replaceVars('' + eventValue, evt.payload.variableData, '0'), 10), evt);
+        evt = updateEventLabel(this.replaceVars(eventLabel, evt.payload.variableData), evt);
+        evt = updateEventValue(parseInt(this.replaceVars('' + eventValue, evt.payload.variableData, '0'), 10), evt);
       }
 
       this.eventBus.dispatch(evt);
     });
   };
+
+  private replaceVars(template: string, values: Record<string, string | number>, fallback?: string | number) {
+    const variableRegex = /{{\s*(\w+)\s*}}/g;
+    return template.replace(variableRegex, (match, p1: string) => {
+      return this.indexReplacer(match, p1, values[p1], fallback);
+    });
+  }
+
+  private indexReplacer(match: string, p1: string, value: string | number, fallback?: string | number) {
+    const indexRegex = /.+Index$/g;
+
+    return indexRegex.test(p1)
+      ? this.determineValue(parseInt(String(value), 10) + 1, match, fallback)
+      : this.determineValue(value, match, fallback);
+  }
+
+  private determineValue(value: any, finalFallback: string | number, fallback?: string | number) {
+    if (this.isValidValue(value)) {
+      return value;
+    }
+    if (this.isValidValue(fallback)) {
+      return fallback;
+    }
+    return finalFallback;
+  }
+
+  private isValidValue(value: any) {
+    if (value === undefined || value === null || value === '') {
+      return false;
+    }
+    return true;
+  }
 }
