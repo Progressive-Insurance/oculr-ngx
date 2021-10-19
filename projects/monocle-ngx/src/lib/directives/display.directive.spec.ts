@@ -22,9 +22,9 @@ fdescribe('DisplayDirective', () => {
     fixture.detectChanges();
   });
 
-  it('dispatches a display event when directive included', fakeAsync(() => {
+  it('dispatches a display event when directive included with an id attribute', fakeAsync(() => {
     expect(mockEventDispatchService.trackDisplay).toHaveBeenCalledTimes(1);
-    expect(mockEventDispatchService.trackDisplay).toHaveBeenCalledWith(undefined);
+    expect(mockEventDispatchService.trackDisplay).toHaveBeenCalledWith({ id: 'testId' });
   }));
 });
 
@@ -50,38 +50,63 @@ fdescribe('DisplayDirective', () => {
     expect(mockEventDispatchService.trackDisplay).toHaveBeenCalledTimes(0);
   }));
 
-  it('does not dispatch a display event when ngIf is true', fakeAsync(() => {
+  it('does dispatch a display event when ngIf is true', fakeAsync(() => {
     fixture.componentInstance.conditional.next(true);
-    fixture.detectChanges();
-    tick();
-    expect(mockEventDispatchService.trackDisplay).toHaveBeenCalledTimes(1);
-    expect(mockEventDispatchService.trackDisplay).toHaveBeenCalledWith(undefined);
-  }));
-
-  it('uses the id attribute when provided', fakeAsync(() => {
-    fixture.componentInstance.useId.next(true);
     fixture.detectChanges();
     tick();
     expect(mockEventDispatchService.trackDisplay).toHaveBeenCalledTimes(1);
     expect(mockEventDispatchService.trackDisplay).toHaveBeenCalledWith({ id: 'testId' });
   }));
+
+  it('does not dispatch a display event when no identifier is provided', fakeAsync(() => {
+    console.warn = jasmine.createSpy('warn');
+    fixture.componentInstance.missingId.next(true);
+    fixture.detectChanges();
+    tick();
+    expect(mockEventDispatchService.trackDisplay).toHaveBeenCalledTimes(0);
+    expect(console.warn).toHaveBeenCalled();
+  }));
+
+  it('does dispatch a display event when an Event object is provided with an id property', fakeAsync(() => {
+    fixture.componentInstance.eventId.next(true);
+    fixture.detectChanges();
+    tick();
+    expect(mockEventDispatchService.trackDisplay).toHaveBeenCalledTimes(1);
+    expect(mockEventDispatchService.trackDisplay).toHaveBeenCalledWith({ id: 'eventId' });
+  }));
+
+  it('prioritizes Event id over host element id when both are provided', fakeAsync(() => {
+    fixture.componentInstance.competingId.next(true);
+    fixture.detectChanges();
+    tick();
+    expect(mockEventDispatchService.trackDisplay).toHaveBeenCalledTimes(1);
+    expect(mockEventDispatchService.trackDisplay).toHaveBeenCalledWith({ id: 'eventId' });
+  }));
 });
 
 @Component({
-  template: `<div mnclDisplay *ngIf="conditional | async">Conditional element</div>
-    <div mnclDisplay id="testId" *ngIf="useId | async">Conditional element</div>`,
+  template: `
+    <div mnclDisplay id="testId" *ngIf="conditional | async">Conditional element</div>
+    <div mnclDisplay *ngIf="missingId | async">Missing id element</div>
+    <div [mnclDisplay]="{ id: 'eventId' }" *ngIf="eventId | async">Event id element</div>
+    <div [mnclDisplay]="{ id: 'eventId' }" id="testId" *ngIf="competingId | async">Competing id element</div>
+  `,
 })
 class ConditionalTestComponent {
   conditional = new Subject<boolean>();
-  useId = new Subject<boolean>();
+  missingId = new Subject<boolean>();
+  eventId = new Subject<boolean>();
+  competingId = new Subject<boolean>();
 
   onInit() {
     this.conditional.next(false);
-    this.useId.next(false);
+    this.missingId.next(false);
+    this.eventId.next(false);
+    this.competingId.next(false);
   }
 }
 
 @Component({
-  template: `<div mnclDisplay>Standard element</div>`,
+  template: `<div mnclDisplay id="testId">Standard element</div>`,
 })
 class SimpleTestComponent {}

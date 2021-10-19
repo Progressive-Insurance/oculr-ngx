@@ -23,19 +23,15 @@ mnclDisplay
 Add the directive `mnclDisplay` to a host element in an Angular component's template.
 
 ```html
-<div mnclDisplay>Something being displayed</div>
+<div mnclDisplay id="myDisplay">Something being displayed</div>
 ```
 
-It is recommended to include an identifier with the display event to help with analysis later. By default the directive will use the host element's `id` attribute if no other identifier is provided.
-
-```html
-<div id="myDisplay" mnclDisplay>Something being displayed</div>
-```
+It is required to include an identifier with the display event to help with analysis later. By default the directive will use the host element's `id` attribute if no other identifier is provided.
 
 Another way to include an identifier is by using property binding with the `mnclDisplay` directive.
 
 ```html
-<div [mnclDispay]="{ eventId: 'myDisplay' }">Something being displayed</div>
+<div [mnclDispay]="{ id: 'myDisplay' }">Something being displayed</div>
 ```
 
 An `Event` type object is being used in this property binding. There are other properties that can be set on the `Event` object, which you can read about more in the [Event]() documentation. To minimize the amount of content done in the component's template, it is recommended to prepare any analytic `Event` objects in the `ngOnInit()` of the component.
@@ -47,7 +43,7 @@ import { Event } from 'monocle-ngx';
   template: `<div [mnclDispay]="myDisplayEvent">Something being displayed</div>`,
 })
 export class MyComponent {
-  myDisplayEvent = { eventId: 'myDisplay' } as Event;
+  myDisplayEvent = { id: 'myDisplay' } as Event;
 }
 ```
 
