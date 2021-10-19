@@ -13,15 +13,16 @@ export class DisplayDirective implements OnInit {
   constructor(private elementRef: ElementRef<HTMLElement>, private eventDispatchService: EventDispatchService) {}
 
   ngOnInit(): void {
-    this.elementId = this.getElementId();
+    console.log(this.elementRef.nativeElement.style.display);
+    this.getElementId();
     this.handleEvent();
   }
 
   private handleEvent() {
-    this.eventDispatchService.trackDisplay(this.event, this.elementId);
+    this.eventDispatchService.trackDisplay(this.event || undefined, this.elementId);
   }
 
-  private getElementId(): string | undefined {
-    return this.elementRef.nativeElement.getAttribute('id') || undefined;
+  private getElementId(): void {
+    this.elementId = this.elementRef.nativeElement.getAttribute('id') || undefined;
   }
 }

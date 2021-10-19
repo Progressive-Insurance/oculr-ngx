@@ -38,7 +38,7 @@ Another way to include an identifier is by using property binding with the `mncl
 <div [mnclDispay]="{ eventId: 'myDisplay' }">Something being displayed</div>
 ```
 
-An `Event` type object is being used in this property binding. There are other properties that can be set on the `Event` object, which you can read about more in the [deeper dive section](#deeper-dive) below. To minimize the amount of content done in the component's template, it is recommended to prepare any analytic `Event` objects in the `ngOnInit()` of the component.
+An `Event` type object is being used in this property binding. There are other properties that can be set on the `Event` object, which you can read about more in the [Event]() documentation. To minimize the amount of content done in the component's template, it is recommended to prepare any analytic `Event` objects in the `ngOnInit()` of the component.
 
 ```typescript
 import { Event } from 'monocle-ngx';
@@ -52,5 +52,3 @@ export class MyComponent {
 ```
 
 :stop_sign: Do not use on Angular's `ng-container`, `ng-content`, or `ng-template` elements as these do not render.
-
-## Deeper dive
