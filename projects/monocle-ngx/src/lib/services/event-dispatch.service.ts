@@ -54,10 +54,10 @@ export class EventDispatchService {
     this.dispatch(interactionEvent(payload));
   };
 
-  trackDisplay(event?: Event, elementId?: string): void {
+  trackDisplay(event?: Event): void {
     const payload = {
       ...event,
-      id: event?.id || elementId || '',
+      id: event?.id || '',
       type: AnalyticsAction.DISPLAY_EVENT,
       eventLocation: this.locationTrackingService.location,
     };

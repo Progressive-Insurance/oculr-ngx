@@ -24,7 +24,7 @@ fdescribe('DisplayDirective', () => {
 
   it('dispatches a display event when directive included', fakeAsync(() => {
     expect(mockEventDispatchService.trackDisplay).toHaveBeenCalledTimes(1);
-    expect(mockEventDispatchService.trackDisplay).toHaveBeenCalledWith(undefined, undefined);
+    expect(mockEventDispatchService.trackDisplay).toHaveBeenCalledWith(undefined);
   }));
 });
 
@@ -55,7 +55,7 @@ fdescribe('DisplayDirective', () => {
     fixture.detectChanges();
     tick();
     expect(mockEventDispatchService.trackDisplay).toHaveBeenCalledTimes(1);
-    expect(mockEventDispatchService.trackDisplay).toHaveBeenCalledWith(undefined, undefined);
+    expect(mockEventDispatchService.trackDisplay).toHaveBeenCalledWith(undefined);
   }));
 
   it('uses the id attribute when provided', fakeAsync(() => {
@@ -63,7 +63,7 @@ fdescribe('DisplayDirective', () => {
     fixture.detectChanges();
     tick();
     expect(mockEventDispatchService.trackDisplay).toHaveBeenCalledTimes(1);
-    expect(mockEventDispatchService.trackDisplay).toHaveBeenCalledWith(undefined, 'testId');
+    expect(mockEventDispatchService.trackDisplay).toHaveBeenCalledWith({ id: 'testId' });
   }));
 });
 
