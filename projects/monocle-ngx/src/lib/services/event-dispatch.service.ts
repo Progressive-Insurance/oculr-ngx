@@ -2,13 +2,21 @@ import { HttpErrorResponse, HttpRequest, HttpResponse, HttpResponseBase } from '
 import { Injectable } from '@angular/core';
 import { TimeoutError } from 'rxjs';
 
-import { AnalyticsAction } from '../../public-api';
 import {
-  analyticsError, apiCompleteEvent, apiFailureEvent, apiStartEvent, apiSuccessEvent,
-  appError, appInit, displayEvent, interactionEvent, pageViewEvent,
-  systemEvent, validationErrorEvent
+  analyticsError,
+  apiCompleteEvent,
+  apiFailureEvent,
+  apiStartEvent,
+  apiSuccessEvent,
+  appError,
+  appInit,
+  interactionEvent,
+  pageViewEvent,
+  systemEvent,
+  validationErrorEvent,
 } from '../actions/analytics.actions';
 import { timeoutErrorStatusCode, unknownErrorStatusCode } from '../interceptors/constants';
+import { AnalyticsAction } from '../models/actions/analytics-action.enum';
 import { AnalyticsGenericAction } from '../models/actions/analytics-generic-action.interface';
 import { EventModel } from '../models/event-model.class';
 import { EventPayload } from '../models/event-payload.interface';

@@ -2,20 +2,17 @@ import { NavigationEnd, convertToParamMap } from '@angular/router';
 import { BehaviorSubject } from 'rxjs';
 
 import { LocationTrackingService } from './location-tracking.service';
-import { updateLocation } from '../actions/analytics.actions';
 
 describe('LocationTrackingService', () => {
   let locationTrackingService: LocationTrackingService;
   let mockLocation: any;
   let mockWindowService: any;
   let mockRouter: any;
-  let mockAnalyticsEventBusService: any;
   let mockEventCacheService: any;
   let mockRouterUtilityService: any;
   let mockQueryParamMap: any;
 
   beforeEach(() => {
-    mockAnalyticsEventBusService = jasmine.createSpyObj('mockAnalyticsEventBusService', ['dispatch']);
     mockEventCacheService = jasmine.createSpyObj('mockEventCacheService', ['setIsCurrentPageModal']);
     mockLocation = jasmine.createSpyObj('mockLocation', ['path']);
     mockRouterUtilityService = {
@@ -59,7 +56,6 @@ describe('LocationTrackingService', () => {
           mockLocation,
           mockWindowService,
           mockRouter,
-          mockAnalyticsEventBusService,
           mockEventCacheService,
           mockRouterUtilityService
         );
@@ -99,7 +95,6 @@ describe('LocationTrackingService', () => {
           mockLocation,
           mockWindowService,
           mockRouter,
-          mockAnalyticsEventBusService,
           mockEventCacheService,
           mockRouterUtilityService
         );
@@ -140,7 +135,6 @@ describe('LocationTrackingService', () => {
           mockLocation,
           mockWindowService,
           mockRouter,
-          mockAnalyticsEventBusService,
           mockEventCacheService,
           mockRouterUtilityService
         );
@@ -179,7 +173,6 @@ describe('LocationTrackingService', () => {
           mockLocation,
           mockWindowService,
           mockRouter,
-          mockAnalyticsEventBusService,
           mockEventCacheService,
           mockRouterUtilityService
         );
@@ -221,7 +214,6 @@ describe('LocationTrackingService', () => {
           mockLocation,
           mockWindowService,
           mockRouter,
-          mockAnalyticsEventBusService,
           mockEventCacheService,
           mockRouterUtilityService
         );
@@ -260,7 +252,6 @@ describe('LocationTrackingService', () => {
           mockLocation,
           mockWindowService,
           mockRouter,
-          mockAnalyticsEventBusService,
           mockEventCacheService,
           mockRouterUtilityService
         );
@@ -302,7 +293,6 @@ describe('LocationTrackingService', () => {
           mockLocation,
           mockWindowService,
           mockRouter,
-          mockAnalyticsEventBusService,
           mockEventCacheService,
           mockRouterUtilityService
         );
@@ -341,7 +331,6 @@ describe('LocationTrackingService', () => {
           mockLocation,
           mockWindowService,
           mockRouter,
-          mockAnalyticsEventBusService,
           mockEventCacheService,
           mockRouterUtilityService
         );
@@ -389,7 +378,6 @@ describe('LocationTrackingService', () => {
         mockLocation,
         mockWindowService,
         mockRouter,
-        mockAnalyticsEventBusService,
         mockEventCacheService,
         mockRouterUtilityService
       );
@@ -430,9 +418,6 @@ describe('LocationTrackingService', () => {
       it('sets isCurrentPageModal on the EventCacheService', () => {
         expect(mockEventCacheService.setIsCurrentPageModal).toHaveBeenCalledWith(false);
       });
-      it('does not issue an updateLocation action', () => {
-        expect(mockAnalyticsEventBusService.dispatch).not.toHaveBeenCalled();
-      });
     });
     describe('when setting a modal location via setModalRoute', () => {
       beforeEach(() => {
@@ -451,32 +436,6 @@ describe('LocationTrackingService', () => {
       });
       it('sets isCurrentPageModal on the EventCacheService', () => {
         expect(mockEventCacheService.setIsCurrentPageModal).toHaveBeenCalledWith(true);
-      });
-      it('issues an updateLocation action', () => {
-        const expectedPayload = updateLocation(
-          {
-            angularRoute: '/new-modal/:idCard',
-            routeWithQueryString: '/new-modal/:idCard',
-            hostName: 'https://example.org/slot5/src',
-            domain: '',
-            fullPath: 'https://example.org/slot5/src/new-modal/:idCard',
-            model: { details: { scopes: [] } },
-            customDimensions: {},
-            selectedItems: {},
-          },
-          false
-        );
-        expect(mockAnalyticsEventBusService.dispatch).toHaveBeenCalledTimes(1);
-        expect(mockAnalyticsEventBusService.dispatch.calls.argsFor(0)[0]).toEqual(expectedPayload);
-      });
-      describe('when setting a modal location via setModalRoute and disabling update location', () => {
-        beforeEach(() => {
-          mockAnalyticsEventBusService.dispatch.calls.reset();
-          locationTrackingService.setModalRoute('/new-modal/:idCard', { idCard: '123' }, { term: 'current' }, true);
-        });
-        it('does not issue an updateLocation action', () => {
-          expect(mockAnalyticsEventBusService.dispatch).not.toHaveBeenCalled();
-        });
       });
       describe('when updateRouteConfig is called after modal, it still uses loaded params', () => {
         it('updates the location details', () => {

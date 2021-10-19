@@ -3,11 +3,10 @@ export enum EVENT_TYPES {
   track = 'track',
   error = 'error',
   event = 'event',
-  interaction = 'interaction',
   validationError = 'validationError',
   apiStart = 'apiStart',
   apiComplete = 'apiComplete',
   apiSuccess = 'apiSuccess',
   apiHandledError = 'apiHandledError',
-  apiUnhandledError = 'apiUnhandledError'
+  apiUnhandledError = 'apiUnhandledError',
 }

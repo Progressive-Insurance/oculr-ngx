@@ -4,16 +4,10 @@ import { Injectable } from '@angular/core';
 import { ActivatedRouteSnapshot, convertToParamMap, NavigationEnd, ParamMap, Router } from '@angular/router';
 import { merge, Subject } from 'rxjs';
 import { filter, map } from 'rxjs/operators';
-
-import { updateLocation } from '../actions/analytics.actions';
 import { EventLocation } from '../models/event-location.interface';
-import { SelectedItems } from '../models/selected-items.interface';
-import { UpdateLocationPayload } from '../models/update-location-payload.interface';
-import { VariableData } from '../models/variable-data.interface';
-import { WindowService } from './window.service';
-import { AnalyticsEventBusService } from './analytics-event-bus.service';
 import { EventCacheService } from './event-cache.service';
 import { RouterUtilityService } from './router-utility.service';
+import { WindowService } from './window.service';
 
 /**
  * LocationTrackingService keeps track of current location (either angular route or modal "virtual route")
@@ -44,7 +38,6 @@ export class LocationTrackingService {
     private locationService: Location,
     private windowService: WindowService,
     private router: Router,
-    private eventBus: AnalyticsEventBusService,
     private eventCache: EventCacheService,
     private routerUtility: RouterUtilityService
   ) {
@@ -99,33 +92,25 @@ export class LocationTrackingService {
   setAngularRoute = (
     virtualPageName: string,
     params: { [key: string]: string } = {},
-    queryParams: { [key: string]: string } = {},
-    disableUpdateLocation = false
+    queryParams: { [key: string]: string } = {}
   ) => {
     this.angularRoutes$.next({
       route: virtualPageName,
       paramMap: convertToParamMap(params),
       queryParamMap: convertToParamMap(queryParams),
     });
-    if (!disableUpdateLocation) {
-      this.dispatchUpdateLocation(virtualPageName);
-    }
   };
 
   setModalRoute = (
     virtualPageName: string,
     params: { [key: string]: string } = {},
-    queryParams: { [key: string]: string } = {},
-    disableUpdateLocation = false
+    queryParams: { [key: string]: string } = {}
   ) => {
     this.modalRoutes$.next({
       route: virtualPageName,
       paramMap: convertToParamMap(params),
       queryParamMap: convertToParamMap(queryParams),
     });
-    if (!disableUpdateLocation) {
-      this.dispatchUpdateLocation(virtualPageName);
-    }
   };
 
   updateRouteConfig = (config: { replaceParamTokens: string[] } = { replaceParamTokens: [] }) => {
@@ -134,30 +119,6 @@ export class LocationTrackingService {
       config.replaceParamTokens,
       this.currentParamMap
     );
-  };
-
-  // DEPRECATED: dispatch old UPDATE_LOCATION event so host app can update location in its store
-  // TODO: Remove when all modules are using new events and we don't need to rely on app's store
-  private dispatchUpdateLocation = (
-    route: string,
-    selectedItems: SelectedItems = {},
-    scopes: string[] = [],
-    customDimensions: VariableData = {},
-    shouldTrack = false
-  ) => {
-    const eventLocation = this.buildEventLocation(route);
-    const updateLocationPayload: UpdateLocationPayload = {
-      angularRoute: eventLocation.virtualPageName,
-      routeWithQueryString: eventLocation.path,
-      hostName: eventLocation.hostName,
-      domain: '',
-      fullPath: eventLocation.url,
-      model: { details: { scopes } },
-      customDimensions,
-      selectedItems,
-    };
-    const updateLocationAction = updateLocation(updateLocationPayload, shouldTrack);
-    this.eventBus.dispatch(updateLocationAction);
   };
 
   private getRouterRoute = () => {
