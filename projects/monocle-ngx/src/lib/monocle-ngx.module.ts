@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { HTTP_INTERCEPTORS, HttpClient } from '@angular/common/http';
-import { APP_INITIALIZER, InjectionToken, Injector, ModuleWithProviders, NgModule, NgZone } from '@angular/core';
+import { ModuleWithProviders, NgModule, NgZone } from '@angular/core';
 
 import { EventLoggerService } from './destinations/event-logger/event-logger.service';
 import { createGoogleTagManagerService } from './destinations/google-tag-manager/create-google-tag-manager.service';
@@ -29,34 +29,15 @@ import { DisplayDirective } from './directives/display.directive';
 import { InteractionEventDirective } from './directives/interaction-event.directive';
 import { ModalDirective } from './directives/modal.directive';
 import { AnalyticsInterceptor } from './interceptors/analytics.interceptor';
-import { AnalyticsEventModelMap } from './models/analytics-event-model-map.interface';
 import { StateProvider } from './models/state-provider.type';
 import { StringSelector } from './models/string-selector.interface';
 import { Transform } from './models/transform.interface';
 import { AnalyticsEventBusService } from './services/analytics-event-bus.service';
-import {
-  ANALYTICS_ERROR_MODEL_ID,
-  ANALYTICS_EVENT_MODEL_MAPS,
-  AnalyticsEventModelsService,
-} from './services/analytics-event-models.service';
-import { AnalyticsService } from './services/analytics.service';
 import { EventCacheService } from './services/event-cache.service';
 import { EventDispatchService } from './services/event-dispatch.service';
-import { HttpDispatchService } from './services/http-dispatch.service';
 import { LocationTrackingService } from './services/location-tracking.service';
-import { RouterDispatchService } from './services/router-dispatch.service';
 import { TimeService } from './services/time.service';
 import { WindowService } from './services/window.service';
-
-export const ANALYTICS_BOOTSTRAP = new InjectionToken<void>('Analytics Bootstrap');
-
-export function provideAnalytics(injector: Injector) {
-  const func = function () {
-    const routerDispatchService = injector.get(RouterDispatchService);
-    routerDispatchService.initialize();
-  };
-  return func;
-}
 
 @NgModule({
   imports: [CommonModule],
@@ -65,10 +46,7 @@ export function provideAnalytics(injector: Injector) {
   providers: [],
 })
 export class MonocleAngularModule {
-  static forRoot(
-    eventModelMaps: AnalyticsEventModelMap[],
-    notFound: string
-  ): ModuleWithProviders<MonocleAngularModule> {
+  static forRoot(): ModuleWithProviders<MonocleAngularModule> {
     return {
       ngModule: MonocleAngularModule,
       providers: [
@@ -78,52 +56,14 @@ export class MonocleAngularModule {
         EventLoggerService,
         LocationTrackingService,
         WindowService,
-        RouterDispatchService,
-        HttpDispatchService,
-        AnalyticsEventModelsService,
-        AnalyticsService,
         TimeService,
         {
           provide: Window,
           useValue: window,
         },
         {
-          provide: ANALYTICS_BOOTSTRAP,
-          useFactory: provideAnalytics,
-          deps: [Injector],
-        },
-        {
-          provide: APP_INITIALIZER,
-          multi: true,
-          useExisting: ANALYTICS_BOOTSTRAP,
-        },
-        {
-          provide: ANALYTICS_EVENT_MODEL_MAPS,
-          useValue: eventModelMaps,
-          multi: true,
-        },
-        {
-          provide: ANALYTICS_ERROR_MODEL_ID,
-          useValue: notFound,
-          multi: false,
-        },
-        {
           provide: HTTP_INTERCEPTORS,
           useClass: AnalyticsInterceptor,
-          multi: true,
-        },
-      ],
-    };
-  }
-
-  static forChild(eventModelMaps: AnalyticsEventModelMap[]): ModuleWithProviders<MonocleAngularModule> {
-    return {
-      ngModule: MonocleAngularModule,
-      providers: [
-        AnalyticsEventModelsService,
-        {
-          provide: ANALYTICS_EVENT_MODEL_MAPS,
-          useValue: eventModelMaps,
           multi: true,
         },
       ],

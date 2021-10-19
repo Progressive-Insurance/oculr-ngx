@@ -13,14 +13,9 @@ describe('EventCacheService', () => {
       it('getLastRouterPageViewEvent gives the 2.0 page view event', () => {
         const pageViewAction: any = {
           type: AnalyticsAction.PAGE_VIEW_EVENT,
-          payload: { eventModel: 'Page View Event Model' }
-        };
-        const updateLocationAction: any = {
-          type: AnalyticsAction.UPDATE_LOCATION,
-          meta: { track: false }
+          payload: { eventModel: 'Page View Event Model' },
         };
         eventCacheService.cacheEvent(pageViewAction);
-        eventCacheService.cacheEvent(updateLocationAction);
 
         const pageViewEvent = eventCacheService.getLastRouterPageViewEvent();
         expect(pageViewEvent).toEqual('Page View Event Model' as any);
@@ -30,18 +25,13 @@ describe('EventCacheService', () => {
       it('gives the 2.0 parent page view event', () => {
         const pageViewAction: any = {
           type: AnalyticsAction.PAGE_VIEW_EVENT,
-          payload: { eventModel: 'Page View Event Model' }
-        };
-        const updateLocationAction: any = {
-          type: AnalyticsAction.UPDATE_LOCATION,
-          meta: { track: false }
+          payload: { eventModel: 'Page View Event Model' },
         };
         const modalPageViewAction: any = {
           type: AnalyticsAction.PAGE_VIEW_EVENT,
-          payload: { eventModel: 'Modal Page View Event Model' }
+          payload: { eventModel: 'Modal Page View Event Model' },
         };
         eventCacheService.cacheEvent(pageViewAction);
-        eventCacheService.cacheEvent(updateLocationAction);
         eventCacheService.cacheEvent(modalPageViewAction, { isOnModal: true });
 
         const pageViewEvent = eventCacheService.getLastRouterPageViewEvent();
@@ -49,44 +39,16 @@ describe('EventCacheService', () => {
       });
     });
 
-    describe('when a 1.0 page logged by RouterDispatchService calls a 2.0 modal', () => {
-      it('gives undefined', () => {
-        const parentUpdateLocationAction: any = {
-          type: AnalyticsAction.UPDATE_LOCATION,
-          meta: { track: true }
-        };
-        const modalPageViewAction: any = {
-          type: AnalyticsAction.PAGE_VIEW_EVENT,
-          payload: { eventModel: 'Modal Page View Event Model' }
-        };
-        const modalUpdateLocationAction: any = {
-          type: AnalyticsAction.UPDATE_LOCATION,
-          meta: { track: false }
-        };
-        eventCacheService.cacheEvent(parentUpdateLocationAction);
-        eventCacheService.cacheEvent(modalUpdateLocationAction);
-        eventCacheService.cacheEvent(modalPageViewAction, { isOnModal: true });
-
-        const pageViewEvent = eventCacheService.getLastRouterPageViewEvent();
-        expect(pageViewEvent).toBeUndefined();
-      });
-    });
-
     describe('when a 1.0 page logged by RouterDispatchService called a 2.0 modal', () => {
       it('does not cache interaction event', () => {
-        const updateLocationAction: any = {
-          type: AnalyticsAction.UPDATE_LOCATION,
-          meta: { track: true }
-        };
         const modalPageViewAction: any = {
           type: AnalyticsAction.PAGE_VIEW_EVENT,
-          payload: { eventModel: 'Modal Page View Event Model' }
+          payload: { eventModel: 'Modal Page View Event Model' },
         };
         const modalInteractionEventAction: any = {
           type: AnalyticsAction.INTERACTION_EVENT,
-          payload: { eventModel: 'Interaction Event Model' }
+          payload: { eventModel: 'Interaction Event Model' },
         };
-        eventCacheService.cacheEvent(updateLocationAction);
         eventCacheService.cacheEvent(modalPageViewAction, { isOnModal: true });
         eventCacheService.cacheEvent(modalInteractionEventAction);
 

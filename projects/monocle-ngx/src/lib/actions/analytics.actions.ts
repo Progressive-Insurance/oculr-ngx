@@ -1,30 +1,10 @@
 import { ApiActionMeta } from '../models/api-action-meta.interface';
 import { ApiStartActionMeta } from '../models/api-start-action-meta.interface';
-import { InteractionEventPayload } from '../models/interaction-event-payload.interface';
-import { UpdateLocationPayload } from '../models/update-location-payload.interface';
 import { EventPayload } from '../models/event-payload.interface';
 import { AnalyticsAction } from '../models/actions/analytics-action.enum';
-import { ErrorReport } from '../models/actions/error-report.interface';
-import { InteractionAction } from '../models/actions/interaction-action.interface';
-import { TrackErrorAction } from '../models/actions/track-error-action.interface';
 import { AnalyticsGenericAction } from '../models/actions/analytics-generic-action.interface';
 import { AnalyticsApiAction } from '../models/actions/analytics-api-action.interface';
 import { AnalyticsErrorAction } from '../models/actions/analytics-error-action.interface';
-import { UpdateLocationAction } from '../models/actions/update-location-action.interface';
-import { EVENT_TYPES } from '../event-types';
-
-/**
- * @deprecated Use interactionEvent for Analytics 2.0
- */
-export function trackInteractionEvent(eventDetails: InteractionEventPayload): InteractionAction {
-  return {
-    type: AnalyticsAction.INTERACTION_EVENT,
-    payload: eventDetails,
-    meta: {
-      trackAs: EVENT_TYPES.interaction
-    }
-  };
-}
 
 /**
  * [Analytics 2.0] Create a Page View Event
@@ -33,7 +13,7 @@ export function trackInteractionEvent(eventDetails: InteractionEventPayload): In
 export function pageViewEvent(payload: EventPayload): AnalyticsGenericAction {
   return {
     type: AnalyticsAction.PAGE_VIEW_EVENT,
-    payload
+    payload,
   };
 }
 
@@ -44,7 +24,7 @@ export function pageViewEvent(payload: EventPayload): AnalyticsGenericAction {
 export function interactionEvent(payload: EventPayload): AnalyticsGenericAction {
   return {
     type: AnalyticsAction.INTERACTION_EVENT,
-    payload
+    payload,
   };
 }
 
@@ -54,7 +34,7 @@ export function interactionEvent(payload: EventPayload): AnalyticsGenericAction 
 export function appInit(payload: EventPayload): AnalyticsGenericAction {
   return {
     type: AnalyticsAction.APP_INIT,
-    payload
+    payload,
   };
 }
 
@@ -66,7 +46,7 @@ export function appError(payload: EventPayload, meta: { error: Error | string })
   return {
     type: AnalyticsAction.APP_ERROR,
     payload,
-    meta
+    meta,
   };
 }
 
@@ -77,7 +57,7 @@ export function appError(payload: EventPayload, meta: { error: Error | string })
 export function displayEvent(payload: EventPayload): AnalyticsGenericAction {
   return {
     type: AnalyticsAction.DISPLAY_EVENT,
-    payload
+    payload,
   };
 }
 
@@ -88,7 +68,7 @@ export function displayEvent(payload: EventPayload): AnalyticsGenericAction {
 export function systemEvent(payload: EventPayload): AnalyticsGenericAction {
   return {
     type: AnalyticsAction.SYSTEM_EVENT,
-    payload
+    payload,
   };
 }
 
@@ -99,7 +79,7 @@ export function systemEvent(payload: EventPayload): AnalyticsGenericAction {
 export function validationErrorEvent(payload: EventPayload): AnalyticsGenericAction {
   return {
     type: AnalyticsAction.VALIDATION_ERROR_EVENT,
-    payload
+    payload,
   };
 }
 
@@ -111,7 +91,7 @@ export function apiStartEvent(payload: EventPayload, meta: ApiStartActionMeta): 
   return {
     type: AnalyticsAction.API_START_EVENT,
     payload,
-    meta
+    meta,
   };
 }
 
@@ -124,7 +104,7 @@ export function apiSuccessEvent(payload: EventPayload, meta: ApiActionMeta): Ana
   return {
     type: AnalyticsAction.API_SUCCESS_EVENT,
     payload,
-    meta
+    meta,
   };
 }
 
@@ -137,7 +117,7 @@ export function apiFailureEvent(payload: EventPayload, meta: ApiActionMeta): Ana
   return {
     type: AnalyticsAction.API_FAILURE_EVENT,
     payload,
-    meta
+    meta,
   };
 }
 
@@ -150,27 +130,7 @@ export function apiCompleteEvent(payload: EventPayload, meta: ApiActionMeta): An
   return {
     type: AnalyticsAction.API_COMPLETE_EVENT,
     payload,
-    meta
-  };
-}
-
-/**
- * @deprecated Use analyticsError for errors that need passed up to application
- */
-export function trackError(errorObject: ErrorReport): TrackErrorAction {
-  const errorReport: ErrorReport = {
-    errorMessage: errorObject.errorMessage || '',
-    errorCode: errorObject.errorCode || '',
-    errorDetail: errorObject.errorDetail || '',
-    logLevel: 'Error'
-  };
-
-  return {
-    type: AnalyticsAction.TRACK_ERROR,
-    payload: errorReport,
-    meta: {
-      trackAs: EVENT_TYPES.error
-    }
+    meta,
   };
 }
 
@@ -182,22 +142,7 @@ export function analyticsError(error: any): AnalyticsErrorAction {
   return {
     type: AnalyticsAction.ANALYTICS_ERROR,
     payload: {
-      error
-    }
-  };
-}
-
-/**
- * @deprecated Use pageViewEvent for Analytics 2.0
- * @param updateLocationPayload new route's location fields
- * @param shouldTrack `true` for Analytics 1.0, `false` for Analytics 2.0 during 1.0 -> 2.0 conversion
- */
-export function updateLocation(updateLocationPayload: UpdateLocationPayload, shouldTrack: boolean): UpdateLocationAction {
-  return {
-    type: AnalyticsAction.UPDATE_LOCATION,
-    payload: updateLocationPayload,
-    meta: {
-      track: shouldTrack
-    }
+      error,
+    },
   };
 }
