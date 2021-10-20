@@ -1,4 +1,4 @@
-export interface Event {
+export interface AnalyticEvent {
   id: string;
   label?: string;
   customScope?: Record<string, unknown>;
