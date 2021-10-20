@@ -1,4 +1,4 @@
-import { Directive, HostListener, Input, Optional } from '@angular/core';
+import { Directive, HostListener, Input } from '@angular/core';
 
 import { EventModel } from '../models/event-model.class';
 import { EventDispatchService } from '../services/event-dispatch.service';

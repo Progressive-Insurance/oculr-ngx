@@ -3,9 +3,17 @@ import { Injectable } from '@angular/core';
 import { TimeoutError } from 'rxjs';
 
 import {
-  analyticsError, apiCompleteEvent, apiFailureEvent, apiStartEvent, apiSuccessEvent,
-  appError, appInit, interactionEvent, pageViewEvent, systemEvent,
-  validationErrorEvent
+  analyticsError,
+  apiCompleteEvent,
+  apiFailureEvent,
+  apiStartEvent,
+  apiSuccessEvent,
+  appError,
+  appInit,
+  interactionEvent,
+  pageViewEvent,
+  systemEvent,
+  validationErrorEvent,
 } from '../actions/analytics.actions';
 import { timeoutErrorStatusCode, unknownErrorStatusCode } from '../interceptors/constants';
 import { AnalyticsAction } from '../models/actions/analytics-action.enum';
@@ -25,26 +33,26 @@ export class EventDispatchService {
     private eventCache: EventCacheService
   ) {}
 
-  trackAnalyticsError = (error: any) => {
+  trackAnalyticsError(error: unknown): void {
     this.dispatch(analyticsError(error));
-  };
+  }
 
-  trackPageView = (eventModel: EventModel, config?: { replaceParamTokens: string[] }) => {
+  trackPageView(eventModel: EventModel, config?: { replaceParamTokens: string[] }): void {
     this.locationTrackingService.updateRouteConfig(config);
     const payload: EventPayload = {
       eventModel,
       eventLocation: this.locationTrackingService.location,
     };
     this.dispatch(pageViewEvent(payload));
-  };
+  }
 
-  trackInteraction = (eventModel: EventModel, event?: any) => {
+  trackInteraction(eventModel: EventModel, event?: Event): void {
     const payload: EventPayload = {
       eventModel: this.updateModelWithEventDetails(eventModel, event),
       eventLocation: this.locationTrackingService.location,
     };
     this.dispatch(interactionEvent(payload));
-  };
+  }
 
   trackButtonInteraction(event?: AnalyticEvent): void {
     const payload = {
@@ -68,54 +76,54 @@ export class EventDispatchService {
     console.log(payload);
   }
 
-  trackAppInit = (scopes: string[]): void => {
+  trackAppInit(scopes: string[]): void {
     const payload: EventPayload = {
       eventLocation: this.locationTrackingService.location,
       eventModel: new EventModel('', '', '', '', '', '', '', '', {}, scopes, '', '', {}),
     };
     this.dispatch(appInit(payload));
-  };
+  }
 
-  trackAppError = (error: Error | string) => {
+  trackAppError(error: Error | string): void {
     const payload: EventPayload = {
       eventLocation: this.locationTrackingService.location,
       eventModel: new EventModel('', '', '', '', '', '', '', '', {}, [], '', '', {}),
     };
     this.dispatch(appError(payload, { error }));
-  };
+  }
 
-  trackSystemEvent = (eventModel: EventModel) => {
+  trackSystemEvent(eventModel: EventModel): void {
     const payload: EventPayload = {
       eventModel,
       eventLocation: this.locationTrackingService.location,
     };
     this.dispatch(systemEvent(payload));
-  };
+  }
 
-  trackValidationError = (eventModel: EventModel) => {
+  trackValidationError(eventModel: EventModel): void {
     const payload: EventPayload = {
       eventModel,
       eventLocation: this.locationTrackingService.location,
     };
     this.dispatch(validationErrorEvent(payload));
-  };
+  }
 
-  trackApiStart = (eventModel: EventModel, request: HttpRequest<any>) => {
+  trackApiStart(eventModel: EventModel, request: HttpRequest<unknown>): void {
     const payload: EventPayload = {
       eventModel,
       eventLocation: this.locationTrackingService.location,
     };
     this.dispatch(apiStartEvent(payload, { request }));
-  };
+  }
 
-  trackApiSuccess = (
+  trackApiSuccess(
     eventModel: EventModel,
-    response: HttpResponse<any>,
+    response: HttpResponse<unknown>,
     requestStartTime: number,
     requestEndTime: number,
     apiEndpoint: string,
     httpMethod: string
-  ) => {
+  ): void {
     const duration = Math.round(requestEndTime - requestStartTime);
     const httpStatus = response.status.toString();
     const payload: EventPayload = {
@@ -125,16 +133,16 @@ export class EventDispatchService {
     this.dispatch(
       apiSuccessEvent(payload, { response, duration, apiEndpoint, httpStatus, httpMethod, hasEventModelTag: true })
     );
-  };
+  }
 
-  trackApiFailure = (
+  trackApiFailure(
     eventModel: EventModel,
     error: HttpErrorResponse | TimeoutError,
     requestStartTime: number,
     requestEndTime: number,
     apiEndpoint: string,
     httpMethod: string
-  ) => {
+  ): void {
     const duration = Math.round(requestEndTime - requestStartTime);
     const httpStatus =
       error instanceof HttpErrorResponse
@@ -156,17 +164,17 @@ export class EventDispatchService {
         hasEventModelTag: true,
       })
     );
-  };
+  }
 
-  trackApiComplete = (
+  trackApiComplete(
     eventModel: EventModel,
-    response: HttpResponse<any> | HttpErrorResponse | TimeoutError,
+    response: HttpResponse<unknown> | HttpErrorResponse | TimeoutError,
     requestStartTime: number,
     requestEndTime: number,
     apiEndpoint: string,
     httpMethod: string,
     hasEventModelTag = true
-  ) => {
+  ): void {
     const duration = Math.round(requestEndTime - requestStartTime);
     const httpStatus =
       response instanceof HttpResponseBase
@@ -181,44 +189,55 @@ export class EventDispatchService {
     this.dispatch(
       apiCompleteEvent(payload, { response, duration, apiEndpoint, httpStatus, httpMethod, hasEventModelTag })
     );
-  };
+  }
 
-  trackCachedPageView = () => {
+  trackCachedPageView(): void {
     const cachedPageView = this.eventCache.getLastRouterPageViewEvent();
     if (cachedPageView) {
       this.trackPageView(cachedPageView);
     }
-  };
+  }
 
-  private updateModelWithApiResults = (
+  private updateModelWithApiResults(
     model: EventModel,
-    response: HttpResponse<any> | HttpErrorResponse | TimeoutError,
+    response: HttpResponse<unknown> | HttpErrorResponse | TimeoutError,
     duration: number
-  ) => {
+  ): EventModel {
     return {
       ...model,
-      eventValue: typeof model.eventValue === 'function' ? model.eventValue(duration) : model.eventValue,
+      eventValue: (typeof model.eventValue === 'function' ? model.eventValue(duration) : model.eventValue) as
+        | number
+        | string
+        | ((val: number) => number | string),
       customDimensions: this.evaluateCustomDimensions(model.customDimensions, response),
     };
-  };
+  }
 
-  private updateModelWithEventDetails = (model: EventModel, event: any) => {
+  private updateModelWithEventDetails(model: EventModel, event?: Event): EventModel {
     return {
       ...model,
       customDimensions: this.evaluateCustomDimensions(model.customDimensions, event),
     };
-  };
+  }
 
-  private evaluateCustomDimensions = (customDimensions: { [dimension: string]: any }, data: any) => {
-    return Object.keys(customDimensions).reduce((dimensionsObj: any, currentField: string) => {
-      const field = customDimensions[currentField];
-      dimensionsObj[currentField] = typeof field === 'function' ? field(data) : field;
-      return dimensionsObj;
-    }, {});
-  };
+  private evaluateCustomDimensions(
+    customDimensions: { [dimension: string]: unknown },
+    data?: EventDetails
+  ): { [dimension: string]: unknown } {
+    return Object.keys(customDimensions).reduce(
+      (dimensionsObj: { [dimension: string]: unknown }, currentField: string) => {
+        const field = customDimensions[currentField];
+        dimensionsObj[currentField] = (typeof field === 'function' ? field(data) : field) as unknown;
+        return dimensionsObj;
+      },
+      {}
+    );
+  }
 
-  private dispatch(action: AnalyticsGenericAction) {
+  private dispatch(action: AnalyticsGenericAction): void {
     this.eventBus.dispatch(action);
     this.eventCache.cacheEvent(action);
   }
 }
+
+type EventDetails = Event | HttpResponse<unknown> | HttpErrorResponse | TimeoutError;

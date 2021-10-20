@@ -62,15 +62,15 @@ export class InteractionEventDirective implements OnChanges, OnDestroy {
     }
   }
 
-  private handleEvent = (event: any) => {
+  private handleEvent = (event: Event) => {
     if (this.eventModel) {
       // bubble up to first element that has an id
-      let target = event.target;
+      let target = event.target as Element;
       while (target != null && target !== event.currentTarget) {
         if (target.getAttribute('analytics-id')) {
           break;
         }
-        target = target.parentNode;
+        target = target.parentNode as Element;
       }
       if (target != null && target.getAttribute('analytics-id') === this.eventModel.eventId) {
         this.eventDispatchService.trackInteraction(this.eventModel, event);

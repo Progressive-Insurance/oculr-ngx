@@ -7,11 +7,11 @@ export class EventModel {
     public eventCategory: string,
     public eventAction: string,
     public eventLabel: string,
-    public eventValue: number | string | Function,
-    public customDimensions: { [dimension: string]: any },
+    public eventValue: number | string | ((val: number) => number | string),
+    public customDimensions: { [dimension: string]: unknown },
     public scopes: Array<string>,
     public milestoneName: string,
     public milestoneStatus: string,
     public selectedItems: { [selectedItems: string]: string }
-  ) { }
+  ) {}
 }
