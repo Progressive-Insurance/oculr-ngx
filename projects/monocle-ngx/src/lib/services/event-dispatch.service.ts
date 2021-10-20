@@ -10,9 +10,9 @@ import {
 import { timeoutErrorStatusCode, unknownErrorStatusCode } from '../interceptors/constants';
 import { AnalyticsAction } from '../models/actions/analytics-action.enum';
 import { AnalyticsGenericAction } from '../models/actions/analytics-generic-action.interface';
+import { AnalyticEvent } from '../models/analytic-event.interface';
 import { EventModel } from '../models/event-model.class';
 import { EventPayload } from '../models/event-payload.interface';
-import { Event } from '../models/event.interface';
 import { AnalyticsEventBusService } from './analytics-event-bus.service';
 import { EventCacheService } from './event-cache.service';
 import { LocationTrackingService } from './location-tracking.service';
@@ -46,7 +46,7 @@ export class EventDispatchService {
     this.dispatch(interactionEvent(payload));
   };
 
-  trackButtonInteraction(event?: Event): void {
+  trackButtonInteraction(event?: AnalyticEvent): void {
     const payload = {
       ...event,
       id: event?.id,
@@ -57,7 +57,7 @@ export class EventDispatchService {
     console.log(payload);
   }
 
-  trackDisplay(event?: Event): void {
+  trackDisplay(event?: AnalyticEvent): void {
     const payload = {
       ...event,
       id: event?.id,

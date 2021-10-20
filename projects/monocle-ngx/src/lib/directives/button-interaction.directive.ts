@@ -1,13 +1,13 @@
 import { Directive, ElementRef, HostListener, Input } from '@angular/core';
 
-import { Event } from '../models/event.interface';
+import { AnalyticEvent } from '../models/analytic-event.interface';
 import { EventDispatchService } from '../services/event-dispatch.service';
 
 @Directive({
   selector: '[mnclButton]',
 })
-export class DisplayDirective {
-  @Input('mnclButton') analyticEvent: Event | undefined;
+export class ButtonDirective {
+  @Input('mnclButton') analyticEvent: AnalyticEvent | undefined;
 
   @HostListener('click', ['$event'])
   onClick(): void {
@@ -30,7 +30,7 @@ export class DisplayDirective {
       if (this.analyticEvent) {
         this.analyticEvent.id = this.analyticEvent.id || elementId;
       } else {
-        this.analyticEvent = { id: elementId } as Event;
+        this.analyticEvent = { id: elementId } as AnalyticEvent;
       }
     }
   }
