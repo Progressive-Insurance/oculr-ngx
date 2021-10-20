@@ -1,4 +1,4 @@
-// TODO - Rename file to analytics-action.type.ts and export to AnalyticsActionType
+// TODO: remove all name spacing
 export enum AnalyticsAction {
   /**
    * [Analytics 1.0/2.0] When the analytics module is initialized.
@@ -21,10 +21,8 @@ export enum AnalyticsAction {
    */
   APP_ERROR = '@pgr/analytics/APP_ERROR',
 
-  /**
-   * [Analytics 2.0] When conditional elements are displayed
-   */
-  DISPLAY_EVENT = '@pgr/analytics/DISPLAY_EVENT',
+  DISPLAY_EVENT = 'DISPLAY_EVENT',
+  BUTTON_INTERACTION_EVENT = 'BUTTON_INTERACTION_EVENT',
 
   /**
    * [Analytics 2.0] When tracking a system event (such as redirect from mobile)

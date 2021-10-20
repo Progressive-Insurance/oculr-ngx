@@ -5,7 +5,7 @@ import { Subject } from 'rxjs';
 import { EventDispatchService } from '../services/event-dispatch.service';
 import { DisplayDirective } from './display.directive';
 
-fdescribe('DisplayDirective', () => {
+describe('DisplayDirective', () => {
   let fixture: ComponentFixture<SimpleTestComponent>;
   let mockEventDispatchService: any;
 
@@ -28,7 +28,7 @@ fdescribe('DisplayDirective', () => {
   }));
 });
 
-fdescribe('DisplayDirective', () => {
+describe('DisplayDirective', () => {
   let fixture: ComponentFixture<ConditionalTestComponent>;
   let mockEventDispatchService: any;
 

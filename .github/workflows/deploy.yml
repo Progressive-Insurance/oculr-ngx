@@ -1,12 +1,14 @@
-name: ci build
+name: ci deploy
+
 on:
-  push:
+  workflow_run:
+    workflows: ['ci build']
     branches: [main]
-  pull_request:
-    branches: [main]
+    types:
+      - completed
 
 jobs:
-  build:
+  deploy:
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -14,14 +16,6 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
-
-      - name: Cache node modules
-        uses: actions/cache@v2
-        with:
-          path: ~/.npm
-          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
-          restore-keys: |
-            ${{ runner.os }}-node-
 
       - name: Node ${{ matrix.node-version }}
         uses: actions/setup-node@v2
@@ -33,4 +27,3 @@ jobs:
           npm ci
           npm run clean
           npm run build
-          npm run test:ci

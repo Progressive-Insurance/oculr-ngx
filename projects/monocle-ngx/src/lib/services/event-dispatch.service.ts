@@ -3,17 +3,9 @@ import { Injectable } from '@angular/core';
 import { TimeoutError } from 'rxjs';
 
 import {
-  analyticsError,
-  apiCompleteEvent,
-  apiFailureEvent,
-  apiStartEvent,
-  apiSuccessEvent,
-  appError,
-  appInit,
-  interactionEvent,
-  pageViewEvent,
-  systemEvent,
-  validationErrorEvent,
+  analyticsError, apiCompleteEvent, apiFailureEvent, apiStartEvent, apiSuccessEvent,
+  appError, appInit, interactionEvent, pageViewEvent, systemEvent,
+  validationErrorEvent
 } from '../actions/analytics.actions';
 import { timeoutErrorStatusCode, unknownErrorStatusCode } from '../interceptors/constants';
 import { AnalyticsAction } from '../models/actions/analytics-action.enum';
@@ -54,10 +46,21 @@ export class EventDispatchService {
     this.dispatch(interactionEvent(payload));
   };
 
+  trackButtonInteraction(event?: Event): void {
+    const payload = {
+      ...event,
+      id: event?.id,
+      type: AnalyticsAction.BUTTON_INTERACTION_EVENT,
+      eventLocation: this.locationTrackingService.location,
+    };
+    // TODO: this.dispatch(displayEvent(payload));
+    console.log(payload);
+  }
+
   trackDisplay(event?: Event): void {
     const payload = {
       ...event,
-      id: event?.id || '',
+      id: event?.id,
       type: AnalyticsAction.DISPLAY_EVENT,
       eventLocation: this.locationTrackingService.location,
     };
