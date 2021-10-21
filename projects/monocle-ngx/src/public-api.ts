@@ -12,10 +12,6 @@ export { SplunkStandardLoggingService } from './lib/destinations/splunk-standard
 export { DisplayDirective } from './lib/directives/display.directive';
 export { ButtonDirective } from './lib/directives/button-interaction.directive';
 
-// TODO: remove the old modal directive that is deprecated, still needed to handle modals as pages
-export { InteractionEventDirective } from './lib/directives/interaction-event.directive';
-export { ModalDirective } from './lib/directives/modal.directive';
-
 export { AnalyticEvent } from './lib/models/analytic-event.interface';
 // TODO: to review expose, lean towards interfaces
 export { AnalyticsHttpParams } from './lib/models/analytics-http-params.class';
