@@ -28,6 +28,11 @@ describe('DisplayDirective', () => {
   }));
 });
 
+@Component({
+  template: `<div mnclDisplay id="testId">Standard element</div>`,
+})
+class SimpleTestComponent {}
+
 describe('DisplayDirective', () => {
   let fixture: ComponentFixture<ConditionalTestComponent>;
   let mockEventDispatchService: any;
@@ -105,8 +110,3 @@ class ConditionalTestComponent {
     this.competingId.next(false);
   }
 }
-
-@Component({
-  template: `<div mnclDisplay id="testId">Standard element</div>`,
-})
-class SimpleTestComponent {}
