@@ -32,7 +32,7 @@ export class ButtonDirective {
   private determineId(analyticEvent: AnalyticEvent): void {
     const elementId = this.elementRef.nativeElement.getAttribute('id');
     if (elementId) {
-      analyticEvent.id = analyticEvent.id ? analyticEvent.id : elementId;
+      analyticEvent.id ||= elementId;
     }
   }
 
@@ -43,7 +43,7 @@ export class ButtonDirective {
   private determineLabel(analyticEvent: AnalyticEvent): void {
     const buttonText = this.elementRef.nativeElement.innerText;
     if (buttonText) {
-      analyticEvent.label = analyticEvent.label ? analyticEvent.label : buttonText;
+      analyticEvent.label ||= buttonText;
     }
   }
 

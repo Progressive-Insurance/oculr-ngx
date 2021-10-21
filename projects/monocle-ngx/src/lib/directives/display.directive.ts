@@ -26,7 +26,7 @@ export class DisplayDirective implements OnInit {
   private determineId(analyticEvent: AnalyticEvent): void {
     const elementId = this.elementRef.nativeElement.getAttribute('id');
     if (elementId) {
-      analyticEvent.id = analyticEvent.id ? analyticEvent.id : elementId;
+      analyticEvent.id ||= elementId;
     }
   }
 
