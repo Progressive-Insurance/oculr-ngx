@@ -46,14 +46,6 @@ export class EventDispatchService {
     this.dispatch(pageViewEvent(payload));
   }
 
-  trackInteraction(eventModel: EventModel, event?: Event): void {
-    const payload: EventPayload = {
-      eventModel: this.updateModelWithEventDetails(eventModel, event),
-      eventLocation: this.locationTrackingService.location,
-    };
-    this.dispatch(interactionEvent(payload));
-  }
-
   trackButtonInteraction(event?: AnalyticEvent): void {
     const payload = {
       ...event,

@@ -90,39 +90,6 @@ describe('EventDispatchService', () => {
     });
   });
 
-  describe('trackInteraction', () => {
-    it('dispatches an INTERACTION_EVENT action with model and location', () => {
-      const mockModel: any = { event: 'mock', customDimensions: { pagePosition: 'Header' } };
-      const mockEvent: any = {
-        type: AnalyticsAction.INTERACTION_EVENT,
-        payload: {
-          eventModel: mockModel,
-          eventLocation: mockLocation,
-        },
-      };
-      eventDispatchService.trackInteraction(mockModel);
-      expect(mockEventBus.dispatch.calls.argsFor(0)[0]).toEqual(mockEvent);
-    });
-
-    it('evaluates functions in model customDimensions against event', () => {
-      const originalModel: any = {
-        event: 'mock',
-        customDimensions: { dataValue: ($event: any) => $event.target.nodeName },
-      };
-      const browserEvent: any = { target: { nodeName: 'SELECT' } };
-      const updatedModel: any = { event: 'mock', customDimensions: { dataValue: 'SELECT' } };
-      const expectedAction: any = {
-        type: AnalyticsAction.INTERACTION_EVENT,
-        payload: {
-          eventModel: updatedModel,
-          eventLocation: mockLocation,
-        },
-      };
-      eventDispatchService.trackInteraction(originalModel, browserEvent);
-      expect(mockEventBus.dispatch.calls.argsFor(0)[0]).toEqual(expectedAction);
-    });
-  });
-
   describe('trackDisplay', () => {
     it('dispatches an DISPLAY_EVENT action with model and location', () => {
       console.log = jasmine.createSpy('log');
