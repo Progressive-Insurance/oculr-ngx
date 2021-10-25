@@ -1,4 +1,4 @@
-[API]() > [Directives]()
+[API](./README.md) > [Directives](./README.md#Directives)
 
 # ButtonDirective
 
@@ -46,3 +46,7 @@ export class MyComponent {
   myButtonEvent = { id: 'myButton' } as AnalyticEvent;
 }
 ```
+
+## Feedback
+
+Is something not working or unclear? Please create an [issue](https://github.com/Progressive/monocle-ngx/issues/new/choose) or [PR](https://github.com/Progressive/monocle-ngx/blob/main/CONTRIBUTING.md).

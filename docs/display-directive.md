@@ -1,4 +1,4 @@
-[API]() > [Directives]()
+[API](./README.md) > [Directives](./README.md#Directives)
 
 # DisplayDirective
 
@@ -14,9 +14,9 @@ mnclDisplay
 
 ## Properties
 
-| Property                     | Description                                                                                                     |
-| ---------------------------- | --------------------------------------------------------------------------------------------------------------- |
-| `mcnlDisplay: AnalyticEvent` | **optional** </br> [AnalyticEvent]() holds useful identifiers and data determined by the consuming application. |
+| Property                     | Description                                                                                                                      |
+| ---------------------------- | -------------------------------------------------------------------------------------------------------------------------------- |
+| `mcnlDisplay?: DisplayEvent` | **optional** </br> [DisplayEvent](./display-event.md) holds useful identifiers and data determined by the consuming application. |
 
 ## Quick start
 
@@ -34,16 +34,20 @@ Another way to include an identifier is by using property binding with the `mncl
 <div [mnclDispay]="{ id: 'myDisplay' }">Something being displayed</div>
 ```
 
-An `AnalyticEvent` type object is being used in this property binding. There are other properties that can be set on the `AnalyticEvent` object, which you can read about more in the [AnalyticEvent]() documentation. To minimize the amount of content done in the component's template, it is recommended to prepare any `AnalyticEvent` objects in the `ngOnInit()` of the component.
+A `DisplayEvent` type object is being used in this property binding. There are other properties that can be set on the `DisplayEvent` object, which you can read about more in the [DisplayEvent](./display-event.md) documentation. To minimize the amount of content done in the component's template, it is recommended to prepare any `DisplayEvent` objects in the `ngOnInit()` of the component.
 
 ```typescript
-import { AnalyticEvent } from 'monocle-ngx';
+import { DisplayEvent } from 'monocle-ngx';
 
 @Component({
-  template: `<div [mnclDispay]="myDisplayEvent">Something being displayed</div>`,
+  template: `<div [mnclDisplay]="myDisplayEvent">Something being displayed</div>`,
 })
-export class MyComponent {
-  myDisplayEvent = { id: 'myDisplay' } as AnalyticEvent;
+export class MyComponent implements OnInit {
+  myDisplayEvent: DisplayEvent;
+
+  ngOnInit() {
+    this.myDisplayEvent = { id: 'myDisplay' };
+  }
 }
 ```
 
@@ -52,3 +56,7 @@ export class MyComponent {
 ## Alternate methods
 
 Some situations may require a consuming application to have more control when the display events are dispatched. Use the [EventDispatchService]() to have more control when dispatching display events.
+
+## Feedback
+
+Is something not working or unclear? Please create an [issue](https://github.com/Progressive/monocle-ngx/issues/new/choose) or [PR](https://github.com/Progressive/monocle-ngx/blob/main/CONTRIBUTING.md).

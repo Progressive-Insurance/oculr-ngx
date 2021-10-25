@@ -19,6 +19,7 @@ import { timeoutErrorStatusCode, unknownErrorStatusCode } from '../interceptors/
 import { AnalyticsAction } from '../models/actions/analytics-action.enum';
 import { AnalyticsGenericAction } from '../models/actions/analytics-generic-action.interface';
 import { AnalyticEvent } from '../models/analytic-event.interface';
+import { DisplayEvent } from '../models/destinations/display-event.interface';
 import { EventModel } from '../models/event-model.class';
 import { EventPayload } from '../models/event-payload.interface';
 import { AnalyticsEventBusService } from './analytics-event-bus.service';
@@ -57,7 +58,7 @@ export class EventDispatchService {
     console.log(payload);
   }
 
-  trackDisplay(event?: AnalyticEvent): void {
+  trackDisplay(event?: DisplayEvent): void {
     const payload = {
       ...event,
       id: event?.id,

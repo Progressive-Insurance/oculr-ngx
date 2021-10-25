@@ -1,4 +1,4 @@
 export enum InteractionDetail {
-  click = 'mouse',
+  mouse = 'mouse',
   keyboard = 'keyboard',
 }

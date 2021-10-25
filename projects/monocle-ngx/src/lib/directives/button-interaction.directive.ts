@@ -37,7 +37,7 @@ export class ButtonDirective {
   }
 
   private determineInteractionDetail(analyticEvent: AnalyticEvent, mouseEvent: MouseEvent): void {
-    analyticEvent.interactionDetail = mouseEvent.detail === 0 ? InteractionDetail.keyboard : InteractionDetail.click;
+    analyticEvent.interactionDetail = mouseEvent.detail === 0 ? InteractionDetail.keyboard : InteractionDetail.mouse;
   }
 
   private determineLabel(analyticEvent: AnalyticEvent): void {
