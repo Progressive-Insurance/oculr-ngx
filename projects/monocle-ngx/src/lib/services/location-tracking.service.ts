@@ -79,13 +79,13 @@ export class LocationTrackingService {
   }
 
   /** location returns the current location's parameters */
-  get location() {
+  get location(): EventLocation {
     return this.currentLocation;
   }
-  get paramMap() {
+  get paramMap(): ParamMap {
     return this.currentParamMap;
   }
-  get queryParamMap() {
+  get queryParamMap(): ParamMap {
     return this.currentQueryParamMap;
   }
 
@@ -93,7 +93,7 @@ export class LocationTrackingService {
     virtualPageName: string,
     params: { [key: string]: string } = {},
     queryParams: { [key: string]: string } = {}
-  ) => {
+  ): void => {
     this.angularRoutes$.next({
       route: virtualPageName,
       paramMap: convertToParamMap(params),
@@ -105,7 +105,7 @@ export class LocationTrackingService {
     virtualPageName: string,
     params: { [key: string]: string } = {},
     queryParams: { [key: string]: string } = {}
-  ) => {
+  ): void => {
     this.modalRoutes$.next({
       route: virtualPageName,
       paramMap: convertToParamMap(params),
@@ -113,7 +113,7 @@ export class LocationTrackingService {
     });
   };
 
-  updateRouteConfig = (config: { replaceParamTokens: string[] } = { replaceParamTokens: [] }) => {
+  updateRouteConfig = (config: { replaceParamTokens: string[] } = { replaceParamTokens: [] }): void => {
     this.currentLocation = this.routerUtility.insertLocationParams(
       this.currentLocation,
       config.replaceParamTokens,
@@ -149,7 +149,7 @@ export class LocationTrackingService {
     }
   };
 
-  private buildEventLocation = (route: string, queryString = ''): any => {
+  private buildEventLocation = (route: string, queryString = ''): EventLocation => {
     const virtualPageName = route.substr(0, route.indexOf('?')) || route;
 
     return {

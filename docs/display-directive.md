@@ -14,9 +14,9 @@ mnclDisplay
 
 ## Properties
 
-| Property             | Description                                                                                             |
-| -------------------- | ------------------------------------------------------------------------------------------------------- |
-| `mcnlDisplay: Event` | **optional** </br> [Event]() holds useful identifiers and data determined by the consuming application. |
+| Property                     | Description                                                                                                     |
+| ---------------------------- | --------------------------------------------------------------------------------------------------------------- |
+| `mcnlDisplay: AnalyticEvent` | **optional** </br> [AnalyticEvent]() holds useful identifiers and data determined by the consuming application. |
 
 ## Quick start
 
@@ -34,17 +34,21 @@ Another way to include an identifier is by using property binding with the `mncl
 <div [mnclDispay]="{ id: 'myDisplay' }">Something being displayed</div>
 ```
 
-An `Event` type object is being used in this property binding. There are other properties that can be set on the `Event` object, which you can read about more in the [Event]() documentation. To minimize the amount of content done in the component's template, it is recommended to prepare any analytic `Event` objects in the `ngOnInit()` of the component.
+An `AnalyticEvent` type object is being used in this property binding. There are other properties that can be set on the `AnalyticEvent` object, which you can read about more in the [AnalyticEvent]() documentation. To minimize the amount of content done in the component's template, it is recommended to prepare any `AnalyticEvent` objects in the `ngOnInit()` of the component.
 
 ```typescript
-import { Event } from 'monocle-ngx';
+import { AnalyticEvent } from 'monocle-ngx';
 
 @Component({
   template: `<div [mnclDispay]="myDisplayEvent">Something being displayed</div>`,
 })
 export class MyComponent {
-  myDisplayEvent = { id: 'myDisplay' } as Event;
+  myDisplayEvent = { id: 'myDisplay' } as AnalyticEvent;
 }
 ```
 
 :stop_sign: Do not use on Angular's `ng-container`, `ng-content`, or `ng-template` elements as these do not render.
+
+## Alternate methods
+
+Some situations may require a consuming application to have more control when the display events are dispatched. Use the [EventDispatchService]() to have more control when dispatching display events.
