@@ -25,7 +25,7 @@ import {
   splunkStandardLoggingEndpoint,
   SplunkStandardLoggingService,
 } from './destinations/splunk-standard-logging/splunk-standard-logging.service';
-import { ButtonDirective } from '../public-api';
+import { ButtonDirective } from './directives/button-interaction.directive';
 import { DisplayDirective } from './directives/display.directive';
 import { AnalyticsInterceptor } from './interceptors/analytics.interceptor';
 import { StateProvider } from './models/state-provider.type';
