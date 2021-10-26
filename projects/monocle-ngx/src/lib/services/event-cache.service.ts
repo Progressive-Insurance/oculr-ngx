@@ -1,16 +1,14 @@
 import { Injectable } from '@angular/core';
-
-import { isPageViewAction } from '../models/actions/page-view-action.interface';
+import { AnalyticEventType } from '../models/analytic-event-type.enum';
+import { AnalyticEvent } from '../models/analytic-event.interface';
 import { CacheEventOptions } from '../models/cache-event-options.interface';
-import { EventModel } from '../models/event-model.class';
-import { StandardAction } from '../models/actions/standard-action.interface';
 
 @Injectable()
 export class EventCacheService {
-  private routerPageViewEvent: EventModel | undefined = undefined;
+  private routerPageViewEvent: AnalyticEvent | undefined = undefined;
   private isCurrentPageModal = false;
 
-  getLastRouterPageViewEvent(): EventModel | undefined {
+  getLastRouterPageViewEvent(): AnalyticEvent | undefined {
     return this.routerPageViewEvent;
   }
 
@@ -18,9 +16,9 @@ export class EventCacheService {
     this.isCurrentPageModal = isModal;
   }
 
-  cacheEvent(action: StandardAction, options: CacheEventOptions = { isOnModal: this.isCurrentPageModal }): void {
-    if (!options.isOnModal && isPageViewAction(action)) {
-      this.routerPageViewEvent = action.payload.eventModel;
+  cacheEvent(event: AnalyticEvent, options: CacheEventOptions = { isOnModal: this.isCurrentPageModal }): void {
+    if (!options.isOnModal && event.eventType === AnalyticEventType.PAGE_VIEW_EVENT) {
+      this.routerPageViewEvent = event;
     }
   }
 }

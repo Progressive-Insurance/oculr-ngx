@@ -51,17 +51,6 @@ export function appError(payload: EventPayload, meta: { error: Error | string })
 }
 
 /**
- * [Analytics 2.0] Create a Display Event
- * @param payload Event Model and Event Location for this event
- */
-export function displayEvent(payload: EventPayload): AnalyticsGenericAction {
-  return {
-    type: AnalyticsAction.DISPLAY_EVENT,
-    payload,
-  };
-}
-
-/**
  * [Analytics 2.0] Create a System Event
  * @param payload Event Model and Event Location for this event
  */

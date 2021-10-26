@@ -1,9 +1,13 @@
+import { AnalyticEventType } from './analytic-event-type.enum';
+import { EventLocation } from './event-location.interface';
 import { InteractionDetail } from './interaction-detail.enum';
 import { InteractionType } from './interaction-type.enum';
 
 export interface AnalyticEvent {
   id: string;
   label?: string;
+  eventType?: AnalyticEventType;
+  location?: EventLocation;
   interactionType?: InteractionType;
   interactionDetail?: InteractionDetail;
   customScope?: Record<string, unknown>;

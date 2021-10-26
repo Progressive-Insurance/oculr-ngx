@@ -1,6 +1,6 @@
 import { Directive, ElementRef, Input, OnInit } from '@angular/core';
 
-import { DisplayEvent } from '../models/destinations/display-event.interface';
+import { DisplayEvent } from '../models/display-event.interface';
 import { EventDispatchService } from '../services/event-dispatch.service';
 
 @Directive({

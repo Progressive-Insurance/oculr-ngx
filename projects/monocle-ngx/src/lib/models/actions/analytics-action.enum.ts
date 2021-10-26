@@ -21,9 +21,6 @@ export enum AnalyticsAction {
    */
   APP_ERROR = '@pgr/analytics/APP_ERROR',
 
-  DISPLAY_EVENT = 'DISPLAY_EVENT',
-  BUTTON_INTERACTION_EVENT = 'BUTTON_INTERACTION_EVENT',
-
   /**
    * [Analytics 2.0] When tracking a system event (such as redirect from mobile)
    */
