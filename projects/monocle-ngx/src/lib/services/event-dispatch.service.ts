@@ -1,7 +1,6 @@
 import { HttpErrorResponse, HttpRequest, HttpResponse, HttpResponseBase } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { TimeoutError } from 'rxjs';
-
 import {
   analyticsError,
   apiCompleteEvent,
@@ -10,16 +9,14 @@ import {
   apiSuccessEvent,
   appError,
   appInit,
-  interactionEvent,
-  pageViewEvent,
   systemEvent,
   validationErrorEvent,
 } from '../actions/analytics.actions';
 import { timeoutErrorStatusCode, unknownErrorStatusCode } from '../interceptors/constants';
-import { AnalyticsAction } from '../models/actions/analytics-action.enum';
 import { AnalyticsGenericAction } from '../models/actions/analytics-generic-action.interface';
+import { AnalyticEventType } from '../models/analytic-event-type.enum';
 import { AnalyticEvent } from '../models/analytic-event.interface';
-import { DisplayEvent } from '../models/destinations/display-event.interface';
+import { DisplayEvent } from '../models/display-event.interface';
 import { EventModel } from '../models/event-model.class';
 import { EventPayload } from '../models/event-payload.interface';
 import { AnalyticsEventBusService } from './analytics-event-bus.service';
@@ -38,35 +35,31 @@ export class EventDispatchService {
     this.dispatch(analyticsError(error));
   }
 
-  trackPageView(eventModel: EventModel, config?: { replaceParamTokens: string[] }): void {
+  trackPageView(event: AnalyticEvent, config?: { replaceParamTokens: string[] }): void {
     this.locationTrackingService.updateRouteConfig(config);
-    const payload: EventPayload = {
-      eventModel,
-      eventLocation: this.locationTrackingService.location,
+    const eventDispatch = {
+      ...event,
+      location: this.locationTrackingService.location,
     };
-    this.dispatch(pageViewEvent(payload));
+    this.dispatchEvent(eventDispatch);
   }
 
-  trackButtonInteraction(event?: AnalyticEvent): void {
-    const payload = {
+  trackButtonInteraction(event: AnalyticEvent): void {
+    const eventDispatch = {
       ...event,
-      id: event?.id,
-      type: AnalyticsAction.BUTTON_INTERACTION_EVENT,
-      eventLocation: this.locationTrackingService.location,
+      eventType: AnalyticEventType.BUTTON_INTERACTION_EVENT,
+      location: this.locationTrackingService.location,
     };
-    // TODO: this.dispatch(displayEvent(payload));
-    console.log(payload);
+    this.dispatchEvent(eventDispatch);
   }
 
-  trackDisplay(event?: DisplayEvent): void {
-    const payload = {
+  trackDisplay(event: DisplayEvent): void {
+    const eventDispatch = {
       ...event,
-      id: event?.id,
-      type: AnalyticsAction.DISPLAY_EVENT,
-      eventLocation: this.locationTrackingService.location,
+      eventType: AnalyticEventType.DISPLAY_EVENT,
+      location: this.locationTrackingService.location,
     };
-    // TODO: this.dispatch(displayEvent(payload));
-    console.log(payload);
+    this.dispatchEvent(eventDispatch);
   }
 
   trackAppInit(scopes: string[]): void {
@@ -206,13 +199,6 @@ export class EventDispatchService {
     };
   }
 
-  private updateModelWithEventDetails(model: EventModel, event?: Event): EventModel {
-    return {
-      ...model,
-      customDimensions: this.evaluateCustomDimensions(model.customDimensions, event),
-    };
-  }
-
   private evaluateCustomDimensions(
     customDimensions: { [dimension: string]: unknown },
     data?: EventDetails
@@ -227,9 +213,15 @@ export class EventDispatchService {
     );
   }
 
+  // TODO: Remove once all tracked events are refactored
   private dispatch(action: AnalyticsGenericAction): void {
-    this.eventBus.dispatch(action);
-    this.eventCache.cacheEvent(action);
+    console.log(action);
+  }
+
+  private dispatchEvent(event: AnalyticEvent): void {
+    console.log(event);
+    this.eventBus.dispatch(event);
+    this.eventCache.cacheEvent(event);
   }
 }
 

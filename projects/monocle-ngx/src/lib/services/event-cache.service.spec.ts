@@ -1,5 +1,6 @@
 import { EventCacheService } from './event-cache.service';
 import { AnalyticsAction } from '../models/actions/analytics-action.enum';
+import { AnalyticEventType } from '../models/analytic-event-type.enum';
 
 describe('EventCacheService', () => {
   let eventCacheService: EventCacheService;
@@ -11,49 +12,31 @@ describe('EventCacheService', () => {
   describe('Integration', () => {
     describe('when a 2.0 page is opened', () => {
       it('getLastRouterPageViewEvent gives the 2.0 page view event', () => {
-        const pageViewAction: any = {
-          type: AnalyticsAction.PAGE_VIEW_EVENT,
-          payload: { eventModel: 'Page View Event Model' },
+        const pageViewEvent: any = {
+          id: 'MOCK',
+          eventType: AnalyticEventType.PAGE_VIEW_EVENT,
         };
-        eventCacheService.cacheEvent(pageViewAction);
+        eventCacheService.cacheEvent(pageViewEvent);
 
-        const pageViewEvent = eventCacheService.getLastRouterPageViewEvent();
-        expect(pageViewEvent).toEqual('Page View Event Model' as any);
+        const routerPageViewEvent = eventCacheService.getLastRouterPageViewEvent();
+        expect(routerPageViewEvent?.id).toEqual('MOCK');
       });
     });
     describe('when a 2.0 page calls 2.0 modal', () => {
       it('gives the 2.0 parent page view event', () => {
-        const pageViewAction: any = {
-          type: AnalyticsAction.PAGE_VIEW_EVENT,
-          payload: { eventModel: 'Page View Event Model' },
+        const pageViewEvent: any = {
+          id: 'MOCK',
+          eventType: AnalyticEventType.PAGE_VIEW_EVENT,
         };
-        const modalPageViewAction: any = {
-          type: AnalyticsAction.PAGE_VIEW_EVENT,
-          payload: { eventModel: 'Modal Page View Event Model' },
+        const modalPageViewEvent: any = {
+          id: 'MOCK-MODAL',
+          eventType: AnalyticEventType.PAGE_VIEW_EVENT,
         };
-        eventCacheService.cacheEvent(pageViewAction);
-        eventCacheService.cacheEvent(modalPageViewAction, { isOnModal: true });
+        eventCacheService.cacheEvent(pageViewEvent);
+        eventCacheService.cacheEvent(modalPageViewEvent, { isOnModal: true });
 
-        const pageViewEvent = eventCacheService.getLastRouterPageViewEvent();
-        expect(pageViewEvent).toEqual('Page View Event Model' as any);
-      });
-    });
-
-    describe('when a 1.0 page logged by RouterDispatchService called a 2.0 modal', () => {
-      it('does not cache interaction event', () => {
-        const modalPageViewAction: any = {
-          type: AnalyticsAction.PAGE_VIEW_EVENT,
-          payload: { eventModel: 'Modal Page View Event Model' },
-        };
-        const modalInteractionEventAction: any = {
-          type: AnalyticsAction.INTERACTION_EVENT,
-          payload: { eventModel: 'Interaction Event Model' },
-        };
-        eventCacheService.cacheEvent(modalPageViewAction, { isOnModal: true });
-        eventCacheService.cacheEvent(modalInteractionEventAction);
-
-        const pageViewEvent = eventCacheService.getLastRouterPageViewEvent();
-        expect(pageViewEvent).toBeUndefined();
+        const routerPageViewEvent = eventCacheService.getLastRouterPageViewEvent();
+        expect(routerPageViewEvent?.id).toEqual('MOCK');
       });
     });
   });
