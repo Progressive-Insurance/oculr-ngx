@@ -19,29 +19,39 @@ import { AnalyticEvent } from '../models/analytic-event.interface';
 import { DisplayEvent } from '../models/display-event.interface';
 import { EventModel } from '../models/event-model.class';
 import { EventPayload } from '../models/event-payload.interface';
+import { PageViewEvent } from '../models/page-view-event.interface';
 import { AnalyticsEventBusService } from './analytics-event-bus.service';
-import { EventCacheService } from './event-cache.service';
 import { LocationTrackingService } from './location-tracking.service';
 
 @Injectable()
 export class EventDispatchService {
-  constructor(
-    private locationTrackingService: LocationTrackingService,
-    private eventBus: AnalyticsEventBusService,
-    private eventCache: EventCacheService
-  ) {}
+  constructor(private locationTrackingService: LocationTrackingService, private eventBus: AnalyticsEventBusService) {}
 
   trackAnalyticsError(error: unknown): void {
     this.dispatch(analyticsError(error));
   }
 
-  trackPageView(event: AnalyticEvent, config?: { replaceParamTokens: string[] }): void {
+  trackPageView(event?: PageViewEvent, config?: { replaceParamTokens: string[] }): void {
     this.locationTrackingService.updateRouteConfig(config);
+
     const eventDispatch = {
       ...event,
+      eventType: AnalyticEventType.PAGE_VIEW_EVENT,
       location: this.locationTrackingService.location,
     };
+    eventDispatch.id ||= eventDispatch.location.path;
+
     this.dispatchEvent(eventDispatch);
+    if (!eventDispatch.isModal) {
+      this.locationTrackingService.cachePageView(eventDispatch);
+    }
+  }
+
+  trackCachedPageView(): void {
+    const cachedPageView = this.locationTrackingService.lastPageViewEvent;
+    if (cachedPageView) {
+      this.trackPageView(cachedPageView);
+    }
   }
 
   trackButtonInteraction(event: AnalyticEvent): void {
@@ -177,13 +187,6 @@ export class EventDispatchService {
     );
   }
 
-  trackCachedPageView(): void {
-    const cachedPageView = this.eventCache.getLastRouterPageViewEvent();
-    if (cachedPageView) {
-      this.trackPageView(cachedPageView);
-    }
-  }
-
   private updateModelWithApiResults(
     model: EventModel,
     response: HttpResponse<unknown> | HttpErrorResponse | TimeoutError,
@@ -218,10 +221,10 @@ export class EventDispatchService {
     console.log(action);
   }
 
+  // TODO: Can probably remove and replace with single call to eventBus.dispatch
   private dispatchEvent(event: AnalyticEvent): void {
     console.log(event);
     this.eventBus.dispatch(event);
-    this.eventCache.cacheEvent(event);
   }
 }
 
