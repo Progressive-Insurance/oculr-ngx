@@ -32,7 +32,6 @@ import { StateProvider } from './models/state-provider.type';
 import { StringSelector } from './models/string-selector.interface';
 import { Transform } from './models/transform.interface';
 import { AnalyticsEventBusService } from './services/analytics-event-bus.service';
-import { EventCacheService } from './services/event-cache.service';
 import { EventDispatchService } from './services/event-dispatch.service';
 import { LocationTrackingService } from './services/location-tracking.service';
 import { TimeService } from './services/time.service';
@@ -51,7 +50,6 @@ export class MonocleAngularModule {
       providers: [
         AnalyticsEventBusService,
         EventDispatchService,
-        EventCacheService,
         EventLoggerService,
         LocationTrackingService,
         WindowService,
@@ -75,7 +73,6 @@ export class MonocleAngularModule {
       providers: [
         AnalyticsEventBusService,
         EventDispatchService,
-        EventCacheService,
         EventLoggerService,
         LocationTrackingService,
         WindowService,

@@ -1,5 +1,4 @@
 import { HttpErrorResponse, HttpResponse } from '@angular/common/http';
-import { convertToParamMap } from '@angular/router';
 
 import { AnalyticsAction } from '../models/actions/analytics-action.enum';
 import { AnalyticEventType } from '../models/analytic-event-type.enum';
@@ -10,19 +9,18 @@ describe('EventDispatchService', () => {
   let eventDispatchService: EventDispatchService;
   let mockLocation: any;
   let mockEventBus: any;
-  let mockEventCacheService: any;
 
   beforeEach(() => {
-    mockLocation = { angularRoute: '/here' };
+    mockLocation = { angularRoute: '/here', path: '/there' };
     mockEventBus = {
       dispatch: jasmine.createSpy('dispatch'),
     };
-    mockEventCacheService = {
-      cacheEvent: jasmine.createSpy('cacheEvent'),
-      getLastRouterPageViewEvent: jasmine.createSpy('getLastRouterPageViewEvent'),
+    mockLocationTrackingService = {
+      location: mockLocation,
+      updateRouteConfig: () => undefined,
+      cachePageView: jasmine.createSpy('cachePageView'),
     };
-    mockLocationTrackingService = { location: mockLocation, updateRouteConfig: () => undefined };
-    eventDispatchService = new EventDispatchService(mockLocationTrackingService, mockEventBus, mockEventCacheService);
+    eventDispatchService = new EventDispatchService(mockLocationTrackingService, mockEventBus);
   });
 
   xdescribe('trackError', () => {
@@ -39,55 +37,71 @@ describe('EventDispatchService', () => {
     });
   });
 
-  xdescribe('trackPageView', () => {
-    it('dispatches a PAGE_VIEW_EVENT action with model and location', () => {
-      const mockModel: any = { event: 'mock' };
-      const mockEvent: any = {
-        type: AnalyticsAction.PAGE_VIEW_EVENT,
-        payload: {
-          eventModel: mockModel,
-          eventLocation: mockLocation,
-        },
+  describe('trackPageView', () => {
+    it('sets a default event id when one is not supplied', () => {
+      const mockEvent = { isModal: true };
+      const expectedDispatch = {
+        isModal: true,
+        eventType: AnalyticEventType.PAGE_VIEW_EVENT,
+        location: mockLocation,
+        id: mockLocation.path,
       };
-      eventDispatchService.trackPageView(mockModel);
-      expect(mockEventBus.dispatch.calls.argsFor(0)[0]).toEqual(mockEvent);
+
+      eventDispatchService.trackPageView(mockEvent);
+
+      expect(mockEventBus.dispatch).toHaveBeenCalledWith(expectedDispatch);
     });
 
-    it('caches the event', () => {
-      const mockModel: any = { event: 'mock' };
-      const mockEvent: any = {
-        type: AnalyticsAction.PAGE_VIEW_EVENT,
-        payload: {
-          eventModel: mockModel,
-          eventLocation: mockLocation,
-        },
+    it('does not set a default event id when one is supplied', () => {
+      const mockEvent = { isModal: true, id: 'id' };
+      const expectedDispatch = {
+        isModal: true,
+        eventType: AnalyticEventType.PAGE_VIEW_EVENT,
+        location: mockLocation,
+        id: 'id',
       };
-      eventDispatchService.trackPageView(mockModel);
-      expect(mockEventCacheService.cacheEvent.calls.argsFor(0)[0]).toEqual(mockEvent);
+
+      eventDispatchService.trackPageView(mockEvent);
+
+      expect(mockEventBus.dispatch).toHaveBeenCalledWith(expectedDispatch);
     });
 
-    describe('with route parameters', () => {
-      beforeEach(() => {
-        const paramMap = convertToParamMap({ key: '123' });
-        mockLocation = { url: '/here/:key', hidId: 1 };
-        mockLocationTrackingService = {
-          location: mockLocation,
-          paramMap: paramMap,
-          updateRouteConfig: () => jasmine.createSpy('updateRouteConfig'),
-        };
-        eventDispatchService = new EventDispatchService(
-          mockLocationTrackingService,
-          mockEventBus,
-          mockEventCacheService
-        );
-      });
+    it('does not cache the event when isModal is true', () => {
+      const mockEvent = { isModal: true };
+      eventDispatchService.trackPageView(mockEvent);
+      expect(mockLocationTrackingService.cachePageView).not.toHaveBeenCalled();
+    });
 
-      it('calls locationTrackingService to updateRouteConfig', () => {
-        spyOn(mockLocationTrackingService, 'updateRouteConfig');
-        const mockModel: any = { event: 'mock' };
-        eventDispatchService.trackPageView(mockModel, { replaceParamTokens: ['key'] });
-        expect(mockLocationTrackingService.updateRouteConfig).toHaveBeenCalledWith({ replaceParamTokens: ['key'] });
-      });
+    it('does cache the event when isModal is false', () => {
+      const mockEvent = { isModal: false };
+      const expectedDispatch = {
+        isModal: false,
+        eventType: AnalyticEventType.PAGE_VIEW_EVENT,
+        location: mockLocation,
+        id: mockLocation.path,
+      };
+
+      eventDispatchService.trackPageView(mockEvent);
+
+      expect(mockLocationTrackingService.cachePageView).toHaveBeenCalledWith(expectedDispatch);
+    });
+  });
+
+  describe('trackCachedPageView', () => {
+    it('tracks the cached page view event when it exists', () => {
+      const cachedEvent = {
+        id: 'cached',
+        eventType: AnalyticEventType.PAGE_VIEW_EVENT,
+        location: mockLocation,
+      };
+      mockLocationTrackingService.lastPageViewEvent = cachedEvent;
+      eventDispatchService.trackCachedPageView();
+      expect(mockEventBus.dispatch).toHaveBeenCalledWith(cachedEvent);
+    });
+
+    it('does nothing if there is no cached page view event', () => {
+      eventDispatchService.trackCachedPageView();
+      expect(mockEventBus.dispatch).not.toHaveBeenCalled();
     });
   });
 
@@ -132,39 +146,6 @@ describe('EventDispatchService', () => {
       };
       eventDispatchService.trackValidationError(mockModel);
       expect(mockEventBus.dispatch.calls.argsFor(0)[0]).toEqual(mockEvent);
-    });
-  });
-
-  xdescribe('trackCachedPageView', () => {
-    describe('when cache is empty', () => {
-      beforeEach(() => {
-        mockEventCacheService.getLastRouterPageViewEvent = () => {
-          return undefined;
-        };
-      });
-      it('does not dispatch a pageView event', () => {
-        eventDispatchService.trackCachedPageView();
-        expect(mockEventBus.dispatch).not.toHaveBeenCalled();
-      });
-    });
-    describe('when cache is not empty', () => {
-      const mockModel: any = { event: 'mock' };
-      const mockEvent: any = {
-        type: AnalyticsAction.PAGE_VIEW_EVENT,
-        payload: {
-          eventModel: mockModel,
-          eventLocation: { angularRoute: '/here' },
-        },
-      };
-      beforeEach(() => {
-        mockEventCacheService.getLastRouterPageViewEvent = () => {
-          return mockModel;
-        };
-      });
-      it('dispatches the cached pageView event', () => {
-        eventDispatchService.trackCachedPageView();
-        expect(mockEventBus.dispatch).toHaveBeenCalledWith(mockEvent);
-      });
     });
   });
 

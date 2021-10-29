@@ -1,11 +1,10 @@
 import { Location } from '@angular/common';
 import { HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { ActivatedRouteSnapshot, convertToParamMap, NavigationEnd, ParamMap, Router } from '@angular/router';
-import { merge, Subject } from 'rxjs';
+import { ActivatedRouteSnapshot, NavigationEnd, ParamMap, Router } from '@angular/router';
 import { filter, map } from 'rxjs/operators';
 import { EventLocation } from '../models/event-location.interface';
-import { EventCacheService } from './event-cache.service';
+import { PageViewEvent } from '../models/page-view-event.interface';
 import { RouterUtilityService } from './router-utility.service';
 import { WindowService } from './window.service';
 
@@ -29,24 +28,19 @@ export class LocationTrackingService {
     virtualPageName: '',
   };
   private hostName: string;
-  private angularRoutes$: Subject<{ route: string; paramMap: ParamMap; queryParamMap: ParamMap }>;
-  private modalRoutes$: Subject<{ route: string; paramMap: ParamMap; queryParamMap: ParamMap }>;
   private currentParamMap: ParamMap = {} as ParamMap;
   private currentQueryParamMap: ParamMap = {} as ParamMap;
+  private lastPageView: PageViewEvent = {};
 
   constructor(
     private locationService: Location,
     private windowService: WindowService,
     private router: Router,
-    private eventCache: EventCacheService,
     private routerUtility: RouterUtilityService
   ) {
     this.hostName = Location.stripTrailingSlash(
       this.windowService.url.substring(0, this.windowService.url.length - this.locationService.path(true).length)
     );
-
-    this.angularRoutes$ = new Subject();
-    this.modalRoutes$ = new Subject();
 
     this.router.events
       .pipe(
@@ -63,19 +57,11 @@ export class LocationTrackingService {
         }))
       )
       .subscribe((event) => {
-        this.angularRoutes$.next(event);
+        const eventLocation = this.buildEventLocation(event.route, this.getFormattedQueryString(event.queryParamMap));
+        this.currentLocation = { ...eventLocation };
+        this.currentParamMap = event.paramMap;
+        this.currentQueryParamMap = event.queryParamMap;
       });
-
-    merge(
-      this.angularRoutes$.pipe(map((event) => ({ event, isModal: false }))),
-      this.modalRoutes$.pipe(map((event) => ({ event, isModal: true })))
-    ).subscribe(({ event, isModal }) => {
-      const eventLocation = this.buildEventLocation(event.route, this.getFormattedQueryString(event.queryParamMap));
-      this.currentLocation = { ...eventLocation };
-      this.eventCache.setIsCurrentPageModal(isModal);
-      this.currentParamMap = event.paramMap;
-      this.currentQueryParamMap = event.queryParamMap;
-    });
   }
 
   /** location returns the current location's parameters */
@@ -89,44 +75,28 @@ export class LocationTrackingService {
     return this.currentQueryParamMap;
   }
 
-  setAngularRoute = (
-    virtualPageName: string,
-    params: { [key: string]: string } = {},
-    queryParams: { [key: string]: string } = {}
-  ): void => {
-    this.angularRoutes$.next({
-      route: virtualPageName,
-      paramMap: convertToParamMap(params),
-      queryParamMap: convertToParamMap(queryParams),
-    });
-  };
+  get lastPageViewEvent(): PageViewEvent {
+    return this.lastPageView;
+  }
 
-  setModalRoute = (
-    virtualPageName: string,
-    params: { [key: string]: string } = {},
-    queryParams: { [key: string]: string } = {}
-  ): void => {
-    this.modalRoutes$.next({
-      route: virtualPageName,
-      paramMap: convertToParamMap(params),
-      queryParamMap: convertToParamMap(queryParams),
-    });
-  };
+  cachePageView(event: PageViewEvent): void {
+    this.lastPageView = event;
+  }
 
-  updateRouteConfig = (config: { replaceParamTokens: string[] } = { replaceParamTokens: [] }): void => {
+  updateRouteConfig(config: { replaceParamTokens: string[] } = { replaceParamTokens: [] }): void {
     this.currentLocation = this.routerUtility.insertLocationParams(
       this.currentLocation,
       config.replaceParamTokens,
       this.currentParamMap
     );
-  };
+  }
 
-  private getRouterRoute = () => {
+  private getRouterRoute(): string {
     const rootSnapshot = this.router.routerState.root.snapshot;
     return this.getRouteFromSnapshot(rootSnapshot);
-  };
+  }
 
-  private getFormattedQueryString = (queryParamMap: ParamMap): string => {
+  private getFormattedQueryString(queryParamMap: ParamMap): string {
     let httpParams = new HttpParams();
 
     if (queryParamMap == null) {
@@ -137,19 +107,19 @@ export class LocationTrackingService {
     });
 
     return httpParams.toString() ? '?' + httpParams.toString() : '';
-  };
+  }
 
   // TODO: double check null check here
-  private getRouteFromSnapshot = (snapshot: ActivatedRouteSnapshot | null): string => {
+  private getRouteFromSnapshot(snapshot: ActivatedRouteSnapshot | null): string {
     if (snapshot == null) {
       return '';
     } else {
       const route = snapshot.routeConfig && snapshot.routeConfig.path ? '/' + snapshot.routeConfig.path : '';
       return route + this.getRouteFromSnapshot(snapshot.firstChild);
     }
-  };
+  }
 
-  private buildEventLocation = (route: string, queryString = ''): EventLocation => {
+  private buildEventLocation(route: string, queryString = ''): EventLocation {
     const virtualPageName = route.substr(0, route.indexOf('?')) || route;
 
     return {
@@ -160,5 +130,5 @@ export class LocationTrackingService {
       queryString,
       virtualPageName,
     };
-  };
+  }
 }

@@ -8,12 +8,10 @@ describe('LocationTrackingService', () => {
   let mockLocation: any;
   let mockWindowService: any;
   let mockRouter: any;
-  let mockEventCacheService: any;
   let mockRouterUtilityService: any;
   let mockQueryParamMap: any;
 
   beforeEach(() => {
-    mockEventCacheService = jasmine.createSpyObj('mockEventCacheService', ['setIsCurrentPageModal']);
     mockLocation = jasmine.createSpyObj('mockLocation', ['path']);
     mockRouterUtilityService = {
       getSnapshotHierarchyAsArray: () => {
@@ -56,46 +54,6 @@ describe('LocationTrackingService', () => {
           mockLocation,
           mockWindowService,
           mockRouter,
-          mockEventCacheService,
-          mockRouterUtilityService
-        );
-
-        const routerEvent = new NavigationEnd(1, '', '/access/login');
-        mockRouter.routerState.root.snapshot.firstChild = {
-          routeConfig: {
-            path: 'access/login',
-          },
-        };
-        mockLocation.path.and.returnValue('/access/login');
-        mockWindowService.url = 'https://example.org/access/login';
-        mockRouter.events.next(routerEvent);
-
-        expect(locationTrackingService.location.hostName).toEqual('https://example.org');
-      });
-
-      it('should remove trailing slash from hostname', () => {
-        mockLocation.path.and.returnValue('');
-        mockWindowService = { url: 'https://example.org/' };
-        mockQueryParamMap = convertToParamMap({});
-
-        mockRouter = {
-          events: new BehaviorSubject(null),
-          routerState: {
-            root: {
-              snapshot: {
-                routeConfig: null,
-                firstChild: null,
-                queryParamMap: mockQueryParamMap,
-              },
-            },
-          },
-        };
-
-        locationTrackingService = new LocationTrackingService(
-          mockLocation,
-          mockWindowService,
-          mockRouter,
-          mockEventCacheService,
           mockRouterUtilityService
         );
 
@@ -135,49 +93,10 @@ describe('LocationTrackingService', () => {
           mockLocation,
           mockWindowService,
           mockRouter,
-          mockEventCacheService,
           mockRouterUtilityService
         );
 
         const routerEvent = new NavigationEnd(1, '?brand=Progressive', '/access/login?brand=Progressive');
-        mockRouter.routerState.root.snapshot.firstChild = {
-          routeConfig: {
-            path: '/access/login',
-          },
-        };
-        mockLocation.path.and.returnValue('/access/login?brand=Progressive');
-        mockWindowService.url = 'https://example.org/access/login?brand=Progressive';
-        mockRouter.events.next(routerEvent);
-
-        expect(locationTrackingService.location.hostName).toEqual('https://example.org');
-      });
-      it('should remove trailing slash from hostname', () => {
-        mockLocation.path.and.returnValue('?brand=Progressive');
-        mockWindowService = { url: 'https://example.org/?brand=Progressive' };
-        mockQueryParamMap = convertToParamMap({ brand: 'Progressive' });
-
-        mockRouter = {
-          events: new BehaviorSubject(null),
-          routerState: {
-            root: {
-              snapshot: {
-                routeConfig: null,
-                firstChild: null,
-                queryParamMap: mockQueryParamMap,
-              },
-            },
-          },
-        };
-
-        locationTrackingService = new LocationTrackingService(
-          mockLocation,
-          mockWindowService,
-          mockRouter,
-          mockEventCacheService,
-          mockRouterUtilityService
-        );
-
-        const routerEvent = new NavigationEnd(1, '/?brand=Progressive', '/access/login?brand=Progressive');
         mockRouter.routerState.root.snapshot.firstChild = {
           routeConfig: {
             path: '/access/login',
@@ -214,49 +133,10 @@ describe('LocationTrackingService', () => {
           mockLocation,
           mockWindowService,
           mockRouter,
-          mockEventCacheService,
           mockRouterUtilityService
         );
 
         const routerEvent = new NavigationEnd(1, '#top', '/access/login#top');
-        mockRouter.routerState.root.snapshot.firstChild = {
-          routeConfig: {
-            path: '/access/login',
-          },
-        };
-        mockLocation.path.and.returnValue('/access/login#top');
-        mockWindowService.url = 'https://example.org/access/login#top';
-        mockRouter.events.next(routerEvent);
-
-        expect(locationTrackingService.location.hostName).toEqual('https://example.org');
-      });
-      it('should remove trailing slash from hostname', () => {
-        mockLocation.path.and.returnValue('#top');
-        mockWindowService = { url: 'https://example.org/#top' };
-        mockQueryParamMap = convertToParamMap({});
-
-        mockRouter = {
-          events: new BehaviorSubject(null),
-          routerState: {
-            root: {
-              snapshot: {
-                routeConfig: null,
-                firstChild: null,
-                queryParamMap: mockQueryParamMap,
-              },
-            },
-          },
-        };
-
-        locationTrackingService = new LocationTrackingService(
-          mockLocation,
-          mockWindowService,
-          mockRouter,
-          mockEventCacheService,
-          mockRouterUtilityService
-        );
-
-        const routerEvent = new NavigationEnd(1, '/#top', '/access/login#top');
         mockRouter.routerState.root.snapshot.firstChild = {
           routeConfig: {
             path: '/access/login',
@@ -293,49 +173,10 @@ describe('LocationTrackingService', () => {
           mockLocation,
           mockWindowService,
           mockRouter,
-          mockEventCacheService,
           mockRouterUtilityService
         );
 
         const routerEvent = new NavigationEnd(1, '?brand=Progressive#top', '/access/login?brand=Progressive#top');
-        mockRouter.routerState.root.snapshot.firstChild = {
-          routeConfig: {
-            path: '/access/login',
-          },
-        };
-        mockLocation.path.and.returnValue('/access/login?brand=Progressive#top');
-        mockWindowService.url = 'https://example.org/access/login?brand=Progressive#top';
-        mockRouter.events.next(routerEvent);
-
-        expect(locationTrackingService.location.hostName).toEqual('https://example.org');
-      });
-      it('should remove trailing slash from hostname', () => {
-        mockLocation.path.and.returnValue('?brand=Progressive#top');
-        mockWindowService = { url: 'https://example.org/?brand=Progressive#top' };
-        mockQueryParamMap = convertToParamMap({ brand: 'Progressive' });
-
-        mockRouter = {
-          events: new BehaviorSubject(null),
-          routerState: {
-            root: {
-              snapshot: {
-                routeConfig: null,
-                firstChild: null,
-                queryParamMap: mockQueryParamMap,
-              },
-            },
-          },
-        };
-
-        locationTrackingService = new LocationTrackingService(
-          mockLocation,
-          mockWindowService,
-          mockRouter,
-          mockEventCacheService,
-          mockRouterUtilityService
-        );
-
-        const routerEvent = new NavigationEnd(1, '/?brand=Progressive#top', '/access/login?brand=Progressive#top');
         mockRouter.routerState.root.snapshot.firstChild = {
           routeConfig: {
             path: '/access/login',
@@ -378,7 +219,6 @@ describe('LocationTrackingService', () => {
         mockLocation,
         mockWindowService,
         mockRouter,
-        mockEventCacheService,
         mockRouterUtilityService
       );
     });
@@ -415,47 +255,8 @@ describe('LocationTrackingService', () => {
         };
         expect(locationTrackingService.location).toEqual(expectedLocation);
       });
-      it('sets isCurrentPageModal on the EventCacheService', () => {
-        expect(mockEventCacheService.setIsCurrentPageModal).toHaveBeenCalledWith(false);
-      });
     });
-    describe('when setting a modal location via setModalRoute', () => {
-      beforeEach(() => {
-        locationTrackingService.setModalRoute('/new-modal/:idCard', { idCard: '123' }, { term: 'current' });
-      });
-      it('sets current location', () => {
-        const expectedLocation = {
-          hitId: 1,
-          hostName: 'https://example.org/slot5/src',
-          path: '/new-modal/:idCard?term=current',
-          url: 'https://example.org/slot5/src/new-modal/:idCard?term=current',
-          queryString: '?term=current',
-          virtualPageName: '/new-modal/:idCard',
-        };
-        expect(locationTrackingService.location).toEqual(expectedLocation);
-      });
-      it('sets isCurrentPageModal on the EventCacheService', () => {
-        expect(mockEventCacheService.setIsCurrentPageModal).toHaveBeenCalledWith(true);
-      });
-      describe('when updateRouteConfig is called after modal, it still uses loaded params', () => {
-        it('updates the location details', () => {
-          locationTrackingService.updateRouteConfig({ replaceParamTokens: ['idCard'] });
-          const hostName = 'https://example.org/slot5/src';
-          const path = '/new-modal/123?term=current';
-          const url = 'https://example.org/slot5/src/new-modal/123?term=current';
-          const queryString = '?term=current';
-          const virtualPageName = '/new-modal/123';
-          expect(locationTrackingService.location).toEqual({
-            hitId: 1,
-            hostName,
-            path,
-            url,
-            queryString,
-            virtualPageName,
-          });
-        });
-      });
-    });
+
     describe('sets current location with no querystring', () => {
       beforeEach(() => {
         mockRouter.routerState.root.snapshot.firstChild = {
@@ -486,25 +287,6 @@ describe('LocationTrackingService', () => {
             url: 'https://example.org/slot5/src/id-card-hub/:policyNumber/id-card',
             queryString: '',
             virtualPageName: '/id-card-hub/:policyNumber/id-card',
-          };
-          expect(locationTrackingService.location).toEqual(expectedLocation);
-        });
-        it('sets isCurrentPageModal on the EventCacheService', () => {
-          expect(mockEventCacheService.setIsCurrentPageModal).toHaveBeenCalledWith(false);
-        });
-      });
-      describe('when setting a modal location via setModalRoute without a query string parameter', () => {
-        beforeEach(() => {
-          locationTrackingService.setModalRoute('/new-modal/:idCard', { idCard: '123' });
-        });
-        it('sets current location with querystring field undefined', () => {
-          const expectedLocation = {
-            hitId: 1,
-            hostName: 'https://example.org/slot5/src',
-            path: '/new-modal/:idCard',
-            url: 'https://example.org/slot5/src/new-modal/:idCard',
-            queryString: '',
-            virtualPageName: '/new-modal/:idCard',
           };
           expect(locationTrackingService.location).toEqual(expectedLocation);
         });
