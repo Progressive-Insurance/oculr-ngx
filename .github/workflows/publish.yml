@@ -18,15 +18,19 @@ jobs:
         uses: actions/setup-node@v2
         with:
           node-version: ${{ matrix.node-version }}
-          registry-url: 'https://$ARTIFACTORY_USER:$ARTIFACTORY_TOKEN@progressive.jfrog.io/progressive/api/npm/pgr-npm/'
 
-      - name: Build, test, and publish
+      - name: Build and test
         run: |
           npm ci
           npm run clean
           npm run build
           npm run test:ci
-          npm publish
+
+      - name: Publish
+        run: |
+          curl -u ${ARTIFACTORY_USER}:${ARTIFACTORY_TOKEN} https://progressive.jfrog.io/progressive/api/npm/auth > ~/.npmrc
+          npm publish dist/monocle-ngx --registry https://$ARTIFACTORY_USER:$ARTIFACTORY_TOKEN@progressive.jfrog.io/progressive/api/npm/pgr-npm
         env:
           ARTIFACTORY_USER: ${{ secrets.ARTIFACTORY_USER }}
           ARTIFACTORY_TOKEN: ${{ secrets.ARTIFACTORY_TOKEN }}
+          NPM_CONFIG_registry: 'https://progressive.jfrog.io/progressive/api/npm/pgr-npm/'

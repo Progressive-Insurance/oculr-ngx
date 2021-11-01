@@ -1,8 +1,11 @@
 {
   "name": "monocle-ngx",
-  "version": "0.0.1-alpha.0",
+  "version": "0.0.1-alpha.2",
   "scripts": {
     "version": "git commit -a -m \"Release %npm_package_version%\" && git tag \"v%npm_package_version%\""
+  },
+  "publishConfig": {
+    "registry": "https://progressive.jfrog.io/progressive/api/npm/pgr-npm/"
   },
   "peerDependencies": {
     "@angular/common": "^12.2.0",
