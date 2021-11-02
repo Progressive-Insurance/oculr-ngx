@@ -10,7 +10,7 @@ export { SplunkAnalyticsService } from './lib/destinations/splunk-analytics/splu
 export { SplunkStandardLoggingService } from './lib/destinations/splunk-standard-logging/splunk-standard-logging.service';
 
 export { DisplayDirective } from './lib/directives/display.directive';
-export { ButtonDirective } from './lib/directives/button-interaction.directive';
+export { ClickDirective } from './lib/directives/click.directive';
 
 export { AnalyticEvent } from './lib/models/analytic-event.interface';
 // TODO: to review expose, lean towards interfaces

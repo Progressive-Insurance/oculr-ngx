@@ -54,10 +54,10 @@ export class EventDispatchService {
     }
   }
 
-  trackButtonInteraction(event: AnalyticEvent): void {
+  trackClick(event: AnalyticEvent): void {
     const eventDispatch = {
       ...event,
-      eventType: AnalyticEventType.BUTTON_INTERACTION_EVENT,
+      eventType: AnalyticEventType.CLICK_EVENT,
       location: this.locationTrackingService.location,
     };
     this.dispatchEvent(eventDispatch);

@@ -7,6 +7,7 @@ export interface AnalyticEvent {
   id?: string;
   label?: string;
   eventType?: AnalyticEventType;
+  url?: string;
   location?: EventLocation;
   interactionType?: InteractionType;
   interactionDetail?: InteractionDetail;
