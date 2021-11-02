@@ -6,10 +6,10 @@ import { InteractionType } from '../models/interaction-type.enum';
 import { EventDispatchService } from '../services/event-dispatch.service';
 
 @Directive({
-  selector: '[mnclButton]',
+  selector: '[mnclClick]',
 })
-export class ButtonDirective {
-  @Input('mnclButton') analyticEventInput: AnalyticEvent | undefined;
+export class ClickDirective {
+  @Input('mnclClick') analyticEventInput: AnalyticEvent | undefined;
 
   @HostListener('click', ['$event'])
   onClick(mouseEvent: MouseEvent): void {
@@ -19,11 +19,15 @@ export class ButtonDirective {
       analyticEvent.interactionType = InteractionType.click;
       this.determineInteractionDetail(analyticEvent, mouseEvent);
       this.determineLabel(analyticEvent);
+      this.determineHostUrl(analyticEvent);
       this.handleEvent(analyticEvent);
     }
   }
 
-  constructor(private elementRef: ElementRef<HTMLButtonElement>, private eventDispatchService: EventDispatchService) {}
+  constructor(
+    private elementRef: ElementRef<HTMLButtonElement | HTMLLinkElement>,
+    private eventDispatchService: EventDispatchService
+  ) {}
 
   private getAnalyticEvent(): AnalyticEvent {
     return this.analyticEventInput ? { ...this.analyticEventInput } : { id: '' };
@@ -41,22 +45,31 @@ export class ButtonDirective {
   }
 
   private determineLabel(analyticEvent: AnalyticEvent): void {
-    const buttonText = this.elementRef.nativeElement.innerText;
-    if (buttonText) {
-      analyticEvent.label ||= buttonText;
+    const hostText = this.elementRef.nativeElement.innerText;
+    if (hostText) {
+      analyticEvent.label ||= hostText;
+    }
+  }
+
+  private determineHostUrl(analyticEvent: AnalyticEvent): void {
+    if (this.elementRef.nativeElement.tagName.toLowerCase() === 'a') {
+      analyticEvent.linkUrl =
+        this.elementRef.nativeElement.getAttribute('routeLink') ||
+        this.elementRef.nativeElement.getAttribute('href') ||
+        '';
     }
   }
 
   private handleEvent(analyticEvent: AnalyticEvent) {
-    this.eventDispatchService.trackButtonInteraction(analyticEvent);
+    this.eventDispatchService.trackClick(analyticEvent);
   }
 
   private shouldDispatch(analyticEvent: AnalyticEvent): boolean {
     if (!analyticEvent.id) {
       console.warn(
-        `The mnclButton directive requires an identifier. This can be done with an id attribute on the
+        `The mnclClick directive requires an identifier. This can be done with an id attribute on the
         host element, or by binding an Event object. More information can be found here:
-        https://github.com/Progressive/monocle-ngx/blob/main/docs/button-directive.md`
+        https://github.com/Progressive/monocle-ngx/blob/main/docs/click-directive.md`
       );
       return false;
     }

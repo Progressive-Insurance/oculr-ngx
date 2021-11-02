@@ -25,7 +25,7 @@ import {
   splunkStandardLoggingEndpoint,
   SplunkStandardLoggingService,
 } from './destinations/splunk-standard-logging/splunk-standard-logging.service';
-import { ButtonDirective } from './directives/button-interaction.directive';
+import { ClickDirective } from './directives/click.directive';
 import { DisplayDirective } from './directives/display.directive';
 import { AnalyticsInterceptor } from './interceptors/analytics.interceptor';
 import { StateProvider } from './models/state-provider.type';
@@ -39,8 +39,8 @@ import { WindowService } from './services/window.service';
 
 @NgModule({
   imports: [CommonModule],
-  declarations: [DisplayDirective, ButtonDirective],
-  exports: [DisplayDirective, ButtonDirective],
+  declarations: [DisplayDirective, ClickDirective],
+  exports: [DisplayDirective, ClickDirective],
   providers: [],
 })
 export class MonocleAngularModule {
