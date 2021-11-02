@@ -53,7 +53,7 @@ export class ClickDirective {
 
   private determineHostUrl(analyticEvent: AnalyticEvent): void {
     if (this.elementRef.nativeElement.tagName.toLowerCase() === 'a') {
-      analyticEvent.url =
+      analyticEvent.linkUrl =
         this.elementRef.nativeElement.getAttribute('routeLink') ||
         this.elementRef.nativeElement.getAttribute('href') ||
         '';
