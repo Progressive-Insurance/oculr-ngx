@@ -12,14 +12,14 @@ export { SplunkStandardLoggingService } from './lib/destinations/splunk-standard
 export { DisplayDirective } from './lib/directives/display.directive';
 export { ClickDirective } from './lib/directives/click.directive';
 
+export { API_EVENT_CONTEXT } from './lib/interceptors/analytics.interceptor';
+
 export { AnalyticEvent } from './lib/models/analytic-event.interface';
+export { ApiContext } from './lib/models/api-context.interface';
+export { ApiEventContext } from './lib/models/api-event-context.interface';
 // TODO: to review expose, lean towards interfaces
-export { AnalyticsHttpParams } from './lib/models/analytics-http-params.class';
-export { ApiActionMeta } from './lib/models/api-action-meta.interface';
-export { ApiAnalyticsModels } from './lib/models/api-analytics-models.interface';
 export { EventModel } from './lib/models/event-model.class';
 export { EventPayload } from './lib/models/event-payload.interface';
-export { AnalyticsApiAction } from './lib/models/actions/analytics-api-action.interface';
 export { AnalyticsErrorAction } from './lib/models/actions/analytics-error-action.interface';
 export { AnalyticsGenericAction } from './lib/models/actions/analytics-generic-action.interface';
 export { SplunkBasePayload } from './lib/models/destinations/splunk-base-payload.interface';
@@ -30,7 +30,6 @@ export { Transform } from './lib/models/transform.interface';
 export { AnalyticsAction } from './lib/models/actions/analytics-action.enum';
 export { EventExtras } from './lib/models/event-extras.interface';
 export { JwtToken } from './lib/models/jwt-token.interface';
-export { GetFromResponseInterface } from './lib/models/get-from-response.interface';
 export { CommonErrorSchema } from './lib/models/common-error-schema.model';
 export { StandardAction } from './lib/models/actions/standard-action.interface';
 
