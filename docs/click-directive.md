@@ -23,7 +23,8 @@ mnclClick
 Add the directive `mnclClick` to a host button or anchor element in an Angular component's template.
 
 ```html
-<button mnclClick id="myButton">Continue</button> <a mnclClick routerLink="/home" id="myLink">Cancel</a>
+<button mnclClick id="myButton">Continue</button>
+<a mnclClick routerLink="/home" id="myLink">Cancel</a>
 ```
 
 It is required to include an identifier with the interaction event to help with analysis later. By default the directive will use the host element's `id` attribute if no other identifier is provided.
