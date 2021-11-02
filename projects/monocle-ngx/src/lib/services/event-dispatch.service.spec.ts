@@ -1,5 +1,3 @@
-import { HttpErrorResponse, HttpResponse } from '@angular/common/http';
-
 import { AnalyticsAction } from '../models/actions/analytics-action.enum';
 import { AnalyticEventType } from '../models/analytic-event-type.enum';
 import { EventDispatchService } from './event-dispatch.service';
@@ -149,420 +147,69 @@ describe('EventDispatchService', () => {
     });
   });
 
-  xdescribe('API Event Actions', () => {
+  describe('API Event Actions', () => {
     const httpRequest: any = { url: 'http://localhost:3000/breed/getAll', method: 'GET' };
+    const httpResponse: any = { url: 'http://localhost:3000/breed/getAll', status: 200 };
 
     describe('trackApiStart', () => {
-      it('dispatches an API_START_EVENT action', () => {
-        const eventModel: any = { eventId: 'EVENT_HASH' };
-        const expectedAction: any = {
-          type: AnalyticsAction.API_START_EVENT,
-          payload: {
-            eventModel,
-            eventLocation: mockLocation,
-          },
-          meta: {
-            request: httpRequest,
-          },
+      it('dispatches an API_START_EVENT with the supplied id and scopes', () => {
+        const apiContext: any = { id: 'api start', scopes: [{ data: 'starting' }] };
+        const expectedEvent: any = {
+          request: httpRequest,
+          id: apiContext.id,
+          scopes: apiContext.scopes,
+          eventType: AnalyticEventType.API_START_EVENT,
+          location: mockLocationTrackingService.location,
         };
-        eventDispatchService.trackApiStart(eventModel, httpRequest);
-        expect(mockEventBus.dispatch.calls.argsFor(0)[0]).toEqual(expectedAction);
-      });
-    });
-
-    describe('trackApiSuccess', () => {
-      it('dispatches an API_SUCCESS_EVENT action', () => {
-        const httpResponse: any = { status: 200 };
-        const eventModel: any = { eventId: 'EVENT_HASH', eventValue: 0, customDimensions: {} };
-        const expectedAction: any = {
-          type: AnalyticsAction.API_SUCCESS_EVENT,
-          payload: {
-            eventModel,
-            eventLocation: mockLocation,
-          },
-          meta: {
-            response: httpResponse,
-            duration: 5000,
-            apiEndpoint: httpRequest.url,
-            httpStatus: '200',
-            httpMethod: httpRequest.method,
-            hasEventModelTag: true,
-          },
-        };
-        eventDispatchService.trackApiSuccess(
-          eventModel,
-          httpResponse,
-          315550800000,
-          315550805000,
-          httpRequest.url,
-          httpRequest.method
-        );
-        expect(mockEventBus.dispatch.calls.argsFor(0)[0]).toEqual(expectedAction);
+        eventDispatchService.trackApiStart(apiContext, httpRequest);
+        expect(mockEventBus.dispatch).toHaveBeenCalledWith(expectedEvent);
       });
 
-      it('runs eventValue function if present', () => {
-        const httpResponse: any = { status: 200 };
-        const eventModel: any = {
-          eventId: 'EVENT_HASH',
-          eventValue: (duration: any) => duration,
-          customDimensions: {},
+      it('dispatches an API_START_EVENT with the api url as an id', () => {
+        const apiContext: any = {};
+        const expectedEvent: any = {
+          request: httpRequest,
+          id: httpRequest.url,
+          scopes: [],
+          eventType: AnalyticEventType.API_START_EVENT,
+          location: mockLocationTrackingService.location,
         };
-        const expectedAction: any = {
-          type: AnalyticsAction.API_SUCCESS_EVENT,
-          payload: {
-            eventModel: {
-              eventId: 'EVENT_HASH',
-              eventValue: 5000,
-              customDimensions: {},
-            },
-            eventLocation: mockLocation,
-          },
-          meta: {
-            response: httpResponse,
-            duration: 5000,
-            apiEndpoint: httpRequest.url,
-            httpStatus: '200',
-            httpMethod: httpRequest.method,
-            hasEventModelTag: true,
-          },
-        };
-        eventDispatchService.trackApiSuccess(
-          eventModel,
-          httpResponse,
-          315550800000,
-          315550805000,
-          httpRequest.url,
-          httpRequest.method
-        );
-        expect(mockEventBus.dispatch.calls.argsFor(0)[0]).toEqual(expectedAction);
-      });
-      it('runs customDimensions functions if present', () => {
-        const httpResponse: any = { status: 200, body: { policies: ['10000000', '20000000'] } };
-        const eventModel: any = {
-          eventId: 'EVENT_HASH',
-          eventValue: 0,
-          customDimensions: {
-            isAwesome: true,
-            policyCount: (response: any) => response.body.policies.length,
-          },
-        };
-        const expectedAction: any = {
-          type: AnalyticsAction.API_SUCCESS_EVENT,
-          payload: {
-            eventModel: {
-              eventId: 'EVENT_HASH',
-              eventValue: 0,
-              customDimensions: {
-                isAwesome: true,
-                policyCount: 2,
-              },
-            },
-            eventLocation: mockLocation,
-          },
-          meta: {
-            response: httpResponse,
-            duration: 5000,
-            apiEndpoint: httpRequest.url,
-            httpStatus: '200',
-            httpMethod: httpRequest.method,
-            hasEventModelTag: true,
-          },
-        };
-        eventDispatchService.trackApiSuccess(
-          eventModel,
-          httpResponse,
-          315550800000,
-          315550805000,
-          httpRequest.url,
-          httpRequest.method
-        );
-        expect(mockEventBus.dispatch.calls.argsFor(0)[0]).toEqual(expectedAction);
-      });
-    });
-    describe('trackApiFailure', () => {
-      it('dispatches an API_FAILURE_EVENT action', () => {
-        const httpResponse = new HttpErrorResponse({ status: 500 });
-        const eventModel: any = { eventId: 'EVENT_HASH', eventValue: 0, customDimensions: {} };
-        const expectedAction: any = {
-          type: AnalyticsAction.API_FAILURE_EVENT,
-          payload: {
-            eventModel,
-            eventLocation: mockLocation,
-          },
-          meta: {
-            response: httpResponse,
-            duration: 5000,
-            apiEndpoint: httpRequest.url,
-            httpStatus: '500',
-            httpMethod: httpRequest.method,
-            hasEventModelTag: true,
-          },
-        };
-        eventDispatchService.trackApiFailure(
-          eventModel,
-          httpResponse,
-          315550800000,
-          315550805000,
-          httpRequest.url,
-          httpRequest.method
-        );
-        expect(mockEventBus.dispatch.calls.argsFor(0)[0]).toEqual(expectedAction);
-      });
-
-      it('runs eventValue function if present', () => {
-        const httpResponse = new HttpErrorResponse({ status: 500 });
-        const eventModel: any = {
-          eventId: 'EVENT_HASH',
-          eventValue: (duration: any) => duration,
-          customDimensions: {},
-        };
-        const expectedAction: any = {
-          type: AnalyticsAction.API_FAILURE_EVENT,
-          payload: {
-            eventModel: {
-              eventId: 'EVENT_HASH',
-              eventValue: 5000,
-              customDimensions: {},
-            },
-            eventLocation: mockLocation,
-          },
-          meta: {
-            response: httpResponse,
-            duration: 5000,
-            apiEndpoint: httpRequest.url,
-            httpStatus: '500',
-            httpMethod: httpRequest.method,
-            hasEventModelTag: true,
-          },
-        };
-        eventDispatchService.trackApiFailure(
-          eventModel,
-          httpResponse,
-          315550800000,
-          315550805000,
-          httpRequest.url,
-          httpRequest.method
-        );
-        expect(mockEventBus.dispatch.calls.argsFor(0)[0]).toEqual(expectedAction);
-      });
-
-      it('runs customDimensions functions if present', () => {
-        const httpResponse = new HttpErrorResponse({ status: 500, error: { message: 'Server fell over dead.' } });
-        const eventModel: any = {
-          eventId: 'EVENT_HASH',
-          eventValue: 0,
-          customDimensions: {
-            isAwesome: false,
-            errorMessage: (response: any) => response.error.message,
-          },
-        };
-        const expectedAction: any = {
-          type: AnalyticsAction.API_FAILURE_EVENT,
-          payload: {
-            eventModel: {
-              eventId: 'EVENT_HASH',
-              eventValue: 0,
-              customDimensions: {
-                isAwesome: false,
-                errorMessage: 'Server fell over dead.',
-              },
-            },
-            eventLocation: mockLocation,
-          },
-          meta: {
-            response: httpResponse,
-            duration: 5000,
-            apiEndpoint: httpRequest.url,
-            httpStatus: '500',
-            httpMethod: httpRequest.method,
-            hasEventModelTag: true,
-          },
-        };
-        eventDispatchService.trackApiFailure(
-          eventModel,
-          httpResponse,
-          315550800000,
-          315550805000,
-          httpRequest.url,
-          httpRequest.method
-        );
-        expect(mockEventBus.dispatch.calls.argsFor(0)[0]).toEqual(expectedAction);
-      });
-
-      it(`uses '-1001' for meta's httpStatus code when response is a TimeoutError`, () => {
-        const error = {
-          message: 'Timeout has occurred',
-          name: 'TimeoutError',
-          info: { meta: {}, seen: 0, lastValue: {} },
-        };
-        const eventModel: any = { eventId: 'EVENT_HASH', eventValue: 0, customDimensions: {} };
-        const expectedAction: any = {
-          type: AnalyticsAction.API_FAILURE_EVENT,
-          payload: {
-            eventModel,
-            eventLocation: mockLocation,
-          },
-          meta: {
-            response: error,
-            duration: 5000,
-            apiEndpoint: httpRequest.url,
-            httpStatus: '-1001',
-            httpMethod: httpRequest.method,
-            hasEventModelTag: true,
-          },
-        };
-        eventDispatchService.trackApiFailure(
-          eventModel,
-          error,
-          315550800000,
-          315550805000,
-          httpRequest.url,
-          httpRequest.method
-        );
-        expect(mockEventBus.dispatch.calls.argsFor(0)[0]).toEqual(expectedAction);
+        eventDispatchService.trackApiStart(apiContext, httpRequest);
+        expect(mockEventBus.dispatch).toHaveBeenCalledWith(expectedEvent);
       });
     });
 
     describe('trackApiComplete', () => {
-      it('dispatches an API_COMPLETE_EVENT action', () => {
-        const httpResponse = new HttpResponse<any>({ status: 200 });
-        const eventModel: any = { eventId: 'EVENT_HASH', eventValue: 0, customDimensions: {} };
-        const expectedAction: any = {
-          type: AnalyticsAction.API_COMPLETE_EVENT,
-          payload: {
-            eventModel,
-            eventLocation: mockLocation,
-          },
-          meta: {
-            response: httpResponse,
-            duration: 5000,
-            apiEndpoint: httpRequest.url,
-            httpStatus: '200',
-            httpMethod: httpRequest.method,
-            hasEventModelTag: true,
-          },
+      it('dispatches an API_COMPLETE_EVENT with the supplied id and scopes', () => {
+        const apiContext: any = { id: 'api complete', scopes: [{ data: 'starting' }] };
+        const duration = 312;
+        const expectedEvent: any = {
+          response: httpResponse,
+          request: httpRequest,
+          duration,
+          id: apiContext.id,
+          scopes: apiContext.scopes,
+          eventType: AnalyticEventType.API_COMPLETE_EVENT,
+          location: mockLocationTrackingService.location,
         };
-        eventDispatchService.trackApiComplete(
-          eventModel,
-          httpResponse,
-          315550800000,
-          315550805000,
-          httpRequest.url,
-          httpRequest.method
-        );
-        expect(mockEventBus.dispatch.calls.argsFor(0)[0]).toEqual(expectedAction);
+        eventDispatchService.trackApiComplete(apiContext, httpResponse, httpRequest, duration);
+        expect(mockEventBus.dispatch).toHaveBeenCalledWith(expectedEvent);
       });
 
-      it('runs eventValue function if present', () => {
-        const httpResponse = new HttpErrorResponse({ status: 500 });
-        const eventModel: any = {
-          eventId: 'EVENT_HASH',
-          eventValue: (duration: any) => duration,
-          customDimensions: {},
+      it('dispatches an API_COMPLETE_EVENT with the api url as an id', () => {
+        const apiContext: any = {};
+        const duration = 312;
+        const expectedEvent: any = {
+          response: httpResponse,
+          request: httpRequest,
+          duration,
+          id: httpRequest.url,
+          scopes: [],
+          eventType: AnalyticEventType.API_COMPLETE_EVENT,
+          location: mockLocationTrackingService.location,
         };
-        const expectedAction: any = {
-          type: AnalyticsAction.API_COMPLETE_EVENT,
-          payload: {
-            eventModel: {
-              eventId: 'EVENT_HASH',
-              eventValue: 5000,
-              customDimensions: {},
-            },
-            eventLocation: mockLocation,
-          },
-          meta: {
-            response: httpResponse,
-            duration: 5000,
-            apiEndpoint: httpRequest.url,
-            httpStatus: '500',
-            httpMethod: httpRequest.method,
-            hasEventModelTag: true,
-          },
-        };
-        eventDispatchService.trackApiComplete(
-          eventModel,
-          httpResponse,
-          315550800000,
-          315550805000,
-          httpRequest.url,
-          httpRequest.method
-        );
-        expect(mockEventBus.dispatch.calls.argsFor(0)[0]).toEqual(expectedAction);
-      });
-
-      it('runs customDimensions functions if present', () => {
-        const httpResponse = new HttpResponse<any>({ status: 200, body: { policies: ['10000000', '20000000'] } });
-        const eventModel: any = {
-          eventId: 'EVENT_HASH',
-          eventValue: 0,
-          customDimensions: {
-            isAwesome: true,
-            firstPolicy: (response: any) => response.body.policies[0],
-          },
-        };
-        const expectedAction: any = {
-          type: AnalyticsAction.API_COMPLETE_EVENT,
-          payload: {
-            eventModel: {
-              eventId: 'EVENT_HASH',
-              eventValue: 0,
-              customDimensions: {
-                isAwesome: true,
-                firstPolicy: '10000000',
-              },
-            },
-            eventLocation: mockLocation,
-          },
-          meta: {
-            response: httpResponse,
-            duration: 5000,
-            apiEndpoint: httpRequest.url,
-            httpStatus: '200',
-            httpMethod: httpRequest.method,
-            hasEventModelTag: true,
-          },
-        };
-        eventDispatchService.trackApiComplete(
-          eventModel,
-          httpResponse,
-          315550800000,
-          315550805000,
-          httpRequest.url,
-          httpRequest.method
-        );
-        expect(mockEventBus.dispatch.calls.argsFor(0)[0]).toEqual(expectedAction);
-      });
-      it(`uses '-1001' for meta's httpStatus code when response is a TimeoutError`, () => {
-        const error = {
-          message: 'Timeout has occurred',
-          name: 'TimeoutError',
-          info: { meta: {}, seen: 0, lastValue: {} },
-        };
-        const eventModel: any = { eventId: 'EVENT_HASH', eventValue: 0, customDimensions: {} };
-        const expectedAction: any = {
-          type: AnalyticsAction.API_COMPLETE_EVENT,
-          payload: {
-            eventModel,
-            eventLocation: mockLocation,
-          },
-          meta: {
-            response: error,
-            duration: 5000,
-            apiEndpoint: httpRequest.url,
-            httpStatus: '-1001',
-            httpMethod: httpRequest.method,
-            hasEventModelTag: true,
-          },
-        };
-        eventDispatchService.trackApiComplete(
-          eventModel,
-          error,
-          315550800000,
-          315550805000,
-          httpRequest.url,
-          httpRequest.method
-        );
-        expect(mockEventBus.dispatch.calls.argsFor(0)[0]).toEqual(expectedAction);
+        eventDispatchService.trackApiComplete(apiContext, httpResponse, httpRequest, duration);
+        expect(mockEventBus.dispatch).toHaveBeenCalledWith(expectedEvent);
       });
     });
   });

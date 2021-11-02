@@ -8,16 +8,15 @@ An interface that is used with dispatching display event using [DisplayDirective
 
 ## Properties
 
-| Property                                | Desciption                                                                                                                                                |
-| --------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `id: string`                            | A useful indentifier for the event.                                                                                                                       |
-| `label?: string`                        | **optional** </br> An easier to read description of the event.                                                                                            |
-| `customScope?: Record<string, unknown>` | **optional** </br> A custom object containing any other useful information.                                                                               |
-| `configuredScopes?: string[]`           | **optional** </br> A list of preconfigured scopes to include with the event. See [initialization and configuration]() to setup up reusable custom scopes. |
+| Property         | Desciption                                                                                                                                  |
+| ---------------- | ------------------------------------------------------------------------------------------------------------------------------------------- |
+| `id: string`     | A useful indentifier for the event.                                                                                                         |
+| `label?: string` | **optional** </br> An easier to read description of the event.                                                                              |
+| `scopes?: []`    | **optional** </br> A list of scopes to include with the event. See [initialization and configuration]() to setup up reusable custom scopes. |
 
 ## Example
 
-In this example a `DisplayEvent` is built in the Angular component's `ngOnInit()` and then used by the [mnclDisplay](display-directive.md) directive. The properties in `customScope` are completely customizable and determined by consuming applications.
+In this example a `DisplayEvent` is built in the Angular component's `ngOnInit()` and then used by the [mnclDisplay](display-directive.md) directive. The objects in `scopes` are completely customizable and determined by consuming applications.
 
 ```typescript
 import { DisplayEvent } from 'monocle-ngx';
@@ -32,11 +31,11 @@ export class MyComponent implements OnInit {
     this.bannerEvent = {
       id: 'bannerMessage',
       label: 'Display important banner message',
-      customScope: {
+      scopes: [{
         // the following properties are for example only
         test: 'messagePosition'
         experience: 'A'
-      }
+      }]
     };
   }
 }
