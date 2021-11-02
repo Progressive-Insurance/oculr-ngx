@@ -43,7 +43,7 @@ describe('ClickDirective', () => {
       interactionType: 'click',
       interactionDetail: 'keyboard',
       label: 'Simple routerLink',
-      url: '/somewhere',
+      linkUrl: '/somewhere',
     };
     const link = fixture.debugElement.nativeElement.querySelector('#linkWithRouterLink');
     link.click();
