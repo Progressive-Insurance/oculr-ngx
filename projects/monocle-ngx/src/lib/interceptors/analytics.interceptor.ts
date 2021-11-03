@@ -1,88 +1,51 @@
 import {
-  HttpErrorResponse, HttpEvent, HttpHandler, HttpInterceptor, HttpRequest,
-  HttpResponse
+  HttpContextToken,
+  HttpErrorResponse,
+  HttpEvent,
+  HttpHandler,
+  HttpInterceptor,
+  HttpRequest,
+  HttpResponse,
 } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { tap } from 'rxjs/operators';
-
-import { AnalyticsHttpParams } from '../models/analytics-http-params.class';
-import { EventModel } from '../models/event-model.class';
+import { ApiEventContext } from '../models/api-event-context.interface';
 import { EventDispatchService } from '../services/event-dispatch.service';
 import { TimeService } from '../services/time.service';
+
+export const API_EVENT_CONTEXT = new HttpContextToken(() => {
+  return { start: {}, success: {}, failure: {} };
+});
 
 @Injectable()
 export class AnalyticsInterceptor implements HttpInterceptor {
   constructor(private eventDispatchService: EventDispatchService, private timeService: TimeService) {}
 
-  intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
+  intercept(request: HttpRequest<unknown>, next: HttpHandler): Observable<HttpEvent<unknown>> {
+    // TODO: Need to allow for this type of exclusion via config and not hardcode it
     if (request.url && !request.url.includes('splunkservices')) {
-      const params = (request.params || {}) as AnalyticsHttpParams;
-      const apiAnalyticsModels = params.apiAnalyticsModels || {};
-      const emptyEventModel = this.getEmptyEventModel();
-      const {
-        start = emptyEventModel,
-        success = emptyEventModel,
-        error = emptyEventModel,
-        complete = emptyEventModel,
-      } = apiAnalyticsModels;
-
-      // TODO: Remove the hasEventModelTag logic after Analytics 1.0 has been fully deprecated
-      const hasEventModelTag =
-        (apiAnalyticsModels.start && apiAnalyticsModels.start.eventId) ||
-        (apiAnalyticsModels.success && apiAnalyticsModels.success.eventId) ||
-        (apiAnalyticsModels.error && apiAnalyticsModels.error.eventId) ||
-        (apiAnalyticsModels.complete && apiAnalyticsModels.complete.eventId)
-          ? true
-          : false;
-
       const requestStartTime = this.timeService.now();
+      const { start, success, failure } = request.context.get<ApiEventContext>(API_EVENT_CONTEXT);
+
       this.eventDispatchService.trackApiStart(start, request);
 
       return next.handle(request).pipe(
         tap(
-          (event: HttpEvent<any>) => {
+          (event: HttpEvent<unknown>) => {
             if (event instanceof HttpResponse) {
               const requestEndTime = this.timeService.now();
-              this.eventDispatchService.trackApiSuccess(
-                success,
-                event,
-                requestStartTime,
-                requestEndTime,
-                request.url,
-                request.method
-              );
-              this.eventDispatchService.trackApiComplete(
-                complete,
-                event,
-                requestStartTime,
-                requestEndTime,
-                request.url,
-                request.method,
-                hasEventModelTag
-              );
+              const duration = Math.round(requestEndTime - requestStartTime);
+
+              this.eventDispatchService.trackApiComplete(success, event, request, duration);
             }
           },
-          (err: any) => {
-            if (err instanceof HttpErrorResponse) {
+          (error: unknown) => {
+            if (error instanceof HttpErrorResponse) {
               const requestEndTime = this.timeService.now();
-              this.eventDispatchService.trackApiFailure(
-                error,
-                err,
-                requestStartTime,
-                requestEndTime,
-                request.url,
-                request.method
-              );
-              this.eventDispatchService.trackApiComplete(
-                complete,
-                err,
-                requestStartTime,
-                requestEndTime,
-                request.url,
-                request.method,
-                hasEventModelTag
-              );
+              const duration = Math.round(requestEndTime - requestStartTime);
+
+              this.eventDispatchService.trackApiComplete(failure, error, request, duration);
             }
           }
         )
@@ -90,9 +53,4 @@ export class AnalyticsInterceptor implements HttpInterceptor {
     }
     return next.handle(request);
   }
-
-  // TODO: look into replace this with an interface
-  getEmptyEventModel = () => {
-    return new EventModel('', '', '', '', '', '', '', 0, {}, [], '', '', {});
-  };
 }

@@ -1,3 +1,5 @@
+import { HttpErrorResponse, HttpRequest, HttpResponse } from '@angular/common/http';
+import { TimeoutError } from 'rxjs';
 import { AnalyticEventType } from './analytic-event-type.enum';
 import { EventLocation } from './event-location.interface';
 import { InteractionDetail } from './interaction-detail.enum';
@@ -11,7 +13,9 @@ export interface AnalyticEvent {
   location?: EventLocation;
   interactionType?: InteractionType;
   interactionDetail?: InteractionDetail;
-  customScope?: Record<string, unknown>;
   // TODO: needs a new type, possible generics
-  predefinedScopes?: [];
+  scopes?: [];
+  response?: HttpResponse<unknown> | HttpErrorResponse | TimeoutError;
+  request?: HttpRequest<unknown>;
+  duration?: number;
 }

@@ -1,21 +1,13 @@
-import { HttpErrorResponse, HttpRequest, HttpResponse, HttpResponseBase } from '@angular/common/http';
+import { HttpErrorResponse, HttpRequest, HttpResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { TimeoutError } from 'rxjs';
-import {
-  analyticsError,
-  apiCompleteEvent,
-  apiFailureEvent,
-  apiStartEvent,
-  apiSuccessEvent,
-  appError,
-  appInit,
-  systemEvent,
-  validationErrorEvent,
-} from '../actions/analytics.actions';
-import { timeoutErrorStatusCode, unknownErrorStatusCode } from '../interceptors/constants';
+import { analyticsError, appError, appInit, systemEvent, validationErrorEvent } from '../actions/analytics.actions';
 import { AnalyticsGenericAction } from '../models/actions/analytics-generic-action.interface';
 import { AnalyticEventType } from '../models/analytic-event-type.enum';
 import { AnalyticEvent } from '../models/analytic-event.interface';
+import { ApiCompleteEvent } from '../models/api-complete-event.interface';
+import { ApiContext } from '../models/api-context.interface';
+import { ApiStartEvent } from '../models/api-start-event.interface';
 import { DisplayEvent } from '../models/display-event.interface';
 import { EventModel } from '../models/event-model.class';
 import { EventPayload } from '../models/event-payload.interface';
@@ -104,116 +96,33 @@ export class EventDispatchService {
     this.dispatch(validationErrorEvent(payload));
   }
 
-  trackApiStart(eventModel: EventModel, request: HttpRequest<unknown>): void {
-    const payload: EventPayload = {
-      eventModel,
-      eventLocation: this.locationTrackingService.location,
+  trackApiStart(context: ApiContext, request: HttpRequest<unknown>): void {
+    const eventDispatch: ApiStartEvent = {
+      request,
+      id: context.id || request.url, // TODO: request.url likely needs to be normalized
+      scopes: context.scopes || [],
+      eventType: AnalyticEventType.API_START_EVENT,
+      location: this.locationTrackingService.location,
     };
-    this.dispatch(apiStartEvent(payload, { request }));
-  }
-
-  trackApiSuccess(
-    eventModel: EventModel,
-    response: HttpResponse<unknown>,
-    requestStartTime: number,
-    requestEndTime: number,
-    apiEndpoint: string,
-    httpMethod: string
-  ): void {
-    const duration = Math.round(requestEndTime - requestStartTime);
-    const httpStatus = response.status.toString();
-    const payload: EventPayload = {
-      eventModel: this.updateModelWithApiResults(eventModel, response, duration),
-      eventLocation: this.locationTrackingService.location,
-    };
-    this.dispatch(
-      apiSuccessEvent(payload, { response, duration, apiEndpoint, httpStatus, httpMethod, hasEventModelTag: true })
-    );
-  }
-
-  trackApiFailure(
-    eventModel: EventModel,
-    error: HttpErrorResponse | TimeoutError,
-    requestStartTime: number,
-    requestEndTime: number,
-    apiEndpoint: string,
-    httpMethod: string
-  ): void {
-    const duration = Math.round(requestEndTime - requestStartTime);
-    const httpStatus =
-      error instanceof HttpErrorResponse
-        ? error.status.toString()
-        : error['name'] === 'TimeoutError'
-        ? timeoutErrorStatusCode
-        : unknownErrorStatusCode;
-    const payload: EventPayload = {
-      eventModel: this.updateModelWithApiResults(eventModel, error, duration),
-      eventLocation: this.locationTrackingService.location,
-    };
-    this.dispatch(
-      apiFailureEvent(payload, {
-        response: error,
-        duration,
-        apiEndpoint,
-        httpStatus,
-        httpMethod,
-        hasEventModelTag: true,
-      })
-    );
+    this.dispatchEvent(eventDispatch);
   }
 
   trackApiComplete(
-    eventModel: EventModel,
+    context: ApiContext,
     response: HttpResponse<unknown> | HttpErrorResponse | TimeoutError,
-    requestStartTime: number,
-    requestEndTime: number,
-    apiEndpoint: string,
-    httpMethod: string,
-    hasEventModelTag = true
-  ): void {
-    const duration = Math.round(requestEndTime - requestStartTime);
-    const httpStatus =
-      response instanceof HttpResponseBase
-        ? response.status.toString()
-        : response['name'] === 'TimeoutError'
-        ? timeoutErrorStatusCode
-        : unknownErrorStatusCode;
-    const payload: EventPayload = {
-      eventModel: this.updateModelWithApiResults(eventModel, response, duration),
-      eventLocation: this.locationTrackingService.location,
-    };
-    this.dispatch(
-      apiCompleteEvent(payload, { response, duration, apiEndpoint, httpStatus, httpMethod, hasEventModelTag })
-    );
-  }
-
-  private updateModelWithApiResults(
-    model: EventModel,
-    response: HttpResponse<unknown> | HttpErrorResponse | TimeoutError,
+    request: HttpRequest<unknown>,
     duration: number
-  ): EventModel {
-    return {
-      ...model,
-      eventValue: (typeof model.eventValue === 'function' ? model.eventValue(duration) : model.eventValue) as
-        | number
-        | string
-        | ((val: number) => number | string),
-      customDimensions: this.evaluateCustomDimensions(model.customDimensions, response),
+  ): void {
+    const eventDispatch: ApiCompleteEvent = {
+      response,
+      request,
+      duration,
+      id: context.id || request.url, // TODO: request.url likely needs to be normalized
+      scopes: context.scopes || [],
+      eventType: AnalyticEventType.API_COMPLETE_EVENT,
+      location: this.locationTrackingService.location,
     };
-  }
-
-  private evaluateCustomDimensions(
-    customDimensions: { [dimension: string]: unknown },
-    data?: EventDetails
-  ): { [dimension: string]: unknown } {
-    return Object.keys(customDimensions).reduce(
-      (dimensionsObj: { [dimension: string]: unknown }, currentField: string) => {
-        const field = customDimensions[currentField];
-        dimensionsObj[currentField] = (typeof field === 'function' ? field(data) : field) as unknown;
-        return dimensionsObj;
-      },
-      {}
-    );
+    this.dispatchEvent(eventDispatch);
   }
 
   // TODO: Remove once all tracked events are refactored
@@ -227,5 +136,3 @@ export class EventDispatchService {
     this.eventBus.dispatch(event);
   }
 }
-
-type EventDetails = Event | HttpResponse<unknown> | HttpErrorResponse | TimeoutError;
