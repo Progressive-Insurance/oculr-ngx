@@ -1,7 +1,5 @@
 export { MonocleAngularModule } from './lib/monocle-ngx.module';
 
-// TODO: export an interface export { getEmptyEventModel } from './lib/interceptors/constants';
-
 // TODO: configurable service (api calls), e.g. Splunk, Google Tag. Don't expose service that does calls, handled by lib
 // TODO: have default services for Splunk and Google
 // TODO: don't want to hook into state management, observable providers?
