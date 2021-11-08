@@ -9,7 +9,7 @@ import { EventDispatchService } from '../services/event-dispatch.service';
   selector: '[mnclClick]',
 })
 export class ClickDirective {
-  @Input('mnclClick') analyticEventInput: AnalyticEvent | undefined;
+  @Input('mnclClick') analyticEventInput: AnalyticEvent | '' = '';
 
   @HostListener('click', ['$event'])
   onClick(mouseEvent: MouseEvent): void {

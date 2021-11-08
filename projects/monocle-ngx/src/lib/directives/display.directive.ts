@@ -7,7 +7,7 @@ import { EventDispatchService } from '../services/event-dispatch.service';
   selector: '[mnclDisplay]',
 })
 export class DisplayDirective implements OnInit {
-  @Input('mnclDisplay') analyticEventInput: DisplayEvent | undefined;
+  @Input('mnclDisplay') analyticEventInput: DisplayEvent | '' = '';
 
   constructor(private elementRef: ElementRef<HTMLElement>, private eventDispatchService: EventDispatchService) {}
 
