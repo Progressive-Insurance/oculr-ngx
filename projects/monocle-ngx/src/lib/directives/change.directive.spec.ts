@@ -4,7 +4,7 @@ import { ComponentFixture, fakeAsync, TestBed, tick } from '@angular/core/testin
 import { EventDispatchService } from '../services/event-dispatch.service';
 import { ChangeDirective } from './change.directive';
 
-fdescribe('ChangeDirective', () => {
+describe('ChangeDirective', () => {
   let fixture: ComponentFixture<TestComponent>;
   let mockEventDispatchService: any;
 

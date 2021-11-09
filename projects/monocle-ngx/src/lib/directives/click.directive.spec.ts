@@ -5,7 +5,7 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { EventDispatchService } from '../services/event-dispatch.service';
 import { ClickDirective } from './click.directive';
 
-fdescribe('ClickDirective', () => {
+describe('ClickDirective', () => {
   let fixture: ComponentFixture<TestComponent>;
   let mockEventDispatchService: any;
 
