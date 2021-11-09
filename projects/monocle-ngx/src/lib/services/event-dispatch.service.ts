@@ -46,6 +46,15 @@ export class EventDispatchService {
     }
   }
 
+  trackChange(event: AnalyticEvent): void {
+    const eventDispatch = {
+      ...event,
+      eventType: AnalyticEventType.CHANGE_EVENT,
+      location: this.locationTrackingService.location,
+    };
+    this.dispatchEvent(eventDispatch);
+  }
+
   trackClick(event: AnalyticEvent): void {
     const eventDispatch = {
       ...event,

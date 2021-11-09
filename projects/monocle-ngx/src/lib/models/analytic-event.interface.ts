@@ -8,6 +8,8 @@ import { InteractionType } from './interaction-type.enum';
 export interface AnalyticEvent {
   id?: string;
   label?: string;
+  value?: string;
+  displayValue?: string;
   eventType?: AnalyticEventType;
   linkUrl?: string;
   location?: EventLocation;
