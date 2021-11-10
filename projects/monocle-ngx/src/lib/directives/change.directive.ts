@@ -35,7 +35,14 @@ export class ChangeDirective implements OnInit {
 
   @HostListener('mousedown', ['$event'])
   onMousedown(): void {
-    this.interactionDetail = InteractionDetail.mouse;
+    if (this.interactionDetail !== InteractionDetail.touch) {
+      this.interactionDetail = InteractionDetail.mouse;
+    }
+  }
+
+  @HostListener('touchstart', ['$event'])
+  onTouchstart(): void {
+    this.interactionDetail = InteractionDetail.touch;
   }
 
   constructor(private elementRef: ElementRef<HTMLSelectElement>, private eventDispatchService: EventDispatchService) {}

@@ -10,18 +10,36 @@ import { EventDispatchService } from '../services/event-dispatch.service';
 })
 export class ClickDirective {
   @Input('mnclClick') analyticEventInput: AnalyticEvent | '' = '';
+  interactionDetail: InteractionDetail | undefined = undefined;
 
   @HostListener('click', ['$event'])
-  onClick(mouseEvent: MouseEvent): void {
+  onClick(): void {
     const analyticEvent = this.getAnalyticEvent();
     this.determineId(analyticEvent);
     if (this.shouldDispatch(analyticEvent)) {
       analyticEvent.interactionType = InteractionType.click;
-      this.determineInteractionDetail(analyticEvent, mouseEvent);
+      this.determineInteractionDetail(analyticEvent);
       this.determineLabel(analyticEvent);
       this.determineHostUrl(analyticEvent);
       this.handleEvent(analyticEvent);
     }
+  }
+
+  @HostListener('keydown', ['$event'])
+  onKeydown(): void {
+    this.interactionDetail = InteractionDetail.keyboard;
+  }
+
+  @HostListener('mousedown', ['$event'])
+  onMousedown(): void {
+    if (this.interactionDetail !== InteractionDetail.touch) {
+      this.interactionDetail = InteractionDetail.mouse;
+    }
+  }
+
+  @HostListener('touchstart', ['$event'])
+  onTouchstart(): void {
+    this.interactionDetail = InteractionDetail.touch;
   }
 
   constructor(
@@ -40,8 +58,8 @@ export class ClickDirective {
     }
   }
 
-  private determineInteractionDetail(analyticEvent: AnalyticEvent, mouseEvent: MouseEvent): void {
-    analyticEvent.interactionDetail = mouseEvent.detail === 0 ? InteractionDetail.keyboard : InteractionDetail.mouse;
+  private determineInteractionDetail(analyticEvent: AnalyticEvent): void {
+    analyticEvent.interactionDetail = this.interactionDetail;
   }
 
   private determineLabel(analyticEvent: AnalyticEvent): void {
