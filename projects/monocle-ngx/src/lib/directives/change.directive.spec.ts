@@ -38,7 +38,7 @@ describe('ChangeDirective', () => {
     expect(mockEventDispatchService.trackChange).toHaveBeenCalledWith(expectedEvent);
   }));
 
-  it('dispatches a change event using keyboard input', fakeAsync(() => {
+  it('dispatches a change event when using a keyboard', fakeAsync(() => {
     const expectedEvent = {
       id: 'checkboxId',
       interactionType: 'change',
@@ -49,6 +49,24 @@ describe('ChangeDirective', () => {
     };
     const input = fixture.nativeElement.querySelector('#checkboxId');
     input.dispatchEvent(new Event('keydown'));
+    input.click();
+    tick();
+    expect(mockEventDispatchService.trackChange).toHaveBeenCalledTimes(1);
+    expect(mockEventDispatchService.trackChange).toHaveBeenCalledWith(expectedEvent);
+  }));
+
+  it('dispatches a change event when using touch', fakeAsync(() => {
+    const expectedEvent = {
+      id: 'checkboxId',
+      interactionType: 'change',
+      interactionDetail: 'touch',
+      label: 'My default answer',
+      value: 'checked',
+      displayValue: 'My default answer',
+    };
+    const input = fixture.nativeElement.querySelector('#checkboxId');
+    input.dispatchEvent(new Event('touchstart'));
+    input.dispatchEvent(new Event('mousedown'));
     input.click();
     tick();
     expect(mockEventDispatchService.trackChange).toHaveBeenCalledTimes(1);

@@ -31,6 +31,38 @@ describe('ClickDirective', () => {
       label: 'Simple button',
     };
     const button = fixture.nativeElement.querySelector('#testId');
+    button.dispatchEvent(new Event('keydown'));
+    button.click();
+    tick();
+    expect(mockEventDispatchService.trackClick).toHaveBeenCalledTimes(1);
+    expect(mockEventDispatchService.trackClick).toHaveBeenCalledWith(expectedEvent);
+  }));
+
+  it('dispatches a click event when using a mouse', fakeAsync(() => {
+    const expectedEvent = {
+      id: 'testId',
+      interactionType: 'click',
+      interactionDetail: 'mouse',
+      label: 'Simple button',
+    };
+    const button = fixture.nativeElement.querySelector('#testId');
+    button.dispatchEvent(new Event('mousedown'));
+    button.click();
+    tick();
+    expect(mockEventDispatchService.trackClick).toHaveBeenCalledTimes(1);
+    expect(mockEventDispatchService.trackClick).toHaveBeenCalledWith(expectedEvent);
+  }));
+
+  it('dispatches a click event when using touch', fakeAsync(() => {
+    const expectedEvent = {
+      id: 'testId',
+      interactionType: 'click',
+      interactionDetail: 'touch',
+      label: 'Simple button',
+    };
+    const button = fixture.nativeElement.querySelector('#testId');
+    button.dispatchEvent(new Event('touchstart'));
+    button.dispatchEvent(new Event('mousedown'));
     button.click();
     tick();
     expect(mockEventDispatchService.trackClick).toHaveBeenCalledTimes(1);
@@ -46,13 +78,14 @@ describe('ClickDirective', () => {
       linkUrl: '/somewhere',
     };
     const link = fixture.nativeElement.querySelector('#linkWithRouterLink');
+    link.dispatchEvent(new Event('keydown'));
     link.click();
     tick();
     expect(mockEventDispatchService.trackClick).toHaveBeenCalledTimes(1);
     expect(mockEventDispatchService.trackClick).toHaveBeenCalledWith(expectedEvent);
   }));
 
-  it('prioritizes Event properties over host element attributes when both are provided', fakeAsync(() => {
+  it('prioritizes bound properties over host element attributes when both are provided', fakeAsync(() => {
     const expectedEvent = {
       id: 'eventId',
       interactionType: 'click',
@@ -60,15 +93,17 @@ describe('ClickDirective', () => {
       label: 'Event label',
     };
     const button = fixture.nativeElement.querySelector('#useEventId');
+    button.dispatchEvent(new Event('keydown'));
     button.click();
     tick();
     expect(mockEventDispatchService.trackClick).toHaveBeenCalledTimes(1);
     expect(mockEventDispatchService.trackClick).toHaveBeenCalledWith(expectedEvent);
   }));
 
-  it('does not dispatch a click event when no identifier is provided', fakeAsync(() => {
+  it('does not dispatch a click event when an identifier is missing', fakeAsync(() => {
     console.warn = jasmine.createSpy('warn');
     const button = fixture.nativeElement.querySelector('.someClass');
+    button.dispatchEvent(new Event('keydown'));
     button.click();
     tick();
     expect(mockEventDispatchService.trackClick).toHaveBeenCalledTimes(0);
