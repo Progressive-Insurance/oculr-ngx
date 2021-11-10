@@ -22,8 +22,15 @@ mnclClick
 
 Add the directive `mnclClick` to a host button or anchor element in an Angular component's template.
 
+### Button
+
 ```html
 <button mnclClick id="myButton">Continue</button>
+```
+
+### Link
+
+```html
 <a mnclClick routerLink="/home" id="myLink">Cancel</a>
 ```
 
@@ -43,8 +50,12 @@ import { AnalyticEvent } from 'monocle-ngx';
 @Component({
   template: `<button [mnclClick]="myButtonEvent">Continue</button>`,
 })
-export class MyComponent {
-  myButtonEvent = { id: 'myButton' } as AnalyticEvent;
+export class MyComponent implements OnInit {
+  myButtonEvent: AnalyticEvent;
+
+  ngOnInit() {
+    myButtonEvent = { id: 'myButton' };
+  }
 }
 ```
 

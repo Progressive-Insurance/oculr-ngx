@@ -15,8 +15,8 @@ describe('ClickDirective', () => {
     };
 
     TestBed.configureTestingModule({
-      imports: [RouterTestingModule.withRoutes([{ path: 'somewhere', component: DummyRouteComponent }])],
-      declarations: [TestComponent, DummyRouteComponent, ClickDirective],
+      imports: [RouterTestingModule.withRoutes([{ path: 'somewhere', component: AlternateRouteComponent }])],
+      declarations: [TestComponent, AlternateRouteComponent, ClickDirective],
       providers: [{ provide: EventDispatchService, useValue: mockEventDispatchService }],
     });
     fixture = TestBed.createComponent(TestComponent);
@@ -30,7 +30,7 @@ describe('ClickDirective', () => {
       interactionDetail: 'keyboard',
       label: 'Simple button',
     };
-    const button = fixture.debugElement.nativeElement.querySelector('#testId');
+    const button = fixture.nativeElement.querySelector('#testId');
     button.click();
     tick();
     expect(mockEventDispatchService.trackClick).toHaveBeenCalledTimes(1);
@@ -45,7 +45,7 @@ describe('ClickDirective', () => {
       label: 'Simple routerLink',
       linkUrl: '/somewhere',
     };
-    const link = fixture.debugElement.nativeElement.querySelector('#linkWithRouterLink');
+    const link = fixture.nativeElement.querySelector('#linkWithRouterLink');
     link.click();
     tick();
     expect(mockEventDispatchService.trackClick).toHaveBeenCalledTimes(1);
@@ -59,7 +59,7 @@ describe('ClickDirective', () => {
       interactionDetail: 'keyboard',
       label: 'Event label',
     };
-    const button = fixture.debugElement.nativeElement.querySelector('#useEventId');
+    const button = fixture.nativeElement.querySelector('#useEventId');
     button.click();
     tick();
     expect(mockEventDispatchService.trackClick).toHaveBeenCalledTimes(1);
@@ -68,7 +68,7 @@ describe('ClickDirective', () => {
 
   it('does not dispatch a click event when no identifier is provided', fakeAsync(() => {
     console.warn = jasmine.createSpy('warn');
-    const button = fixture.debugElement.nativeElement.querySelector('.someClass');
+    const button = fixture.nativeElement.querySelector('.someClass');
     button.click();
     tick();
     expect(mockEventDispatchService.trackClick).toHaveBeenCalledTimes(0);
@@ -90,4 +90,4 @@ class TestComponent {}
 @Component({
   template: '',
 })
-class DummyRouteComponent {}
+class AlternateRouteComponent {}
