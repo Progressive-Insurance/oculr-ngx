@@ -7,23 +7,23 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "monocle-ngx": {
+    "oculr-ngx": {
       "projectType": "library",
-      "root": "projects/monocle-ngx",
-      "sourceRoot": "projects/monocle-ngx/src",
+      "root": "projects/oculr-ngx",
+      "sourceRoot": "projects/oculr-ngx/src",
       "prefix": "lib",
       "architect": {
         "build": {
           "builder": "@angular-devkit/build-angular:ng-packagr",
           "options": {
-            "project": "projects/monocle-ngx/ng-package.json"
+            "project": "projects/oculr-ngx/ng-package.json"
           },
           "configurations": {
             "production": {
-              "tsConfig": "projects/monocle-ngx/tsconfig.lib.prod.json"
+              "tsConfig": "projects/oculr-ngx/tsconfig.lib.prod.json"
             },
             "development": {
-              "tsConfig": "projects/monocle-ngx/tsconfig.lib.json"
+              "tsConfig": "projects/oculr-ngx/tsconfig.lib.json"
             }
           },
           "defaultConfiguration": "production"
@@ -31,27 +31,24 @@
         "test": {
           "builder": "@angular-devkit/build-angular:karma",
           "options": {
-            "main": "projects/monocle-ngx/src/test.ts",
-            "tsConfig": "projects/monocle-ngx/tsconfig.spec.json",
-            "karmaConfig": "projects/monocle-ngx/karma.conf.js"
+            "main": "projects/oculr-ngx/src/test.ts",
+            "tsConfig": "projects/oculr-ngx/tsconfig.spec.json",
+            "karmaConfig": "projects/oculr-ngx/karma.conf.js"
           },
           "configurations": {
             "production": {
-              "karmaConfig": "projects/monocle-ngx/karma-ci.conf.js"
+              "karmaConfig": "projects/oculr-ngx/karma-ci.conf.js"
             }
           }
         },
         "lint": {
           "builder": "@angular-eslint/builder:lint",
           "options": {
-            "lintFilePatterns": [
-              "projects/monocle-ngx/**/*.ts",
-              "projects/monocle-ngx/**/*.html"
-            ]
+            "lintFilePatterns": ["projects/oculr-ngx/**/*.ts", "projects/oculr-ngx/**/*.html"]
           }
         }
       }
     }
   },
-  "defaultProject": "monocle-ngx"
+  "defaultProject": "oculr-ngx"
 }

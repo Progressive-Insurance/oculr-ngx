@@ -5,7 +5,7 @@
     {
       "files": ["*.ts"],
       "parserOptions": {
-        "project": ["projects/monocle-ngx/tsconfig.lib.json", "projects/monocle-ngx/tsconfig.spec.json"],
+        "project": ["projects/oculr-ngx/tsconfig.lib.json", "projects/oculr-ngx/tsconfig.spec.json"],
         "createDefaultProgram": true
       },
       "rules": {
@@ -13,7 +13,7 @@
           "error",
           {
             "type": "attribute",
-            "prefix": "mncl",
+            "prefix": "oculr",
             "style": "camelCase"
           }
         ],
@@ -21,7 +21,7 @@
           "error",
           {
             "type": "element",
-            "prefix": "mncl",
+            "prefix": "oculr",
             "style": "kebab-case"
           }
         ]

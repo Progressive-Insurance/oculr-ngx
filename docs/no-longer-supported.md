@@ -10,7 +10,7 @@ The logic in this function formats Angular form errors in a format specific to t
 
 > ### Recommended refactor
 >
-> Implement the `formatFormErrors` [function](https://github.com/Progressive/monocle-ngx/blob/cf828395364367fd2ffee6f4babd9f2c761e1bb4/projects/monocle-ngx/src/lib/utils/format-form-errors.ts) within your own client and replace any calls.
+> Implement the `formatFormErrors` [function](https://github.com/Progressive/oculr-ngx/blob/cf828395364367fd2ffee6f4babd9f2c761e1bb4/projects/oculr-ngx/src/lib/utils/format-form-errors.ts) within your own client and replace any calls.
 
 ### getCheckboxState
 
@@ -18,7 +18,7 @@ This function returns a string based on the state of a checkbox control. This ty
 
 > ### Recommended refactor
 >
-> Implement the `getCheckboxState` [function](https://github.com/Progressive/monocle-ngx/blob/7eb948cefbbc2f9bdd65c199cb07d975a882d992/projects/monocle-ngx/src/lib/utils/get-checkbox-state.ts) within your own client and replace any calls.
+> Implement the `getCheckboxState` [function](https://github.com/Progressive/oculr-ngx/blob/7eb948cefbbc2f9bdd65c199cb07d975a882d992/projects/oculr-ngx/src/lib/utils/get-checkbox-state.ts) within your own client and replace any calls.
 
 ### getInputLabel
 
@@ -26,7 +26,7 @@ This function is far too specialized to provide value to multiple clients. It's 
 
 > ### Recommended refactor
 >
-> Implement the `getInputLabel` [function](https://github.com/Progressive/monocle-ngx/blob/7eb948cefbbc2f9bdd65c199cb07d975a882d992/projects/monocle-ngx/src/lib/utils/get-input-label.ts) within your own client and replace any calls.
+> Implement the `getInputLabel` [function](https://github.com/Progressive/oculr-ngx/blob/7eb948cefbbc2f9bdd65c199cb07d975a882d992/projects/oculr-ngx/src/lib/utils/get-input-label.ts) within your own client and replace any calls.
 
 ### remoteHtmlEntities
 

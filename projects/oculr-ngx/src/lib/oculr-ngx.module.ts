@@ -20,10 +20,10 @@ import { WindowService } from './services/window.service';
   exports: [DisplayDirective, ClickDirective],
   providers: [],
 })
-export class MonocleAngularModule {
-  static forRoot(): ModuleWithProviders<MonocleAngularModule> {
+export class OculrAngularModule {
+  static forRoot(): ModuleWithProviders<OculrAngularModule> {
     return {
-      ngModule: MonocleAngularModule,
+      ngModule: OculrAngularModule,
       providers: [
         AnalyticsEventBusService,
         EventDispatchService,

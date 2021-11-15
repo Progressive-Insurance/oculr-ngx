@@ -29,7 +29,7 @@ jobs:
       - name: Publish
         run: |
           curl -u ${ARTIFACTORY_USER}:${ARTIFACTORY_TOKEN} https://progressive.jfrog.io/progressive/api/npm/auth > ~/.npmrc
-          npm publish dist/monocle-ngx --registry https://$ARTIFACTORY_USER:$ARTIFACTORY_TOKEN@progressive.jfrog.io/progressive/api/npm/pgr-npm
+          npm publish dist/oculr-ngx --registry https://$ARTIFACTORY_USER:$ARTIFACTORY_TOKEN@progressive.jfrog.io/progressive/api/npm/pgr-npm
         env:
           ARTIFACTORY_USER: ${{ secrets.ARTIFACTORY_USER }}
           ARTIFACTORY_TOKEN: ${{ secrets.ARTIFACTORY_TOKEN }}

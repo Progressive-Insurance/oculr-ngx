@@ -6,10 +6,10 @@ import { InteractionType } from '../models/interaction-type.enum';
 import { EventDispatchService } from '../services/event-dispatch.service';
 
 @Directive({
-  selector: '[mnclClick]',
+  selector: '[oculrClick]',
 })
 export class ClickDirective {
-  @Input('mnclClick') analyticEventInput: AnalyticEvent | '' = '';
+  @Input('oculrClick') analyticEventInput: AnalyticEvent | '' = '';
   interactionDetail: InteractionDetail | undefined = undefined;
 
   @HostListener('click', ['$event'])
@@ -85,9 +85,9 @@ export class ClickDirective {
   private shouldDispatch(analyticEvent: AnalyticEvent): boolean {
     if (!analyticEvent.id) {
       console.warn(
-        `The mnclClick directive requires an identifier. This can be done with an id attribute on the
+        `The oculrClick directive requires an identifier. This can be done with an id attribute on the
         host element, or by binding an Event object. More information can be found here:
-        https://github.com/Progressive/monocle-ngx/blob/main/docs/click-directive.md`
+        https://github.com/Progressive/oculr-ngx/blob/main/docs/click-directive.md`
       );
       return false;
     }
