@@ -141,7 +141,6 @@ export class EventDispatchService {
 
   // TODO: Can probably remove and replace with single call to eventBus.dispatch
   private dispatchEvent(event: AnalyticEvent): void {
-    console.log(event);
     this.eventBus.dispatch(event);
   }
 }

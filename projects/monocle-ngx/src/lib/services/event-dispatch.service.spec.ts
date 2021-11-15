@@ -105,7 +105,6 @@ describe('EventDispatchService', () => {
 
   describe('trackDisplay', () => {
     it('dispatches an DISPLAY_EVENT action with model and location', () => {
-      console.log = jasmine.createSpy('log');
       const mockEvent: any = { id: 'mock' };
       const mockEventDispatch: any = {
         id: 'mock',
