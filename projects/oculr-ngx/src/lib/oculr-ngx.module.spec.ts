@@ -3,15 +3,15 @@ import { Component, NgModule } from '@angular/core';
 import { inject, TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 
-import { MonocleAngularModule } from './monocle-ngx.module';
+import { OculrAngularModule } from './oculr-ngx.module';
 
-@Component({ selector: 'mncl-bootstrappable-component', template: '' })
+@Component({ selector: 'oculr-bootstrappable-component', template: '' })
 class BootstrappableComponent {}
 
 @NgModule({
   declarations: [BootstrappableComponent],
   bootstrap: [BootstrappableComponent],
-  imports: [MonocleAngularModule.forRoot()],
+  imports: [OculrAngularModule.forRoot()],
 })
 class InitTestModule {}
 
@@ -24,7 +24,7 @@ describe('the analytics library module', () => {
   });
 
   beforeEach(inject([DOCUMENT], function (doc: HTMLDocument) {
-    const elBootComp = doc.createElement('mncl-bootstrappable-component');
+    const elBootComp = doc.createElement('oculr-bootstrappable-component');
     doc.body.appendChild(elBootComp);
   }));
 });

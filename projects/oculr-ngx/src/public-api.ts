@@ -1,4 +1,4 @@
-export { MonocleAngularModule } from './lib/monocle-ngx.module';
+export { OculrAngularModule } from './lib/oculr-ngx.module';
 
 export { GoogleTagManagerService } from './lib/destinations/google-tag-manager/google-tag-manager.service';
 

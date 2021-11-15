@@ -4,10 +4,10 @@ import { DisplayEvent } from '../models/display-event.interface';
 import { EventDispatchService } from '../services/event-dispatch.service';
 
 @Directive({
-  selector: '[mnclDisplay]',
+  selector: '[oculrDisplay]',
 })
 export class DisplayDirective implements OnInit {
-  @Input('mnclDisplay') analyticEventInput: DisplayEvent | '' = '';
+  @Input('oculrDisplay') analyticEventInput: DisplayEvent | '' = '';
 
   constructor(private elementRef: ElementRef<HTMLElement>, private eventDispatchService: EventDispatchService) {}
 
@@ -37,9 +37,9 @@ export class DisplayDirective implements OnInit {
   private shouldDispatch(analyticEvent: DisplayEvent): boolean {
     if (!analyticEvent.id) {
       console.warn(
-        `The mnclDisplay directive requires an identifier. This can be done with an id attribute on the
+        `The oculrDisplay directive requires an identifier. This can be done with an id attribute on the
         host element, or by binding an Event object. More information can be found here:
-        https://github.com/Progressive/monocle-ngx/blob/main/docs/display-directive.md`
+        https://github.com/Progressive/oculr-ngx/blob/main/docs/display-directive.md`
       );
       return false;
     }

@@ -16,13 +16,13 @@ An interface that is used with dispatching display event using [DisplayDirective
 
 ## Example
 
-In this example a `DisplayEvent` is built in the Angular component's `ngOnInit()` and then used by the [mnclDisplay](display-directive.md) directive. The objects in `scopes` are completely customizable and determined by consuming applications.
+In this example a `DisplayEvent` is built in the Angular component's `ngOnInit()` and then used by the [oculrDisplay](display-directive.md) directive. The objects in `scopes` are completely customizable and determined by consuming applications.
 
 ```typescript
-import { DisplayEvent } from 'monocle-ngx';
+import { DisplayEvent } from 'oculr-ngx';
 
 @Component({
-  template: `<div [mnclDisplay]="bannerEvent">Important banner message</div>`,
+  template: `<div [oculrDisplay]="bannerEvent">Important banner message</div>`,
 })
 export class MyComponent implements OnInit {
   bannerEvent: DisplayEvent;
@@ -43,4 +43,4 @@ export class MyComponent implements OnInit {
 
 ## Feedback
 
-Is something not working or unclear? Please create an [issue](https://github.com/Progressive/monocle-ngx/issues/new/choose) or [PR](https://github.com/Progressive/monocle-ngx/blob/main/CONTRIBUTING.md).
+Is something not working or unclear? Please create an [issue](https://github.com/Progressive/oculr-ngx/issues/new/choose) or [PR](https://github.com/Progressive/oculr-ngx/blob/main/CONTRIBUTING.md).

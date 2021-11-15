@@ -113,10 +113,10 @@ describe('ClickDirective', () => {
 
 @Component({
   template: `
-    <button mnclClick id="testId">Simple button</button>
-    <a mnclClick routerLink="/somewhere" id="linkWithRouterLink">Simple routerLink</a>
-    <button [mnclClick]="{ id: 'eventId', label: 'Event label' }" id="useEventId">Event object button</button>
-    <button mnclClick class="someClass">Missing id button</button>
+    <button oculrClick id="testId">Simple button</button>
+    <a oculrClick routerLink="/somewhere" id="linkWithRouterLink">Simple routerLink</a>
+    <button [oculrClick]="{ id: 'eventId', label: 'Event label' }" id="useEventId">Event object button</button>
+    <button oculrClick class="someClass">Missing id button</button>
     <router-outlet></router-outlet>
   `,
 })

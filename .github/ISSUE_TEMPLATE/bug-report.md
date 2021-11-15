@@ -1,6 +1,6 @@
 ---
 name: "\U0001F41E Bug report"
-about: Report a bug in monocle-ngx library
+about: Report a bug in oculr-ngx library
 title: ''
 labels: ''
 assignees: ''

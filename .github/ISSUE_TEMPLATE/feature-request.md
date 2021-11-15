@@ -1,6 +1,6 @@
 ---
 name: "\U0001F680 Feature request"
-about: Suggest an idea for the monocle-ngx library
+about: Suggest an idea for the oculr-ngx library
 title: ''
 labels: ''
 assignees: ''

@@ -134,24 +134,24 @@ describe('ChangeDirective', () => {
 
 @Component({
   template: `
-    <input mnclChange type="checkbox" id="checkboxId" />
+    <input oculrChange type="checkbox" id="checkboxId" />
     <label for="checkboxId">My default answer</label>
 
     <input
-      [mnclChange]="{ id: 'eventId', label: 'Event label' }"
+      [oculrChange]="{ id: 'eventId', label: 'Event label' }"
       type="checkbox"
       id="useEventId"
       formControlName="myCheckbox"
     />
     <label for="useEventId">Use event object</label>
 
-    <input mnclChange type="radio" id="radioYesId" value="yes" />
+    <input oculrChange type="radio" id="radioYesId" value="yes" />
     <label for="radioYesId">Yes</label>
-    <input mnclChange type="radio" id="radioNoId" value="no" />
+    <input oculrChange type="radio" id="radioNoId" value="no" />
     <label for="radioNoId">No</label>
 
     <label for="selectId">What is your favorite food?</label>
-    <select mnclChange id="selectId">
+    <select oculrChange id="selectId">
       <option value="pizza">Pizza</option>
       <option value="tacos">Tacos</option>
       <option value="ramen">Ramen</option>

@@ -6,10 +6,10 @@ import { InteractionType } from '../models/interaction-type.enum';
 import { EventDispatchService } from '../services/event-dispatch.service';
 
 @Directive({
-  selector: '[mnclChange]',
+  selector: '[oculrChange]',
 })
 export class ChangeDirective implements OnInit {
-  @Input('mnclChange') analyticEventInput: AnalyticEvent | '' = '';
+  @Input('oculrChange') analyticEventInput: AnalyticEvent | '' = '';
   @Input() sensitiveData = false;
   interactionDetail: InteractionDetail | undefined = undefined;
 
@@ -114,8 +114,8 @@ export class ChangeDirective implements OnInit {
       !['radio', 'checkbox'].includes(this.elementRef.nativeElement.getAttribute('type') || '')
     ) {
       console.warn(
-        `The mnclChange directive only works when the host element is a select, radio input, or checkbox input.
-         More information can be found here: https://github.com/Progressive/monocle-ngx/blob/main/docs/change-directive.md`
+        `The oculrChange directive only works when the host element is a select, radio input, or checkbox input.
+         More information can be found here: https://github.com/Progressive/oculr-ngx/blob/main/docs/change-directive.md`
       );
     }
   }
@@ -123,9 +123,9 @@ export class ChangeDirective implements OnInit {
   private shouldDispatch(analyticEvent: AnalyticEvent): boolean {
     if (!analyticEvent.id) {
       console.warn(
-        `The mnclChange directive requires an identifier. This can be done with an id attribute on the
+        `The oculrChange directive requires an identifier. This can be done with an id attribute on the
         host element, or by binding an Event object. More information can be found here:
-        https://github.com/Progressive/monocle-ngx/blob/main/docs/change-directive.md`
+        https://github.com/Progressive/oculr-ngx/blob/main/docs/change-directive.md`
       );
       return false;
     }

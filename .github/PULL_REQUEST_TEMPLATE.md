@@ -1,6 +1,6 @@
 <!--
   Thank you for sending a pull request!
-  Please take a look at our contribution guide: https://github.com/Progressive/monocle-ngx/blob/main/CONTRIBUTING.md
+  Please take a look at our contribution guide: https://github.com/Progressive/oculr-ngx/blob/main/CONTRIBUTING.md
   One of the project maintainers will review your PR.
 -->
 
