@@ -6,7 +6,7 @@ We warmly welcome any community contributions to this repository.
 
 This repository is maintained by:
 
-- d00d Parkins @michael-parkins
+- Michael "d00d" Parkins @michael-parkins
 - Mike Jancar @mikejancar
 
 ## Contribution Process
