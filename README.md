@@ -4,28 +4,81 @@ An analytics library that makes collecting data in an Angular app simple.
 
 ![build workflow](https://github.com/Progressive/oculr-ngx/actions/workflows/build.yml/badge.svg) ![publish workflow](https://github.com/Progressive/oculr-ngx/actions/workflows/publish.yml/badge.svg)
 
-[Latest release](https://github.com/Progressive/oculr-ngx/releases/latest)
+## What does it do?
 
-<hr>
+Oculr is an Angular library that helps you capture analytic events occuring in your app. The following features give you insight into what your users are doing in your app and how your app is handling data and errors in the background.
 
-## Publishing a new release
+- [Page views]()
+- [API calls]()
+- [Errors]()
+- [Content display](docs/display-directive.md)
+- [Button and link interactions](docs/click-directive.md)
+- [Form control interactions](docs/change-directive.md)
+- [Sensitive information control interactions]()
 
-There are just a few steps to follow when releasing a new version of the library.
+## How can it help?
 
-1. Open your preferred terminal and navigate to the _oculr-ngx_ repo.
-2. Sync your local _main_ branch with the latest changes.
-3. Navigate to the _projects/oculr-ngx_ subdirectory.
-4. Update the _package.json_ file with the desired version value. This can be done manually or by using the [npm version](https://docs.npmjs.com/cli/v7/commands/npm-version) command.
-5. Run `npm run tag-release`.
-6. Push this new commit and its tag to the server.
-   ```node
-   git push
-   git push --tags
-   ```
-7. Open a browser, navigate to the [oculr-ngx](https://github.com/Progressive/oculr-ngx) repo and enter the _Releases_ section.
-8. Switch to the _Tags_ view and click on your newly-created tag.
-9. Click on the _Create release from tag_ button.
-10. Enter a title that matches the tag name and click the _Auto-generate release notes_ button to populate the changes in the release. If this is a pre-release version, be sure to check the _This is a pre-release_ checkbox.
-11. When you're completely satisfied, click on the _Publish release_ button.
+Oculr helps you know what you don't know.
 
-The creation of a new release will kickoff a GitHub action that will rebuild, test and publish the release. You can verify its success by navigating to the [ci publish](https://github.com/Progressive/oculr-ngx/actions/workflows/publish.yml) workflow under the Actions tab.
+Are your users finding the content you want them to? Are they getting stuck on a page or question? Is your app making redundant calls to an API? Is a feature not working leading to a subpar experience? These are just some of the questions Oculr can help answer.
+
+## Where does the data go?
+
+Where you want it.
+
+Oculr can point to any API that you want to use for tracking analytic data. By default it comes with a couple [preconfigured options]() for Splunk and Google Analytics, but it can be [configured]() to use any API of your choice. Oculr also features the ability to [shape the data]() based on your needs before being sent to an API.
+
+## Quick start
+
+Install Oculr.
+
+```node
+npm install oculr --save
+```
+
+Configure Oculr during app initialization.
+
+...
+
+<!-- TODO: need details, may need to be pulled into another doc if too large -->
+
+Check out our [walkthrough]() for more hands-on details to get the most out of Oculr.
+
+## Documentation
+
+- [Full API](docs/README.md)
+- [Walkthrough]()
+- [Configuration]()
+- [Directives]()
+- [Services]()
+
+## Updates
+
+- [Check out our improvements](CHANGELOG.md)
+- [See our latest release](https://github.com/Progressive/oculr-ngx/releases/latest)
+
+## Contributing
+
+### Want to help?
+
+We're excited about your interest in the project. Have an idea, want to contribute some code, found a bug, expand some documentation? Awesome! Check out our [contribution guide]() and then take a look at our [issues]() and [discussions](). We recommend issues that have been labeled as `help wanted` or `good first issue`.
+
+### Local setup
+
+Local setup and a quick few steps.
+
+```node
+git clone https://github.com/Progressive/oculr-ngx
+cd oculr-ngx
+npm install
+npm run test
+```
+
+We recommend the following extensions to make the contribution process as seamless as possible.
+
+- [ESLint](https://marketplace.visualstudio.com/items?itemName=dbaeumer.vscode-eslint)
+- [Prettier](https://marketplace.visualstudio.com/items?itemName=esbenp.prettier-vscode)
+
+### Code of conduct
+
+Help us make this project open and inclusive. Please follow our [Code of Conduct](CODE_OF_CONDUCT.md).
