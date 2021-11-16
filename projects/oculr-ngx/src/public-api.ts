@@ -12,6 +12,7 @@ export { GoogleTagManagerService } from './lib/destinations/google-tag-manager/g
 
 export { DisplayDirective } from './lib/directives/display.directive';
 export { ClickDirective } from './lib/directives/click.directive';
+export { ChangeDirective } from './lib/directives/change.directive';
 
 export { API_EVENT_CONTEXT } from './lib/interceptors/analytics.interceptor';
 

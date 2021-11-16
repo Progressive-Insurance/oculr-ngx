@@ -11,6 +11,7 @@ import { HTTP_INTERCEPTORS } from '@angular/common/http';
 import { APP_INITIALIZER, ModuleWithProviders, NgModule } from '@angular/core';
 import { ConsoleService } from './destinations/console/console.service';
 import { SplunkService } from './destinations/splunk/splunk.service';
+import { ChangeDirective } from './directives/change.directive';
 import { ClickDirective } from './directives/click.directive';
 import { DisplayDirective } from './directives/display.directive';
 import { AnalyticsInterceptor } from './interceptors/analytics.interceptor';
@@ -24,8 +25,8 @@ import { WindowService } from './services/window.service';
 
 @NgModule({
   imports: [CommonModule],
-  declarations: [DisplayDirective, ClickDirective],
-  exports: [DisplayDirective, ClickDirective],
+  declarations: [DisplayDirective, ClickDirective, ChangeDirective],
+  exports: [DisplayDirective, ClickDirective, ChangeDirective],
   providers: [],
 })
 export class OculrAngularModule {
