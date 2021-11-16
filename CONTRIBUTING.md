@@ -11,6 +11,9 @@ This repository is maintained by:
 
 ## Contribution Process
 
+<!-- TODO: Switch over to forking process -->
+<!-- TODO: Add directions for DCO or CLA -->
+
 1. Create a feature branch containing the changes you'd like to make. Feature branches should be named of the form **feature/xyz**.
 2. Open a PR for your change:
 
