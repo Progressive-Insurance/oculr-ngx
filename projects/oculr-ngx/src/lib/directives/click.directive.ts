@@ -79,7 +79,6 @@ export class ClickDirective {
 
   private setHostUrl(analyticEvent: AnalyticEvent): void {
     if (this.elementRef.nativeElement.tagName.toLowerCase() === 'a') {
-      console.log(this.elementRef.nativeElement.getAttribute('routerLink'));
       analyticEvent.linkUrl =
         this.elementRef.nativeElement.getAttribute('routerLink') ||
         this.elementRef.nativeElement.getAttribute('href') ||
