@@ -9,6 +9,7 @@
 import { Directive, ElementRef, HostListener, Input, OnInit } from '@angular/core';
 
 import { AnalyticEvent } from '../models/analytic-event.interface';
+import { InputType } from '../models/input-type.enum';
 import { InteractionDetail } from '../models/interaction-detail.enum';
 import { InteractionType } from '../models/interaction-type.enum';
 import { EventDispatchService } from '../services/event-dispatch.service';
@@ -19,20 +20,32 @@ import { EventDispatchService } from '../services/event-dispatch.service';
 export class ChangeDirective implements OnInit {
   @Input('oculrChange') analyticEventInput: AnalyticEvent | '' = '';
   @Input() sensitiveData = false;
+  successfulInit = true;
   interactionDetail: InteractionDetail | undefined = undefined;
+  supportedInputTypes = [
+    InputType.checkbox,
+    InputType.date,
+    InputType.number,
+    InputType.radio,
+    InputType.search,
+    InputType.text,
+  ];
 
   @HostListener('change', ['$event'])
-  onChange(event: Event): void {
-    const analyticEvent = this.getAnalyticEvent();
-    this.determineId(analyticEvent);
-    if (this.shouldDispatch(analyticEvent)) {
-      analyticEvent.interactionType = InteractionType.change;
-      this.determineInteractionDetail(analyticEvent);
-      this.determineLabel(analyticEvent);
-      if (!this.sensitiveData) {
-        this.determineValue(analyticEvent, event);
+  onChange(): void {
+    if (this.successfulInit) {
+      const analyticEvent = this.getAnalyticEvent();
+      this.setId(analyticEvent);
+      if (this.shouldDispatch(analyticEvent)) {
+        analyticEvent.interactionType = InteractionType.change;
+        this.setInteractionDetail(analyticEvent);
+        this.setInput(analyticEvent);
+        this.setLabel(analyticEvent);
+        if (!this.sensitiveData) {
+          this.setValue(analyticEvent);
+        }
+        this.handleEvent(analyticEvent);
       }
-      this.handleEvent(analyticEvent);
     }
   }
 
@@ -53,7 +66,10 @@ export class ChangeDirective implements OnInit {
     this.interactionDetail = InteractionDetail.touch;
   }
 
-  constructor(private elementRef: ElementRef<HTMLSelectElement>, private eventDispatchService: EventDispatchService) {}
+  constructor(
+    private elementRef: ElementRef<HTMLSelectElement | HTMLTextAreaElement | HTMLInputElement>,
+    private eventDispatchService: EventDispatchService
+  ) {}
 
   ngOnInit(): void {
     this.checkHost();
@@ -72,40 +88,57 @@ export class ChangeDirective implements OnInit {
     return labelText;
   }
 
-  private determineId(analyticEvent: AnalyticEvent): void {
+  private setId(analyticEvent: AnalyticEvent): void {
     const elementId = this.elementRef.nativeElement.getAttribute('id');
     if (elementId) {
       analyticEvent.id ||= elementId;
     }
   }
 
-  private determineInteractionDetail(analyticEvent: AnalyticEvent): void {
+  private setInteractionDetail(analyticEvent: AnalyticEvent): void {
     analyticEvent.interactionDetail = this.interactionDetail;
   }
 
-  private determineLabel(analyticEvent: AnalyticEvent): void {
+  private setInput(analyticEvent: AnalyticEvent): void {
+    const elementName = this.elementRef.nativeElement.tagName.toLowerCase();
+    analyticEvent.inputType =
+      elementName === 'input'
+        ? (this.elementRef.nativeElement.getAttribute('type') as InputType)
+        : (elementName as InputType);
+  }
+
+  private setLabel(analyticEvent: AnalyticEvent): void {
     analyticEvent.label ||= this.getLabel();
   }
 
-  private determineValue(analyticEvent: AnalyticEvent, event: Event): void {
-    const target = event.target as HTMLInputElement;
-    const inputType =
-      this.elementRef.nativeElement.tagName.toLowerCase() === 'select'
-        ? 'select'
-        : this.elementRef.nativeElement.getAttribute('type');
-    switch (inputType) {
-      case 'radio':
-        analyticEvent.value = target.value;
+  private setValue(analyticEvent: AnalyticEvent): void {
+    let element: HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement;
+    switch (analyticEvent.inputType) {
+      case InputType.checkbox:
+        element = this.elementRef.nativeElement as HTMLInputElement;
+        analyticEvent.value = element.checked ? 'checked' : 'cleared';
         analyticEvent.displayValue = this.getLabel();
         break;
-      case 'select':
-        analyticEvent.value = target.value;
-        analyticEvent.displayValue =
-          this.elementRef.nativeElement.options[this.elementRef.nativeElement.selectedIndex].text;
+      case InputType.date:
+      case InputType.number:
+      case InputType.search:
+      case InputType.text:
+        element = this.elementRef.nativeElement as HTMLInputElement;
+        analyticEvent.value = element.value;
         break;
-      case 'checkbox':
-        analyticEvent.value = target.checked ? 'checked' : 'unchecked';
+      case InputType.radio:
+        element = this.elementRef.nativeElement as HTMLInputElement;
+        analyticEvent.value = element.value;
         analyticEvent.displayValue = this.getLabel();
+        break;
+      case InputType.select:
+        element = this.elementRef.nativeElement as HTMLSelectElement;
+        analyticEvent.value = element.value;
+        analyticEvent.displayValue = element.options[element.selectedIndex].text;
+        break;
+      case InputType.textarea:
+        element = this.elementRef.nativeElement as HTMLTextAreaElement;
+        analyticEvent.value = element.value;
         break;
       default:
         break;
@@ -118,23 +151,25 @@ export class ChangeDirective implements OnInit {
 
   private checkHost(): void {
     if (
-      this.elementRef.nativeElement.tagName.toLowerCase() !== 'select' &&
-      !['radio', 'checkbox'].includes(this.elementRef.nativeElement.getAttribute('type') || '')
+      !['select', 'textarea'].includes(this.elementRef.nativeElement.tagName.toLowerCase()) &&
+      !this.supportedInputTypes.includes((this.elementRef.nativeElement.getAttribute('type') || '') as InputType)
     ) {
-      console.warn(
-        `The oculrChange directive only works when the host element is a select, radio input, or checkbox input.
-         More information can be found here: https://github.com/Progressive/oculr-ngx/blob/main/docs/change-directive.md`
-      );
+      this.successfulInit = false;
+      console.warn(`
+The oculrChange directive only works with select, textarea, or input elements of the following types.
+${this.supportedInputTypes.join('\r\n')}
+More information can be found here: https://github.com/Progressive/oculr-ngx/blob/main/docs/change-directive.md
+      `);
     }
   }
 
   private shouldDispatch(analyticEvent: AnalyticEvent): boolean {
     if (!analyticEvent.id) {
-      console.warn(
-        `The oculrChange directive requires an identifier. This can be done with an id attribute on the
-        host element, or by binding an Event object. More information can be found here:
-        https://github.com/Progressive/oculr-ngx/blob/main/docs/change-directive.md`
-      );
+      console.warn(`
+The oculrChange directive requires an identifier. This can be done with an id attribute on the
+host element, or by binding an AnalyticEvent object. More information can be found here:
+https://github.com/Progressive/oculr-ngx/blob/main/docs/change-directive.md
+      `);
       return false;
     }
     return true;

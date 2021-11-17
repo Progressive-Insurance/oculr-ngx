@@ -23,12 +23,12 @@ export class ClickDirective {
   @HostListener('click', ['$event'])
   onClick(): void {
     const analyticEvent = this.getAnalyticEvent();
-    this.determineId(analyticEvent);
+    this.setId(analyticEvent);
     if (this.shouldDispatch(analyticEvent)) {
       analyticEvent.interactionType = InteractionType.click;
-      this.determineInteractionDetail(analyticEvent);
-      this.determineLabel(analyticEvent);
-      this.determineHostUrl(analyticEvent);
+      this.setInteractionDetail(analyticEvent);
+      this.setLabel(analyticEvent);
+      this.setHostUrl(analyticEvent);
       this.handleEvent(analyticEvent);
     }
   }
@@ -59,28 +59,29 @@ export class ClickDirective {
     return this.analyticEventInput ? { ...this.analyticEventInput } : { id: '' };
   }
 
-  private determineId(analyticEvent: AnalyticEvent): void {
+  private setId(analyticEvent: AnalyticEvent): void {
     const elementId = this.elementRef.nativeElement.getAttribute('id');
     if (elementId) {
       analyticEvent.id ||= elementId;
     }
   }
 
-  private determineInteractionDetail(analyticEvent: AnalyticEvent): void {
+  private setInteractionDetail(analyticEvent: AnalyticEvent): void {
     analyticEvent.interactionDetail = this.interactionDetail;
   }
 
-  private determineLabel(analyticEvent: AnalyticEvent): void {
+  private setLabel(analyticEvent: AnalyticEvent): void {
     const hostText = this.elementRef.nativeElement.textContent;
     if (hostText) {
       analyticEvent.label ||= hostText;
     }
   }
 
-  private determineHostUrl(analyticEvent: AnalyticEvent): void {
+  private setHostUrl(analyticEvent: AnalyticEvent): void {
     if (this.elementRef.nativeElement.tagName.toLowerCase() === 'a') {
+      console.log(this.elementRef.nativeElement.getAttribute('routerLink'));
       analyticEvent.linkUrl =
-        this.elementRef.nativeElement.getAttribute('routeLink') ||
+        this.elementRef.nativeElement.getAttribute('routerLink') ||
         this.elementRef.nativeElement.getAttribute('href') ||
         '';
     }

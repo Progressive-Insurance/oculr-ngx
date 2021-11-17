@@ -21,7 +21,7 @@ export class DisplayDirective implements OnInit {
 
   ngOnInit(): void {
     const analyticEvent = this.getAnalyticEvent();
-    this.determineId(analyticEvent);
+    this.setId(analyticEvent);
     if (this.shouldDispatch(analyticEvent)) {
       this.handleEvent(analyticEvent);
     }
@@ -31,7 +31,7 @@ export class DisplayDirective implements OnInit {
     return this.analyticEventInput ? { ...this.analyticEventInput } : { id: '' };
   }
 
-  private determineId(analyticEvent: DisplayEvent): void {
+  private setId(analyticEvent: DisplayEvent): void {
     const elementId = this.elementRef.nativeElement.getAttribute('id');
     if (elementId) {
       analyticEvent.id ||= elementId;

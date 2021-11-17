@@ -10,12 +10,14 @@ import { HttpErrorResponse, HttpRequest, HttpResponse } from '@angular/common/ht
 import { TimeoutError } from 'rxjs';
 import { AnalyticEventType } from './analytic-event-type.enum';
 import { EventLocation } from './event-location.interface';
+import { InputType } from './input-type.enum';
 import { InteractionDetail } from './interaction-detail.enum';
 import { InteractionType } from './interaction-type.enum';
 
 export interface AnalyticEvent {
   id?: string;
   label?: string;
+  inputType?: InputType;
   value?: string;
   displayValue?: string;
   eventType?: AnalyticEventType;

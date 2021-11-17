@@ -4,7 +4,7 @@
 
 ## Description
 
-A directive that dispatches an interaction event when an input or select element changes value.
+A directive that dispatches an interaction event when an input, textarea, or select element changes value.
 
 ## Selector
 
@@ -21,7 +21,25 @@ oculrChange
 
 ## Quick start
 
-Add the directive `oculrChange` to a host radio input, checkbox input, or select element in an Angular component's template.
+Add the directive `oculrChange` to any for the following host elements in an Angular component's template.
+
+| Supported elements      |
+| ----------------------- |
+| `input type="checkbox"` |
+| `input type="date"`     |
+| `input type="number"`   |
+| `input type="radio"`    |
+| `input type="search"`   |
+| `input type="text"`     |
+| `select`                |
+| `textarea`              |
+
+### Checkbox input
+
+```html
+<input oculrChange type="checkbox" id="myCheckbox" formControlName="myCheckbox" />
+<label for="myCheckbox">Do you agree?</label>
+```
 
 ### Radio input
 
@@ -36,17 +54,10 @@ Add the directive `oculrChange` to a host radio input, checkbox input, or select
 </div>
 ```
 
-### Checkbox input
-
-```html
-<input oculrChange type="checkbox" id="myCheckbox" formControlName="myCheckbox" />
-<label for="myCheckbox">Do you agree?</label>
-```
-
 ### Select
 
 ```html
-<label for="mySelect">Favorite food:</label>
+<label for="mySelect">What is you favorite food?</label>
 <select oculrChange id="mySelect" formControlName="mySelect">
   <option value=""></option>
   <option value="pizza">Pizza</option>
@@ -102,8 +113,13 @@ The following table describes what is not captured when `sensitivedata` is set t
 | Control type            | HTML data not captured                                                                                   |
 | ----------------------- | -------------------------------------------------------------------------------------------------------- |
 | `input type="checkbox"` | The text content of the linked `label` element(s). </br> The `checked` attribute of the `input` element. |
+| `input type="date"`     | The `value` attribute of the `input` element.                                                            |
+| `input type="number"`   | The `value` attribute of the `input` element.                                                            |
 | `input type="radio"`    | The text content of the linked `label` element(s). </br> The `value` attribute of the `input` element.   |
+| `input type="search"`   | The `value` attribute of the `input` element.                                                            |
+| `input type="text"`     | The `value` attribute of the `input` element.                                                            |
 | `select`                | The text content of any `option` element. </br> The `value` attribute of any `option` element.           |
+| `textarea`              | The `value` attribute of the `textarea` element.                                                         |
 
 ### Control differences
 
