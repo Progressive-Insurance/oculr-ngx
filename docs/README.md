@@ -4,6 +4,8 @@
 
 ## Initialization and configuration
 
+Setting up the Oculr library can be done in a [few simple steps](./init-and-config.md).
+
 ## Directives
 
 Oculr has a set of directives that help capture various display or interaction events.
@@ -11,6 +13,10 @@ Oculr has a set of directives that help capture various display or interaction e
 | --- | --- |
 | [oculrClick](./click-directive.md) | A directive that captures button and anchor clicks. |
 | [oculrDisplay](./display-directive.md) | A directive that captures when a host element is rendered. |
+
+## Interceptors
+
+Oculr comes with an [HTTP interceptor](./http-interceptor.md) ready to go out of the box.
 
 ## Services
 

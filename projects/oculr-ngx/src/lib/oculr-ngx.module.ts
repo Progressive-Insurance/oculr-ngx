@@ -10,7 +10,7 @@ import { CommonModule } from '@angular/common';
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
 import { APP_INITIALIZER, ModuleWithProviders, NgModule } from '@angular/core';
 import { ConsoleService } from './destinations/console/console.service';
-import { SplunkService } from './destinations/splunk/splunk.service';
+import { HttpApiService } from './destinations/http-api/http-api.service';
 import { ChangeDirective } from './directives/change.directive';
 import { ClickDirective } from './directives/click.directive';
 import { DisplayDirective } from './directives/display.directive';
@@ -50,7 +50,7 @@ export class OculrAngularModule {
         },
         ConfigurationService,
         ConsoleService,
-        SplunkService,
+        HttpApiService,
         InitializationService,
         {
           provide: APP_INITIALIZER,

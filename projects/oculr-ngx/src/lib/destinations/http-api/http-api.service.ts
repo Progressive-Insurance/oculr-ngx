@@ -17,7 +17,7 @@ import { AnalyticsEventBusService } from '../../services/analytics-event-bus.ser
 import { ConfigurationService } from '../../services/configuration.service';
 
 @Injectable()
-export class SplunkService {
+export class HttpApiService {
   private config: DestinationConfig | undefined;
 
   constructor(
@@ -31,7 +31,7 @@ export class SplunkService {
     this.configuration.appConfig$
       .pipe(
         filter((config: AppConfiguration) => !!config),
-        map((config: AppConfiguration) => config.destinations?.find((dest) => dest.name === Destinations.Splunk)),
+        map((config: AppConfiguration) => config.destinations?.find((dest) => dest.name === Destinations.HttpApi)),
         filter((config?: DestinationConfig) => this.loadAndValidateConfig(config)),
         switchMap(() => {
           const eventPipe = this.config?.sendCustomEvents ? this.eventBus.customEvents$ : this.eventBus.events$;
@@ -58,7 +58,7 @@ export class SplunkService {
               ...err,
               message: `Failed to ${method} to ${endpoint} : ${err.message}`,
             };
-            console.warn('Unable to reach Splunk destination', returnError);
+            console.warn('Unable to reach destination', returnError);
             return EMPTY;
           })
         )
@@ -87,11 +87,11 @@ export class SplunkService {
   private loadAndValidateConfig(config?: DestinationConfig): boolean {
     if (config) {
       if (!config.endpoint) {
-        console.warn('An endpoint is required to send events to Splunk');
+        console.warn('An endpoint is required to send events to this destination');
         return false;
       }
       if (!config.method) {
-        console.warn('An HTTP method is required to send events to Splunk');
+        console.warn('An HTTP method is required to send events to this destination');
         return false;
       }
       this.config = config;

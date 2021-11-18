@@ -28,7 +28,7 @@ describe('Analytics Interceptor', () => {
     };
     mockConfigService = {
       appConfig$: of({
-        destinations: [{ name: Destinations.Splunk, sendCustomEvents: false, endpoint: destinationUrl }],
+        destinations: [{ name: Destinations.HttpApi, sendCustomEvents: false, endpoint: destinationUrl }],
       }),
     };
     analyticsInterceptor = new AnalyticsInterceptor(mockEventDispatchService, mockTimeService, mockConfigService);
