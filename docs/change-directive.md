@@ -37,28 +37,33 @@ Add the directive `oculrChange` to any for the following host elements in an Ang
 ### Checkbox input
 
 ```html
-<input oculrChange type="checkbox" id="myCheckbox" formControlName="myCheckbox" />
-<label for="myCheckbox">Do you agree?</label>
+<input oculrChange type="checkbox" id="attestation" formControlName="attestation" />
+<label for="attestation">Do you agree to the terms?</label>
 ```
 
 ### Radio input
 
 ```html
+<p>What is your favorite mythical creature?</p>
 <div>
-  <input oculrChange type="radio" id="myRadioYes" value="yes" formControlName="myRadio" />
-  <label for="myRadioYes">Yes</label>
+  <input oculrChange type="radio" id="dragon" value="dragon" formControlName="mythical" />
+  <label for="dragon">Dragon</label>
 </div>
 <div>
-  <input oculrChange type="radio" id="myRadioNo" value="no" formControlName="myRadio" />
-  <label for="myRadioNo">No</label>
+  <input oculrChange type="radio" id="unicorn" value="unicorn" formControlName="mythical" />
+  <label for="unicorn">Unicorn</label>
+</div>
+<div>
+  <input oculrChange type="radio" id="mermaid" value="mermaid" formControlName="mythical" />
+  <label for="mermaid">Mermaid</label>
 </div>
 ```
 
 ### Select
 
 ```html
-<label for="mySelect">What is you favorite food?</label>
-<select oculrChange id="mySelect" formControlName="mySelect">
+<label for="favoriteFood">What is you favorite food?</label>
+<select oculrChange id="favoriteFood" formControlName="favoriteFood">
   <option value=""></option>
   <option value="pizza">Pizza</option>
   <option value="tacos">Tacos</option>
@@ -71,11 +76,11 @@ It is required to include an identifier with the interaction event to help with 
 Another way to include an identifier is by using property binding with the `oculrChange` directive.
 
 ```html
-<input [oculrChange]="{ id: 'agreementCheckbox' }" type="checkbox" id="myCheckbox" formControlName="myCheckbox" />
-<label for="myCheckbox">Do you agree?</label>
+<input [oculrChange]="{ id: 'alternateAttestation' }" type="checkbox" id="attestation" formControlName="attestation" />
+<label for="attestation">Do you agree to the terms?</label>
 ```
 
-An `AnalyticEvent` type object is being used in this property binding, where `agreementCheckbox` will be used as the identifier since it takes priority over the host element's `id` attribute. It is recommended to still include an `id` attribute in this scenario as it is used for linking the label to the form control. There are other properties that can be set on the `AnalyticEvent` object, which you can read about more in the [AnalyticEvent]() documentation.
+An `AnalyticEvent` type object is being used in this property binding, where `alternateAttestation` will be used as the identifier since it takes priority over the host element's `id` attribute. It is recommended to still include an `id` attribute in this scenario as it is used for linking the label to the form control. There are other properties that can be set on the `AnalyticEvent` object, which you can read about more in the [AnalyticEvent]() documentation.
 
 To minimize the amount of content done in the component's template, it is recommended to prepare any `AnalyticEvent` objects in the `ngOnInit()` of the component.
 
@@ -84,15 +89,15 @@ import { AnalyticEvent } from 'oculr-ngx';
 
 @Component({
   template: `
-    <input [oculrChange]="myChangeEvent" type="checkbox" id="myCheckbox" formControlName="myCheckbox" />
-    <label for="myCheckbox">Do you agree?</label>
+    <input [oculrChange]="attestationEvent" type="checkbox" id="attestation" formControlName="attestation" />
+    <label for="attestation">Do you agree to the terms?</label>
   `,
 })
-export class MyComponent implements OnInit {
-  myChangeEvent: AnalyticEvent;
+export class FormComponent implements OnInit {
+  attestationEvent: AnalyticEvent;
 
   ngOnInit() {
-    myChangeEvent = { id: 'agreementCheckbox' };
+    attestationEvent = { id: 'alternateAttestation' };
   }
 }
 ```
@@ -104,8 +109,8 @@ export class MyComponent implements OnInit {
 Protecting user information is vital and the `oculrChange` directive has a `sensitiveData` input property that blocks the capture of data related to any answer provided by a user.
 
 ```html
-<input oculrChange [sensitiveData]="true" type="checkbox" id="myCheckbox" formControlName="myCheckbox" />
-<label for="myCheckbox">Do you agree?</label>
+<label for="dob">Date of birth:</label>
+<input oculrChange [sensitiveData]="true" type="date" id="dob" formControlName="dob" />
 ```
 
 The following table describes what is not captured when `sensitivedata` is set to `true`.
@@ -126,8 +131,8 @@ The following table describes what is not captured when `sensitivedata` is set t
 The `oculrChange` directive captures similar data for each control type. The exception for this is linked label elements. For select elements the label is the question being asked to the user, while for radio and checkbox inputs the label is often the answer to the question. The following examples show the differnces.
 
 ```html
-<label for="mySelect">What is your favorite food?</label>
-<select oculrChange id="mySelect" formControlName="mySelect">
+<label for="favoriteFood">What is your favorite food?</label>
+<select oculrChange id="favoriteFood" formControlName="favoriteFood">
   <option value=""></option>
   <option value="pizza">Pizza</option>
   <option value="tacos">Tacos</option>
@@ -146,16 +151,16 @@ For this select example the following data is captured with the `AnalyticEvent`.
 ```html
 <p>What is your favorite food?</p>
 <div>
-  <input oculrChange type="radio" id="myRadioPizza" value="pizza" formControlName="myRadio" />
-  <label for="myRadioPizza">Pizza</label>
+  <input oculrChange type="radio" id="pizzaRadio" value="pizza" formControlName="favoriteFood" />
+  <label for="pizzaRadio">Pizza</label>
 </div>
 <div>
-  <input oculrChange type="radio" id="myRadioTacos" value="tacos" formControlName="myRadio" />
-  <label for="myRadioTacos">Tacos</label>
+  <input oculrChange type="radio" id="tacosRadio" value="tacos" formControlName="favoriteFood" />
+  <label for="tacosRadio">Tacos</label>
 </div>
 <div>
-  <input oculrChange type="radio" id="myRadioRamen" value="ramen" formControlName="myRadio" />
-  <label for="myRadioRamen">Ramen</label>
+  <input oculrChange type="radio" id="ramenRadio" value="ramen" formControlName="favoriteFood" />
+  <label for="ramenRadio">Ramen</label>
 </div>
 ```
 
@@ -176,17 +181,23 @@ import { AnalyticEvent } from 'oculr-ngx';
   template: `
     <p>What is your favorite food?</p>
     <div>
-      <input [oculrChange]="myChangeEvent" type="radio" id="myRadioPizza" value="pizza" formControlName="myRadio" />
-      <label for="myRadioPizza">Pizza</label>
+      <input
+        [oculrChange]="favoriteFoodEvent"
+        type="radio"
+        id="pizzaRadio"
+        value="pizza"
+        formControlName="favoriteFood"
+      />
+      <label for="pizzaRadio">Pizza</label>
     </div>
     <!--...-->
   `,
 })
-export class MyComponent implements OnInit {
-  myChangeEvent: AnalyticEvent;
+export class FormComponent implements OnInit {
+  favoriteFoodEvent: AnalyticEvent;
 
   ngOnInit() {
-    myChangeEvent = { label: 'What is your favorite food?' };
+    favoriteFoodEvent = { label: 'What is your favorite food?' };
   }
 }
 ```

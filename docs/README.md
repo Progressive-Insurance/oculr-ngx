@@ -21,6 +21,11 @@ Oculr comes with an [HTTP interceptor](./http-interceptor.md) ready to go out of
 
 ## Services
 
+Oculr has a set of services that simplify library initionalization and capturing targeted analytic events.
+| | |
+| --- | --- |
+| [EventDispatchService](./event-displace-service.md) | A service that allows client apps to target analytic events. |
+
 ## Feedback
 
 Is something not working or unclear? Please create an [issue](https://github.com/Progressive/oculr-ngx/issues/new/choose) or [PR](https://github.com/Progressive/oculr-ngx/blob/main/CONTRIBUTING.md).
