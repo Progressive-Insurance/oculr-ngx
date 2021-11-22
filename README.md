@@ -9,7 +9,7 @@ An analytics library that makes collecting data in an Angular app simple.
 Oculr is an Angular library that helps you capture analytic events occuring in your app. The following features give you insight into what your users are doing in your app and how your app is handling data and errors in the background.
 
 - [Page views]()
-- [API calls]()
+- [API calls](docs/http-interceptor.md)
 - [Errors]()
 - [Content display](docs/display-directive.md)
 - [Button and link interactions](docs/click-directive.md)
@@ -26,14 +26,14 @@ Are your users finding the content you want them to? Are they getting stuck on a
 
 Where you want it.
 
-Oculr can point to any API that you want to use for tracking analytic data. By default it comes with a couple [preconfigured options]() for Splunk and Google Analytics, but it can be [configured]() to use any API of your choice. Oculr also features the ability to [shape the data]() based on your needs before being sent to an API.
+Oculr can point to any destination that you want to use for tracking analytic data. By default it comes with a couple [preconfigured options](docs/init-and-config.md#available-destinations) for HTTP APIs and the console. Oculr also features the ability to [shape the data](docs/init-and-config.md#using-your-own-custom-event-object) based on your needs before being sent to an API.
 
 ## Quick start
 
 Install Oculr.
 
 ```node
-npm install oculr --save
+npm install oculr-ngx --save
 ```
 
 Configure Oculr during app initialization.
@@ -48,7 +48,7 @@ Check out our [walkthrough]() for more hands-on details to get the most out of O
 
 - [Full API](docs/README.md)
 - [Walkthrough]()
-- [Configuration]()
+- [Configuration](docs/init-and-config.md)
 - [Directives]()
 - [Services]()
 
