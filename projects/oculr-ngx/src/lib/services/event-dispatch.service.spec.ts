@@ -22,9 +22,7 @@ describe('EventDispatchService', () => {
       dispatch: jasmine.createSpy('dispatch'),
     };
     mockLocationTrackingService = {
-      location: mockLocation,
-      updateRouteConfig: () => undefined,
-      cachePageView: jasmine.createSpy('cachePageView'),
+      getLocation: () => mockLocation,
     };
     eventDispatchService = new EventDispatchService(mockLocationTrackingService, mockEventBus);
   });
@@ -45,23 +43,20 @@ describe('EventDispatchService', () => {
 
   describe('trackPageView', () => {
     it('sets a default event id when one is not supplied', () => {
-      const mockEvent = { isModal: true };
       const expectedDispatch = {
-        isModal: true,
         eventType: AnalyticEventType.PAGE_VIEW_EVENT,
         location: mockLocation,
         id: mockLocation.path,
       };
 
-      eventDispatchService.trackPageView(mockEvent);
+      eventDispatchService.trackPageView();
 
       expect(mockEventBus.dispatch).toHaveBeenCalledWith(expectedDispatch);
     });
 
     it('does not set a default event id when one is supplied', () => {
-      const mockEvent = { isModal: true, id: 'id' };
+      const mockEvent = { id: 'id' };
       const expectedDispatch = {
-        isModal: true,
         eventType: AnalyticEventType.PAGE_VIEW_EVENT,
         location: mockLocation,
         id: 'id',
@@ -70,44 +65,6 @@ describe('EventDispatchService', () => {
       eventDispatchService.trackPageView(mockEvent);
 
       expect(mockEventBus.dispatch).toHaveBeenCalledWith(expectedDispatch);
-    });
-
-    it('does not cache the event when isModal is true', () => {
-      const mockEvent = { isModal: true };
-      eventDispatchService.trackPageView(mockEvent);
-      expect(mockLocationTrackingService.cachePageView).not.toHaveBeenCalled();
-    });
-
-    it('does cache the event when isModal is false', () => {
-      const mockEvent = { isModal: false };
-      const expectedDispatch = {
-        isModal: false,
-        eventType: AnalyticEventType.PAGE_VIEW_EVENT,
-        location: mockLocation,
-        id: mockLocation.path,
-      };
-
-      eventDispatchService.trackPageView(mockEvent);
-
-      expect(mockLocationTrackingService.cachePageView).toHaveBeenCalledWith(expectedDispatch);
-    });
-  });
-
-  describe('trackCachedPageView', () => {
-    it('tracks the cached page view event when it exists', () => {
-      const cachedEvent = {
-        id: 'cached',
-        eventType: AnalyticEventType.PAGE_VIEW_EVENT,
-        location: mockLocation,
-      };
-      mockLocationTrackingService.lastPageViewEvent = cachedEvent;
-      eventDispatchService.trackCachedPageView();
-      expect(mockEventBus.dispatch).toHaveBeenCalledWith(cachedEvent);
-    });
-
-    it('does nothing if there is no cached page view event', () => {
-      eventDispatchService.trackCachedPageView();
-      expect(mockEventBus.dispatch).not.toHaveBeenCalled();
     });
   });
 
@@ -166,7 +123,7 @@ describe('EventDispatchService', () => {
           id: apiContext.id,
           scopes: apiContext.scopes,
           eventType: AnalyticEventType.API_START_EVENT,
-          location: mockLocationTrackingService.location,
+          location: mockLocation,
         };
         eventDispatchService.trackApiStart(apiContext, httpRequest);
         expect(mockEventBus.dispatch).toHaveBeenCalledWith(expectedEvent);
@@ -179,7 +136,7 @@ describe('EventDispatchService', () => {
           id: httpRequest.url,
           scopes: [],
           eventType: AnalyticEventType.API_START_EVENT,
-          location: mockLocationTrackingService.location,
+          location: mockLocation,
         };
         eventDispatchService.trackApiStart(apiContext, httpRequest);
         expect(mockEventBus.dispatch).toHaveBeenCalledWith(expectedEvent);
@@ -197,7 +154,7 @@ describe('EventDispatchService', () => {
           id: apiContext.id,
           scopes: apiContext.scopes,
           eventType: AnalyticEventType.API_COMPLETE_EVENT,
-          location: mockLocationTrackingService.location,
+          location: mockLocation,
         };
         eventDispatchService.trackApiComplete(apiContext, httpResponse, httpRequest, duration);
         expect(mockEventBus.dispatch).toHaveBeenCalledWith(expectedEvent);
@@ -213,7 +170,7 @@ describe('EventDispatchService', () => {
           id: httpRequest.url,
           scopes: [],
           eventType: AnalyticEventType.API_COMPLETE_EVENT,
-          location: mockLocationTrackingService.location,
+          location: mockLocation,
         };
         eventDispatchService.trackApiComplete(apiContext, httpResponse, httpRequest, duration);
         expect(mockEventBus.dispatch).toHaveBeenCalledWith(expectedEvent);

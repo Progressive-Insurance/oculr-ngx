@@ -8,6 +8,7 @@
 
 import { Component } from '@angular/core';
 import { ComponentFixture, fakeAsync, TestBed, tick } from '@angular/core/testing';
+import { ActivatedRoute } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 
 import { EventDispatchService } from '../services/event-dispatch.service';
@@ -16,16 +17,23 @@ import { ClickDirective } from './click.directive';
 describe('ClickDirective', () => {
   let fixture: ComponentFixture<TestComponent>;
   let mockEventDispatchService: any;
+  let mockActivatedRoute: any;
 
   beforeEach(() => {
     mockEventDispatchService = {
       trackClick: jasmine.createSpy('trackClick'),
     };
+    mockActivatedRoute = {
+      snapshot: { url: '/home' },
+    };
 
     TestBed.configureTestingModule({
       imports: [RouterTestingModule.withRoutes([{ path: 'somewhere', component: AlternateRouteComponent }])],
       declarations: [TestComponent, AlternateRouteComponent, ClickDirective],
-      providers: [{ provide: EventDispatchService, useValue: mockEventDispatchService }],
+      providers: [
+        { provide: EventDispatchService, useValue: mockEventDispatchService },
+        { provide: ActivatedRoute, useValue: mockActivatedRoute },
+      ],
     });
     fixture = TestBed.createComponent(TestComponent);
     fixture.detectChanges();
@@ -37,6 +45,7 @@ describe('ClickDirective', () => {
       interactionType: 'click',
       interactionDetail: 'keyboard',
       label: 'Simple button',
+      activatedRoute: mockActivatedRoute.snapshot,
     };
     const button = fixture.nativeElement.querySelector('#testId');
     button.dispatchEvent(new Event('keydown'));
@@ -52,6 +61,7 @@ describe('ClickDirective', () => {
       interactionType: 'click',
       interactionDetail: 'mouse',
       label: 'Simple button',
+      activatedRoute: mockActivatedRoute.snapshot,
     };
     const button = fixture.nativeElement.querySelector('#testId');
     button.dispatchEvent(new Event('mousedown'));
@@ -67,6 +77,7 @@ describe('ClickDirective', () => {
       interactionType: 'click',
       interactionDetail: 'touch',
       label: 'Simple button',
+      activatedRoute: mockActivatedRoute.snapshot,
     };
     const button = fixture.nativeElement.querySelector('#testId');
     button.dispatchEvent(new Event('touchstart'));
@@ -83,6 +94,7 @@ describe('ClickDirective', () => {
       interactionType: 'click',
       interactionDetail: 'keyboard',
       label: 'Simple routerLink',
+      activatedRoute: mockActivatedRoute.snapshot,
       linkUrl: '/somewhere',
     };
     const link = fixture.nativeElement.querySelector('#linkWithRouterLink');
@@ -99,6 +111,7 @@ describe('ClickDirective', () => {
       interactionType: 'click',
       interactionDetail: 'keyboard',
       label: 'Event label',
+      activatedRoute: mockActivatedRoute.snapshot,
     };
     const button = fixture.nativeElement.querySelector('#useEventId');
     button.dispatchEvent(new Event('keydown'));

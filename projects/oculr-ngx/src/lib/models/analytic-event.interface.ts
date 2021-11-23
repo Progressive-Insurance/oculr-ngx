@@ -7,6 +7,7 @@
  */
 
 import { HttpErrorResponse, HttpRequest, HttpResponse } from '@angular/common/http';
+import { ActivatedRouteSnapshot } from '@angular/router';
 import { TimeoutError } from 'rxjs';
 import { AnalyticEventType } from './analytic-event-type.enum';
 import { EventLocation } from './event-location.interface';
@@ -22,6 +23,7 @@ export interface AnalyticEvent {
   displayValue?: string;
   eventType?: AnalyticEventType;
   linkUrl?: string;
+  activatedRoute?: ActivatedRouteSnapshot;
   location?: EventLocation;
   interactionType?: InteractionType;
   interactionDetail?: InteractionDetail;
