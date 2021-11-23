@@ -9,8 +9,8 @@
 import { convertToParamMap } from '@angular/router';
 import { LocationService } from './location.service';
 
-describe('LocationTrackingService', () => {
-  let locationTrackingService: LocationService;
+describe('LocationService', () => {
+  let locationService: LocationService;
   let mockLocation: any;
   let mockWindowService: any;
   let mockQueryParamMap: any;
@@ -34,12 +34,12 @@ describe('LocationTrackingService', () => {
         },
       },
     };
-    locationTrackingService = new LocationService(mockLocation, mockWindowService, mockRouter);
+    locationService = new LocationService(mockLocation, mockWindowService, mockRouter);
   });
 
   describe('constructor', () => {
     it('should set hostname', () => {
-      expect(locationTrackingService['hostName']).toEqual('https://example.org');
+      expect(locationService['hostName']).toEqual('https://example.org');
     });
   });
 
@@ -52,7 +52,7 @@ describe('LocationTrackingService', () => {
         queryString: '',
         virtualPageName: '/innersource/catalog',
       };
-      const result = locationTrackingService.getLocation();
+      const result = locationService.getLocation();
       console.log(result);
       expect(result).toEqual(expected);
     });
@@ -65,7 +65,7 @@ describe('LocationTrackingService', () => {
         queryParamMap: mockQueryParamMap,
         paramMap: mockParamMap,
       };
-      const result = locationTrackingService['getCurrentRoute'](mockRouter.routerState.root.snapshot);
+      const result = locationService['getCurrentRoute'](mockRouter.routerState.root.snapshot);
       expect(result).toEqual(expected);
     });
   });
@@ -73,27 +73,27 @@ describe('LocationTrackingService', () => {
   describe('getRouteFromSnapshot', () => {
     it('should return an empty string when no snapshot is provided', () => {
       const snapshot: any = null;
-      const result = locationTrackingService['getRouteFromSnapshot'](snapshot);
+      const result = locationService['getRouteFromSnapshot'](snapshot);
       const expected = '';
       expect(result).toEqual(expected);
     });
 
     it('should return an empty string if no routeConfig exists', () => {
       const snapshot: any = { value: {} };
-      const result = locationTrackingService['getRouteFromSnapshot'](snapshot);
+      const result = locationService['getRouteFromSnapshot'](snapshot);
       const expected = '';
       expect(result).toEqual(expected);
     });
 
     it('should return an empty string if no path exists', () => {
       const snapshot: any = { routeConfig: { value: '' } };
-      const result = locationTrackingService['getRouteFromSnapshot'](snapshot);
+      const result = locationService['getRouteFromSnapshot'](snapshot);
       const expected = '';
       expect(result).toEqual(expected);
     });
 
     it('should return a well-formed route when a path exists', () => {
-      const result = locationTrackingService['getRouteFromSnapshot'](mockRouter.routerState.root.snapshot);
+      const result = locationService['getRouteFromSnapshot'](mockRouter.routerState.root.snapshot);
       const expected = '/innersource/catalog';
       expect(result).toEqual(expected);
     });
@@ -111,7 +111,7 @@ describe('LocationTrackingService', () => {
         },
       };
       const expected = [snapshot, snapshot.firstChild, snapshot.firstChild.firstChild];
-      const result = locationTrackingService['getSnapshotHierarchyAsArray']([snapshot]);
+      const result = locationService['getSnapshotHierarchyAsArray']([snapshot]);
       expect(result).toEqual(expected);
     });
 
@@ -121,7 +121,7 @@ describe('LocationTrackingService', () => {
         firstChild: null,
       };
       const expected = [snapshot];
-      const result = locationTrackingService['getSnapshotHierarchyAsArray']([snapshot]);
+      const result = locationService['getSnapshotHierarchyAsArray']([snapshot]);
       expect(result).toEqual(expected);
     });
   });
@@ -130,14 +130,14 @@ describe('LocationTrackingService', () => {
     it('should return an empty string if no param map is provided', () => {
       const paramMap: any = null;
       const expected = '';
-      const result = locationTrackingService['getFormattedQueryString'](paramMap);
+      const result = locationService['getFormattedQueryString'](paramMap);
       expect(result).toEqual(expected);
     });
 
     it('should return the query string when there are params provided', () => {
       const paramMap = convertToParamMap({ licenses: 'approved' });
       const expected = '?licenses=approved';
-      const result = locationTrackingService['getFormattedQueryString'](paramMap);
+      const result = locationService['getFormattedQueryString'](paramMap);
       expect(result).toEqual(expected);
     });
   });
