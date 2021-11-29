@@ -7,8 +7,6 @@
  */
 
 export interface EventLocation {
-  // hitId - page view count - EXPERIMENTAL!
-  hitId: number;
   // hostname - url up to the angular route (includes, protocol, hostname, and part of path including slot)
   hostName: string;
   // path - the angular route, starting with a slash and including query string

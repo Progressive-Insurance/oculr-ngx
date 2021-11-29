@@ -7,7 +7,7 @@
  */
 
 import { Directive, ElementRef, HostListener, Input } from '@angular/core';
-
+import { ActivatedRoute } from '@angular/router';
 import { AnalyticEvent } from '../models/analytic-event.interface';
 import { InteractionDetail } from '../models/interaction-detail.enum';
 import { InteractionType } from '../models/interaction-type.enum';
@@ -26,6 +26,7 @@ export class ClickDirective {
     this.setId(analyticEvent);
     if (this.shouldDispatch(analyticEvent)) {
       analyticEvent.interactionType = InteractionType.click;
+      analyticEvent.activatedRoute = this.activatedRoute.snapshot;
       this.setInteractionDetail(analyticEvent);
       this.setLabel(analyticEvent);
       this.setHostUrl(analyticEvent);
@@ -52,7 +53,8 @@ export class ClickDirective {
 
   constructor(
     private elementRef: ElementRef<HTMLButtonElement | HTMLLinkElement>,
-    private eventDispatchService: EventDispatchService
+    private eventDispatchService: EventDispatchService,
+    private activatedRoute: ActivatedRoute
   ) {}
 
   private getAnalyticEvent(): AnalyticEvent {

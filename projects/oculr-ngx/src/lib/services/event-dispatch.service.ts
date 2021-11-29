@@ -21,44 +21,32 @@ import { EventModel } from '../models/event-model.class';
 import { EventPayload } from '../models/event-payload.interface';
 import { PageViewEvent } from '../models/page-view-event.interface';
 import { AnalyticsEventBusService } from './analytics-event-bus.service';
-import { LocationTrackingService } from './location-tracking.service';
+import { LocationService } from './location.service';
 
 @Injectable()
 export class EventDispatchService {
-  constructor(private locationTrackingService: LocationTrackingService, private eventBus: AnalyticsEventBusService) {}
+  constructor(private locationService: LocationService, private eventBus: AnalyticsEventBusService) {}
 
   trackAnalyticsError(error: unknown): void {
     this.dispatch(analyticsError(error));
   }
 
-  trackPageView(event?: PageViewEvent, config?: { replaceParamTokens: string[] }): void {
-    this.locationTrackingService.updateRouteConfig(config);
-
+  trackPageView(event?: PageViewEvent): void {
     const eventDispatch = {
       ...event,
       eventType: AnalyticEventType.PAGE_VIEW_EVENT,
-      location: this.locationTrackingService.location,
+      location: this.locationService.getLocation(event?.activatedRoute),
     };
     eventDispatch.id ||= eventDispatch.location.path;
 
     this.dispatchEvent(eventDispatch);
-    if (!eventDispatch.isModal) {
-      this.locationTrackingService.cachePageView(eventDispatch);
-    }
-  }
-
-  trackCachedPageView(): void {
-    const cachedPageView = this.locationTrackingService.lastPageViewEvent;
-    if (cachedPageView) {
-      this.trackPageView(cachedPageView);
-    }
   }
 
   trackChange(event: AnalyticEvent): void {
     const eventDispatch = {
       ...event,
       eventType: AnalyticEventType.CHANGE_EVENT,
-      location: this.locationTrackingService.location,
+      location: this.locationService.getLocation(),
     };
     this.dispatchEvent(eventDispatch);
   }
@@ -67,7 +55,7 @@ export class EventDispatchService {
     const eventDispatch = {
       ...event,
       eventType: AnalyticEventType.CLICK_EVENT,
-      location: this.locationTrackingService.location,
+      location: this.locationService.getLocation(event.activatedRoute),
     };
     this.dispatchEvent(eventDispatch);
   }
@@ -76,14 +64,14 @@ export class EventDispatchService {
     const eventDispatch = {
       ...event,
       eventType: AnalyticEventType.DISPLAY_EVENT,
-      location: this.locationTrackingService.location,
+      location: this.locationService.getLocation(),
     };
     this.dispatchEvent(eventDispatch);
   }
 
   trackAppInit(scopes: string[]): void {
     const payload: EventPayload = {
-      eventLocation: this.locationTrackingService.location,
+      eventLocation: this.locationService.getLocation(),
       eventModel: new EventModel('', '', '', '', '', '', '', '', {}, scopes, '', '', {}),
     };
     this.dispatch(appInit(payload));
@@ -91,7 +79,7 @@ export class EventDispatchService {
 
   trackAppError(error: Error | string): void {
     const payload: EventPayload = {
-      eventLocation: this.locationTrackingService.location,
+      eventLocation: this.locationService.getLocation(),
       eventModel: new EventModel('', '', '', '', '', '', '', '', {}, [], '', '', {}),
     };
     this.dispatch(appError(payload, { error }));
@@ -100,7 +88,7 @@ export class EventDispatchService {
   trackSystemEvent(eventModel: EventModel): void {
     const payload: EventPayload = {
       eventModel,
-      eventLocation: this.locationTrackingService.location,
+      eventLocation: this.locationService.getLocation(),
     };
     this.dispatch(systemEvent(payload));
   }
@@ -108,7 +96,7 @@ export class EventDispatchService {
   trackValidationError(eventModel: EventModel): void {
     const payload: EventPayload = {
       eventModel,
-      eventLocation: this.locationTrackingService.location,
+      eventLocation: this.locationService.getLocation(),
     };
     this.dispatch(validationErrorEvent(payload));
   }
@@ -119,7 +107,7 @@ export class EventDispatchService {
       id: context.id || request.url, // TODO: request.url likely needs to be normalized
       scopes: context.scopes || [],
       eventType: AnalyticEventType.API_START_EVENT,
-      location: this.locationTrackingService.location,
+      location: this.locationService.getLocation(),
     };
     this.dispatchEvent(eventDispatch);
   }
@@ -137,7 +125,7 @@ export class EventDispatchService {
       id: context.id || request.url, // TODO: request.url likely needs to be normalized
       scopes: context.scopes || [],
       eventType: AnalyticEventType.API_COMPLETE_EVENT,
-      location: this.locationTrackingService.location,
+      location: this.locationService.getLocation(),
     };
     this.dispatchEvent(eventDispatch);
   }

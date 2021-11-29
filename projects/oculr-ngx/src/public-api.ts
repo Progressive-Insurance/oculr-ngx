@@ -23,6 +23,7 @@ export { ApiEventContext } from './lib/models/api-event-context.interface';
 export { AppConfiguration } from './lib/models/app-configuration.interface';
 export { DestinationConfig } from './lib/models/destination-config.interface';
 export { Destinations } from './lib/models/destinations.enum';
+export { PageViewEvent } from './lib/models/page-view-event.interface';
 // TODO: to review expose, lean towards interfaces
 export { EventModel } from './lib/models/event-model.class';
 export { EventPayload } from './lib/models/event-payload.interface';

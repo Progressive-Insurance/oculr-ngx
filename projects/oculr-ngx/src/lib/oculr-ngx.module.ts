@@ -19,7 +19,7 @@ import { AnalyticsEventBusService } from './services/analytics-event-bus.service
 import { ConfigurationService } from './services/configuration.service';
 import { EventDispatchService } from './services/event-dispatch.service';
 import { InitializationService } from './services/initialization.service';
-import { LocationTrackingService } from './services/location-tracking.service';
+import { LocationService } from './services/location.service';
 import { TimeService } from './services/time.service';
 import { WindowService } from './services/window.service';
 
@@ -36,7 +36,7 @@ export class OculrAngularModule {
       providers: [
         AnalyticsEventBusService,
         EventDispatchService,
-        LocationTrackingService,
+        LocationService,
         WindowService,
         TimeService,
         {
