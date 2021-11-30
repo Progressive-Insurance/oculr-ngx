@@ -73,7 +73,7 @@ export class ClickDirective {
   }
 
   private setLabel(analyticEvent: AnalyticEvent): void {
-    const hostText = this.elementRef.nativeElement.textContent;
+    const hostText = this.elementRef.nativeElement.textContent?.trim();
     if (hostText) {
       analyticEvent.label ||= hostText;
     }
