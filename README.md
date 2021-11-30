@@ -8,7 +8,7 @@ An analytics library that makes collecting data in an Angular app simple.
 
 Oculr is an Angular library that helps you capture analytic events occuring in your app. The following features give you insight into what your users are doing in your app and how your app is handling data and errors in the background.
 
-- [Page views]()
+- [Page views](docs/page-views.md)
 - [API calls](docs/http-interceptor.md)
 - [Errors]()
 - [Content display](docs/display-directive.md)
