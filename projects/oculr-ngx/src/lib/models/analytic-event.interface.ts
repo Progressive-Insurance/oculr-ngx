@@ -18,6 +18,7 @@ import { InteractionType } from './interaction-type.enum';
 export interface AnalyticEvent {
   id?: string;
   label?: string;
+  element?: string;
   inputType?: InputType;
   value?: string;
   displayValue?: string;
@@ -27,7 +28,6 @@ export interface AnalyticEvent {
   location?: EventLocation;
   interactionType?: InteractionType;
   interactionDetail?: InteractionDetail;
-  // TODO: needs a new type, possible generics
   scopes?: [];
   response?: HttpResponse<unknown> | HttpErrorResponse | TimeoutError;
   request?: HttpRequest<unknown>;
