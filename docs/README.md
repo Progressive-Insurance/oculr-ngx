@@ -15,6 +15,10 @@ Oculr has a set of directives that help capture various display or interaction e
 | [oculrClick](./click-directive.md) | A directive that captures button and anchor clicks. |
 | [oculrDisplay](./display-directive.md) | A directive that captures when a host element is rendered. |
 
+## Page Views
+
+Oculr allows you to easily [track the path](./page-views.md) a user navigates through while using your app.
+
 ## Interceptors
 
 Oculr comes with an [HTTP interceptor](./http-interceptor.md) ready to go out of the box.
