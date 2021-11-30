@@ -49,7 +49,7 @@ export class AnalyticsService {
 
 ### Manually dispatching
 
-You may find instances where this approach doesn't cover you. You may want to track a page that isn't handled by the router (i.e. modals). In these cases, you can manually dispatch a page view event.
+You may find instances where this approach doesn't cover you. You may want to track a page that isn't handled by the router (e.g. modals). In these cases, you can manually dispatch a page view event.
 
 ```typescript
 export class HomeComponent implements OnInit {
