@@ -69,6 +69,15 @@ export class EventDispatchService {
     this.dispatchEvent(eventDispatch);
   }
 
+  trackFocus(event: AnalyticEvent): void {
+    const eventDispatch = {
+      ...event,
+      eventType: AnalyticEventType.FOCUS_EVENT,
+      location: this.locationService.getLocation(),
+    };
+    this.dispatchEvent(eventDispatch);
+  }
+
   trackAppInit(scopes: string[]): void {
     const payload: EventPayload = {
       eventLocation: this.locationService.getLocation(),
