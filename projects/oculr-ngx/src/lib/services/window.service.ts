@@ -8,6 +8,7 @@
 
 import { Injectable } from '@angular/core';
 
+// TODO: remove, we're already providing Window at the app level
 @Injectable()
 export class WindowService {
   constructor(private window: Window) {}
@@ -16,7 +17,7 @@ export class WindowService {
     return this.window.location.href;
   }
 
-  // FIXME: this is be used in google-tage-manager.service.ts incorrectly and needs to be appropriately typed as Window or removed
+  // FIXME: this is be used in google-tag-manager.service.ts incorrectly and needs to be appropriately typed as Window or removed
   get nativeWindow(): any {
     return this.window;
   }

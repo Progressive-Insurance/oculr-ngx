@@ -8,49 +8,40 @@
 
 import { Directive, ElementRef, Input, OnInit } from '@angular/core';
 
-import { DisplayEvent } from '../models/display-event.interface';
+import { AnalyticEvent } from '../models/analytic-event.interface';
+import { DirectiveService } from '../services/directive.service';
 import { EventDispatchService } from '../services/event-dispatch.service';
 
 @Directive({
   selector: '[oculrDisplay]',
 })
 export class DisplayDirective implements OnInit {
-  @Input('oculrDisplay') analyticEventInput: DisplayEvent | '' = '';
+  @Input('oculrDisplay') analyticEventInput: AnalyticEvent | '' = '';
 
-  constructor(private elementRef: ElementRef<HTMLElement>, private eventDispatchService: EventDispatchService) {}
+  constructor(
+    private elementRef: ElementRef<HTMLElement>,
+    private eventDispatchService: EventDispatchService,
+    private directiveService: DirectiveService
+  ) {}
 
   ngOnInit(): void {
-    const analyticEvent = this.getAnalyticEvent();
-    this.setId(analyticEvent);
+    const analyticEvent = this.directiveService.getAnalyticEvent(this.analyticEventInput);
+    this.directiveService.setId(analyticEvent, this.elementRef);
     if (this.shouldDispatch(analyticEvent)) {
+      this.directiveService.setElement(analyticEvent, this.elementRef);
       this.handleEvent(analyticEvent);
     }
   }
 
-  private getAnalyticEvent(): DisplayEvent {
-    return this.analyticEventInput ? { ...this.analyticEventInput } : { id: '' };
-  }
-
-  private setId(analyticEvent: DisplayEvent): void {
-    const elementId = this.elementRef.nativeElement.getAttribute('id');
-    if (elementId) {
-      analyticEvent.id ||= elementId;
-    }
-  }
-
-  private handleEvent(analyticEvent: DisplayEvent) {
+  private handleEvent(analyticEvent: AnalyticEvent) {
     this.eventDispatchService.trackDisplay(analyticEvent);
   }
 
-  private shouldDispatch(analyticEvent: DisplayEvent): boolean {
-    if (!analyticEvent.id) {
-      console.warn(
-        `The oculrDisplay directive requires an identifier. This can be done with an id attribute on the
-        host element, or by binding an Event object. More information can be found here:
-        https://github.com/Progressive/oculr-ngx/blob/main/docs/display-directive.md`
-      );
-      return false;
-    }
-    return true;
+  private shouldDispatch(analyticEvent: AnalyticEvent): boolean {
+    return this.directiveService.shouldDispatch(
+      analyticEvent,
+      'oculrDisplay',
+      'https://github.com/Progressive/oculr-ngx/blob/main/docs/display-directive.md'
+    );
   }
 }

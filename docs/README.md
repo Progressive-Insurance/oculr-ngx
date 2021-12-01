@@ -30,6 +30,13 @@ Oculr has a set of services that simplify library initionalization and capturing
 | --- | --- |
 | [EventDispatchService](./event-displace-service.md) | A service that allows client apps to target analytic events. |
 
+## Interfaces
+
+Oculr has a set of interfaces that ensure the shape of the objects being passed around are consistent.
+| | |
+| --- | --- |
+| [AnalyticEvent](./analytic-event.md) | An event interface used by directives. |
+
 ## Feedback
 
 Is something not working or unclear? Please create an [issue](https://github.com/Progressive/oculr-ngx/issues/new/choose) or [PR](https://github.com/Progressive/oculr-ngx/blob/main/CONTRIBUTING.md).

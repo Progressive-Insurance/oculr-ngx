@@ -14,9 +14,11 @@ import { HttpApiService } from './destinations/http-api/http-api.service';
 import { ChangeDirective } from './directives/change.directive';
 import { ClickDirective } from './directives/click.directive';
 import { DisplayDirective } from './directives/display.directive';
+import { FocusDirective } from './directives/focus.directive';
 import { AnalyticsInterceptor } from './interceptors/analytics.interceptor';
 import { AnalyticsEventBusService } from './services/analytics-event-bus.service';
 import { ConfigurationService } from './services/configuration.service';
+import { DirectiveService } from './services/directive.service';
 import { EventDispatchService } from './services/event-dispatch.service';
 import { InitializationService } from './services/initialization.service';
 import { LocationService } from './services/location.service';
@@ -25,8 +27,8 @@ import { WindowService } from './services/window.service';
 
 @NgModule({
   imports: [CommonModule],
-  declarations: [DisplayDirective, ClickDirective, ChangeDirective],
-  exports: [DisplayDirective, ClickDirective, ChangeDirective],
+  declarations: [DisplayDirective, ClickDirective, ChangeDirective, FocusDirective],
+  exports: [DisplayDirective, ClickDirective, ChangeDirective, FocusDirective],
   providers: [],
 })
 export class OculrAngularModule {
@@ -35,6 +37,7 @@ export class OculrAngularModule {
       ngModule: OculrAngularModule,
       providers: [
         AnalyticsEventBusService,
+        DirectiveService,
         EventDispatchService,
         LocationService,
         WindowService,
