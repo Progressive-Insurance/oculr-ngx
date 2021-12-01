@@ -1,6 +1,6 @@
 [API](./README.md) > [Interfaces](./README.md#Interfaces)
 
-# DisplayEvent
+# AnalyticEvent
 
 ## Description
 

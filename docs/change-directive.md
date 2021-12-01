@@ -14,10 +14,10 @@ oculrChange
 
 ## Properties
 
-| Property                     | Description                                                                                                                       |
-| ---------------------------- | --------------------------------------------------------------------------------------------------------------------------------- |
-| `oculrChange: AnalyticEvent` | **optional** </br> [AnalyticEvent]() holds useful identifiers and data determined by the consuming application.                   |
-| `sensitiveData: boolean`     | **optional** </br> Controls whether or not the directive captures the value of the input or select element. Defaulted to `false`. |
+| Property                     | Description                                                                                                                        |
+| ---------------------------- | ---------------------------------------------------------------------------------------------------------------------------------- |
+| `oculrChange: AnalyticEvent` | **optional** </br> [AnalyticEvent](./analytic-event.md) holds useful identifiers and data determined by the consuming application. |
+| `sensitiveData: boolean`     | **optional** </br> Controls whether or not the directive captures the value of the input or select element. Defaulted to `false`.  |
 
 ## Quick start
 
@@ -80,7 +80,7 @@ Another way to include an identifier is by using property binding with the `ocul
 <label for="attestation">Do you agree to the terms?</label>
 ```
 
-An `AnalyticEvent` type object is being used in this property binding, where `alternateAttestation` will be used as the identifier since it takes priority over the host element's `id` attribute. It is recommended to still include an `id` attribute in this scenario as it is used for linking the label to the form control. There are other properties that can be set on the `AnalyticEvent` object, which you can read about more in the [AnalyticEvent]() documentation.
+An `AnalyticEvent` type object is being used in this property binding, where `alternateAttestation` will be used as the identifier since it takes priority over the host element's `id` attribute. It is recommended to still include an `id` attribute in this scenario as it is used for linking the label to the form control. There are other properties that can be set on the `AnalyticEvent` object, which you can read about more in the [AnalyticEvent](./analytic-event.md) documentation.
 
 To minimize the amount of content done in the component's template, it is recommended to prepare any `AnalyticEvent` objects in the `ngOnInit()` of the component.
 
