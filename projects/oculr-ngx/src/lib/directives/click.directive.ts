@@ -11,6 +11,7 @@ import { ActivatedRoute } from '@angular/router';
 import { AnalyticEvent } from '../models/analytic-event.interface';
 import { InteractionDetail } from '../models/interaction-detail.enum';
 import { InteractionType } from '../models/interaction-type.enum';
+import { DirectiveService } from '../services/directive.service';
 import { EventDispatchService } from '../services/event-dispatch.service';
 
 @Directive({
@@ -22,13 +23,14 @@ export class ClickDirective {
 
   @HostListener('click', ['$event'])
   onClick(): void {
-    const analyticEvent = this.getAnalyticEvent();
-    this.setId(analyticEvent);
+    const analyticEvent = this.directiveService.getAnalyticEvent(this.analyticEventInput);
+    this.directiveService.setId(analyticEvent, this.elementRef);
     if (this.shouldDispatch(analyticEvent)) {
-      analyticEvent.interactionType = InteractionType.click;
-      analyticEvent.activatedRoute = this.activatedRoute.snapshot;
+      this.setInteractionType(analyticEvent);
       this.setInteractionDetail(analyticEvent);
-      this.setLabel(analyticEvent);
+      this.directiveService.setElement(analyticEvent, this.elementRef);
+      this.directiveService.setLabel(analyticEvent, this.elementRef);
+      this.setActivatedRoute(analyticEvent);
       this.setHostUrl(analyticEvent);
       this.handleEvent(analyticEvent);
     }
@@ -54,33 +56,24 @@ export class ClickDirective {
   constructor(
     private elementRef: ElementRef<HTMLButtonElement | HTMLLinkElement>,
     private eventDispatchService: EventDispatchService,
+    private directiveService: DirectiveService,
     private activatedRoute: ActivatedRoute
   ) {}
 
-  private getAnalyticEvent(): AnalyticEvent {
-    return this.analyticEventInput ? { ...this.analyticEventInput } : { id: '' };
-  }
-
-  private setId(analyticEvent: AnalyticEvent): void {
-    const elementId = this.elementRef.nativeElement.getAttribute('id');
-    if (elementId) {
-      analyticEvent.id ||= elementId;
-    }
+  private setInteractionType(analyticEvent: AnalyticEvent): void {
+    analyticEvent.interactionType = InteractionType.click;
   }
 
   private setInteractionDetail(analyticEvent: AnalyticEvent): void {
     analyticEvent.interactionDetail = this.interactionDetail;
   }
 
-  private setLabel(analyticEvent: AnalyticEvent): void {
-    const hostText = this.elementRef.nativeElement.textContent?.trim();
-    if (hostText) {
-      analyticEvent.label ||= hostText;
-    }
+  private setActivatedRoute(analyticEvent: AnalyticEvent): void {
+    analyticEvent.activatedRoute = this.activatedRoute.snapshot;
   }
 
   private setHostUrl(analyticEvent: AnalyticEvent): void {
-    if (this.elementRef.nativeElement.tagName.toLowerCase() === 'a') {
+    if (this.directiveService.getElementName(this.elementRef) === 'a') {
       analyticEvent.linkUrl =
         this.elementRef.nativeElement.getAttribute('routerLink') ||
         this.elementRef.nativeElement.getAttribute('href') ||
@@ -93,14 +86,10 @@ export class ClickDirective {
   }
 
   private shouldDispatch(analyticEvent: AnalyticEvent): boolean {
-    if (!analyticEvent.id) {
-      console.warn(
-        `The oculrClick directive requires an identifier. This can be done with an id attribute on the
-        host element, or by binding an Event object. More information can be found here:
-        https://github.com/Progressive/oculr-ngx/blob/main/docs/click-directive.md`
-      );
-      return false;
-    }
-    return true;
+    return this.directiveService.shouldDispatch(
+      analyticEvent,
+      'oculrClick',
+      'https://github.com/Progressive/oculr-ngx/blob/main/docs/click-directive.md'
+    );
   }
 }

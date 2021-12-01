@@ -12,9 +12,9 @@ import { ComponentFixture, fakeAsync, TestBed, tick } from '@angular/core/testin
 import { InteractionDetail } from '../models/interaction-detail.enum';
 import { InteractionType } from '../models/interaction-type.enum';
 import { AnalyticEvent } from 'oculr-ngx';
-import { InputType } from '../models/input-type.enum';
 import { EventDispatchService } from '../services/event-dispatch.service';
 import { ChangeDirective } from './change.directive';
+import { DirectiveService } from '../services/directive.service';
 
 describe('ChangeDirective', () => {
   let fixture: ComponentFixture<TestComponent>;
@@ -28,7 +28,7 @@ describe('ChangeDirective', () => {
 
     TestBed.configureTestingModule({
       declarations: [TestComponent, NotSupportedComponent, ChangeDirective],
-      providers: [{ provide: EventDispatchService, useValue: mockEventDispatchService }],
+      providers: [{ provide: EventDispatchService, useValue: mockEventDispatchService }, DirectiveService],
     });
     fixture = TestBed.createComponent(TestComponent);
     fixture.detectChanges();
@@ -40,9 +40,10 @@ describe('ChangeDirective', () => {
     beforeEach(() => {
       expectedEvent = {
         id: 'attestation',
+        element: 'input',
         interactionType: InteractionType.change,
         interactionDetail: InteractionDetail.mouse,
-        inputType: InputType.checkbox,
+        inputType: 'checkbox',
         label: 'Do you agree to the terms?',
         value: 'checked',
         displayValue: 'Do you agree to the terms?',
@@ -111,9 +112,10 @@ describe('ChangeDirective', () => {
     beforeEach(() => {
       expectedEvent = {
         id: 'return',
+        element: 'input',
         interactionType: InteractionType.change,
         interactionDetail: InteractionDetail.keyboard,
-        inputType: InputType.date,
+        inputType: 'date',
         label: 'Return date:',
       };
     });
@@ -148,9 +150,10 @@ describe('ChangeDirective', () => {
     beforeEach(() => {
       expectedEvent = {
         id: 'weekDays',
+        element: 'input',
         interactionType: InteractionType.change,
         interactionDetail: InteractionDetail.keyboard,
-        inputType: InputType.number,
+        inputType: 'number',
         label: 'How many weekdays?',
         value: '5',
       };
@@ -173,9 +176,10 @@ describe('ChangeDirective', () => {
     beforeEach(() => {
       expectedEvent = {
         id: 'search',
+        element: 'input',
         interactionType: InteractionType.change,
         interactionDetail: InteractionDetail.keyboard,
-        inputType: InputType.search,
+        inputType: 'search',
         label: 'What are you looking for?',
         value: 'things',
       };
@@ -198,9 +202,10 @@ describe('ChangeDirective', () => {
     beforeEach(() => {
       expectedEvent = {
         id: 'petName',
+        element: 'input',
         interactionType: InteractionType.change,
         interactionDetail: InteractionDetail.keyboard,
-        inputType: InputType.text,
+        inputType: 'text',
         label: `Your pet's name:`,
         value: 'Spot',
       };
@@ -223,9 +228,10 @@ describe('ChangeDirective', () => {
     beforeEach(() => {
       expectedEvent = {
         id: 'dragon',
+        element: 'input',
         interactionType: InteractionType.change,
         interactionDetail: InteractionDetail.mouse,
-        inputType: InputType.radio,
+        inputType: 'radio',
         label: 'Dragon',
         value: 'dragon',
         displayValue: 'Dragon',
@@ -248,9 +254,9 @@ describe('ChangeDirective', () => {
     beforeEach(() => {
       expectedEvent = {
         id: 'favoriteFood',
+        element: 'select',
         interactionType: InteractionType.change,
         interactionDetail: InteractionDetail.mouse,
-        inputType: InputType.select,
         label: 'What is your favorite food?',
         value: 'ramen',
         displayValue: 'Ramen',
@@ -274,9 +280,9 @@ describe('ChangeDirective', () => {
     beforeEach(() => {
       expectedEvent = {
         id: 'story',
+        element: 'textarea',
         interactionType: InteractionType.change,
         interactionDetail: InteractionDetail.keyboard,
-        inputType: InputType.textarea,
         label: 'Tell us a story:',
         value: 'Once upon a time...',
       };

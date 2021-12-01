@@ -16,7 +16,6 @@ import { AnalyticEvent } from '../models/analytic-event.interface';
 import { ApiCompleteEvent } from '../models/api-complete-event.interface';
 import { ApiContext } from '../models/api-context.interface';
 import { ApiStartEvent } from '../models/api-start-event.interface';
-import { DisplayEvent } from '../models/display-event.interface';
 import { EventModel } from '../models/event-model.class';
 import { EventPayload } from '../models/event-payload.interface';
 import { PageViewEvent } from '../models/page-view-event.interface';
@@ -60,7 +59,7 @@ export class EventDispatchService {
     this.dispatchEvent(eventDispatch);
   }
 
-  trackDisplay(event: DisplayEvent): void {
+  trackDisplay(event: AnalyticEvent): void {
     const eventDispatch = {
       ...event,
       eventType: AnalyticEventType.DISPLAY_EVENT,

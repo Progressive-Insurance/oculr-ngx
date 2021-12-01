@@ -14,7 +14,7 @@ import { EventDispatchService } from '../services/event-dispatch.service';
 import { FocusDirective } from './focus.directive';
 import { InteractionDetail } from '../models/interaction-detail.enum';
 import { InteractionType } from '../models/interaction-type.enum';
-import { InputType } from '../models/input-type.enum';
+import { DirectiveService } from '../services/directive.service';
 
 describe('FocusDirective', () => {
   let fixture: ComponentFixture<TestComponent>;
@@ -28,7 +28,7 @@ describe('FocusDirective', () => {
 
     TestBed.configureTestingModule({
       declarations: [TestComponent, FocusDirective],
-      providers: [{ provide: EventDispatchService, useValue: mockEventDispatchService }],
+      providers: [{ provide: EventDispatchService, useValue: mockEventDispatchService }, DirectiveService],
     });
     fixture = TestBed.createComponent(TestComponent);
     fixture.detectChanges();
@@ -36,7 +36,7 @@ describe('FocusDirective', () => {
     expectedEvent = {
       id: 'password',
       element: 'input',
-      inputType: InputType.password,
+      inputType: 'password',
       interactionType: InteractionType.focus,
       interactionDetail: InteractionDetail.keyboard,
       label: 'Password:',
@@ -71,7 +71,7 @@ describe('FocusDirective', () => {
 
   it('prioritizes event properties over host element attributes', fakeAsync(() => {
     expectedEvent.id = 'personalPhone';
-    expectedEvent.inputType = InputType.tel;
+    expectedEvent.inputType = 'tel';
     expectedEvent.label = 'Enter your phone number:';
     const input = fixture.nativeElement.querySelector('#phone');
     input.dispatchEvent(new Event('focus'));
@@ -79,10 +79,10 @@ describe('FocusDirective', () => {
     expect(mockEventDispatchService.trackFocus).toHaveBeenCalledWith(expectedEvent);
   }));
 
-  it('elements that are not inputs do not include label or input type', fakeAsync(() => {
+  it('elements that are not inputs do not include input type', fakeAsync(() => {
     expectedEvent.id = 'continue';
     expectedEvent.element = 'button';
-    delete expectedEvent.label;
+    expectedEvent.label = 'Continue';
     delete expectedEvent.inputType;
     const input = fixture.nativeElement.querySelector('#continue');
     input.dispatchEvent(new Event('focus'));
