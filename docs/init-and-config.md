@@ -4,30 +4,41 @@
 
 After the library has been installed, it can be loaded into your application by importing it into your root module (typically an `AppModule`).
 
+
 ```typescript
-imports: [
-  ...
-  OculrAngularModule.forRoot(),
-  ...
-]
+import { OculrAngularModule } from 'oculr-ngx';
+
+@NgModule({
+  imports: [OculrAngularModule.forRoot()],
+})
+export class AppModule {}
 ```
 
 The next thing you'll want to do is configure the library to meet your specific needs.
 
 ## Configuration
 
-The library is configured using an `AppConfiguration` [object](#appconfiguration) that is injected at runtime. This is accomplished using the `ConfigurationService` and its `loadAppConfig` method.
+The library is configured using an `AppConfiguration` [object](#appconfiguration) that is injected at runtime during app initialization. This is accomplished using the `ConfigurationService` and its `loadAppConfig` method.
 
 ```typescript
-@Injectable()
-export class AppInitializationService {
-  constructor(private oculrConfigService: ConfigurationService) {}
-  ...
-  init() {
-    ...
-    this.oculrConfigService.loadAppConfig(yourConfig);
-    ...
-  }
+import { AppConfiguration, ConfigurationService } from 'oculr-ngx';
+
+@NgModule({
+  providers: [
+    {
+      provide: APP_INITIALIZER,
+      useFactory: initializeAppFactory,
+      deps: [ConfigurationService],
+      multi: true,
+    },
+  ],
+})
+export class AppModule {}
+
+function initializeAppFactory(oculrConfigService: ConfigurationService): () => Observable<boolean> {
+  cosnt yourConfig: AppConfiguration = { ... };
+  oculrConfigService.loadAppConfig(yourConfig);
+  return () => of(true);
 }
 ```
 

@@ -14,7 +14,7 @@ Oculr is an Angular library that helps you capture analytic events occuring in y
 - [Content display](docs/display-directive.md)
 - [Button and link interactions](docs/click-directive.md)
 - [Form control interactions](docs/change-directive.md)
-- [Sensitive information control interactions]()
+- [Sensitive information control interactions](docs/focus-directive.md)
 
 ## How can it help?
 
@@ -36,21 +36,64 @@ Install Oculr.
 npm install oculr-ngx --save
 ```
 
-Configure Oculr during app initialization.
+Import Oculr to your app's Angular `AppModule`.
 
-...
+```typescript
+import { OculrAngularModule } from 'oculr-ngx';
 
-<!-- TODO: need details, may need to be pulled into another doc if too large -->
+@NgModule({
+  imports: [OculrAngularModule.forRoot()],
+})
+export class AppModule {}
+```
 
-Check out our [walkthrough]() for more hands-on details to get the most out of Oculr.
+Configure Oculr during app initialization in `AppModule`.
+
+```typescript
+import { ConfigurationService, Destinations } from 'oculr-ngx';
+
+@NgModule({
+  providers: [
+    {
+      provide: APP_INITIALIZER,
+      useFactory: initializeAppFactory,
+      deps: [ConfigurationService],
+      multi: true,
+    },
+  ],
+})
+export class AppModule {}
+
+function initializeAppFactory(oculrConfigService: ConfigurationService): () => Observable<boolean> {
+  oculrConfigService.loadAppConfig({
+    destinations: [
+      {
+        name: Destinations.Console,
+        sendCustomEvents: false,
+      },
+    ],
+  });
+  return () => of(true);
+}
+```
+
+Then add the `oculrClick` directive to any button in your app.
+
+```html
+<button id="continue" oculrClick>Continue</button>
+```
+
+Run your app and you will see an analytic event get logged to your console when clicking the button.
+
+Now that it's working you will likely want it to do more then log a single click to your console. Please check out our [walkthrough]() for more hands-on details to get the most out of Oculr.
 
 ## Documentation
 
 - [Full API](docs/README.md)
 - [Walkthrough]()
 - [Configuration](docs/init-and-config.md)
-- [Directives]()
-- [Services]()
+- [Directives](docs/README.md#Directives)
+- [Services](docs/README.md#Services)
 
 ## Updates
 
@@ -61,7 +104,7 @@ Check out our [walkthrough]() for more hands-on details to get the most out of O
 
 ### Want to help?
 
-We're excited about your interest in the project. Have an idea, want to contribute some code, found a bug, expand some documentation? Awesome! Check out our [contribution guide]() and then take a look at our [issues]() and [discussions](). We recommend issues that have been labeled as `help wanted` or `good first issue`.
+We're excited about your interest in the project. Have an idea, want to contribute some code, found a bug, expand some documentation? Awesome! Check out our [contribution guide](CONTRIBUTING.md) and then take a look at our [issues](https://github.com/Progressive/oculr-ngx/issues) and [discussions](https://github.com/Progressive/oculr-ngx/discussions). We recommend issues that have been labeled as `help wanted` or `good first issue`.
 
 ### Local setup
 
