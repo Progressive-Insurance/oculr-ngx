@@ -6,7 +6,6 @@
  * the LICENSE file at https://github.com/Progressive/oculr-ngx/blob/main/LICENSE.md
  */
 
-import { AnalyticsAction } from '../models/actions/analytics-action.enum';
 import { AnalyticEventType } from '../models/analytic-event-type.enum';
 import { EventDispatchService } from './event-dispatch.service';
 
@@ -25,20 +24,6 @@ describe('EventDispatchService', () => {
       getLocation: () => mockLocation,
     };
     eventDispatchService = new EventDispatchService(mockLocationTrackingService, mockEventBus);
-  });
-
-  xdescribe('trackError', () => {
-    it('dispatches an ANALYTICS_ERROR action with attached error', () => {
-      const mockError = new Error('You done messed up big');
-      const mockEvent: any = {
-        type: AnalyticsAction.ANALYTICS_ERROR,
-        payload: {
-          error: mockError,
-        },
-      };
-      eventDispatchService.trackAnalyticsError(mockError);
-      expect(mockEventBus.dispatch.calls.argsFor(0)[0]).toEqual(mockEvent);
-    });
   });
 
   describe('trackPageView', () => {
@@ -68,8 +53,34 @@ describe('EventDispatchService', () => {
     });
   });
 
+  describe('trackChange', () => {
+    it('dispatches a CHANGE_EVENT event with model and location', () => {
+      const mockEvent: any = { id: 'mock' };
+      const mockEventDispatch: any = {
+        id: 'mock',
+        eventType: AnalyticEventType.CHANGE_EVENT,
+        location: mockLocation,
+      };
+      eventDispatchService.trackChange(mockEvent);
+      expect(mockEventBus.dispatch).toHaveBeenCalledWith(mockEventDispatch);
+    });
+  });
+
+  describe('trackClick', () => {
+    it('dispatches a CLICK_EVENT event with model and location', () => {
+      const mockEvent: any = { id: 'mock' };
+      const mockEventDispatch: any = {
+        id: 'mock',
+        eventType: AnalyticEventType.CLICK_EVENT,
+        location: mockLocation,
+      };
+      eventDispatchService.trackClick(mockEvent);
+      expect(mockEventBus.dispatch).toHaveBeenCalledWith(mockEventDispatch);
+    });
+  });
+
   describe('trackDisplay', () => {
-    it('dispatches an DISPLAY_EVENT action with model and location', () => {
+    it('dispatches a DISPLAY_EVENT event with model and location', () => {
       const mockEvent: any = { id: 'mock' };
       const mockEventDispatch: any = {
         id: 'mock',
@@ -81,33 +92,55 @@ describe('EventDispatchService', () => {
     });
   });
 
-  xdescribe('trackSystemEvent', () => {
-    it('dispatches an SYSTEM_EVENT action with model and location', () => {
-      const mockModel: any = { event: 'mock', customDimensions: { pagePosition: 'Header' } };
-      const expectedAction: any = {
-        type: AnalyticsAction.SYSTEM_EVENT,
-        payload: {
-          eventModel: mockModel,
-          eventLocation: mockLocation,
-        },
+  describe('trackFocus', () => {
+    it('dispatches a FOCUS_EVENT event with model and location', () => {
+      const mockEvent: any = { id: 'mock' };
+      const mockEventDispatch: any = {
+        id: 'mock',
+        eventType: AnalyticEventType.FOCUS_EVENT,
+        location: mockLocation,
       };
-      eventDispatchService.trackSystemEvent(mockModel);
-      expect(mockEventBus.dispatch.calls.argsFor(0)[0]).toEqual(expectedAction);
+      eventDispatchService.trackFocus(mockEvent);
+      expect(mockEventBus.dispatch).toHaveBeenCalledWith(mockEventDispatch);
     });
   });
 
-  xdescribe('trackValidationError', () => {
-    it('dispatches an VALIDATION_ERROR_EVENT action with model and location', () => {
-      const mockModel: any = { event: 'mock' };
-      const mockEvent: any = {
-        type: AnalyticsAction.VALIDATION_ERROR_EVENT,
-        payload: {
-          eventModel: mockModel,
-          eventLocation: mockLocation,
-        },
+  describe('trackAppEvent', () => {
+    it('dispatches a APP_EVENT event with model and location', () => {
+      const mockEvent: any = { id: 'app-init' };
+      const mockEventDispatch: any = {
+        id: 'app-init',
+        eventType: AnalyticEventType.APP_EVENT,
+        location: mockLocation,
       };
-      eventDispatchService.trackValidationError(mockModel);
-      expect(mockEventBus.dispatch.calls.argsFor(0)[0]).toEqual(mockEvent);
+      eventDispatchService.trackAppEvent(mockEvent);
+      expect(mockEventBus.dispatch).toHaveBeenCalledWith(mockEventDispatch);
+    });
+  });
+
+  describe('trackAppError', () => {
+    it('dispatches a APP_ERROR event with model and location', () => {
+      const mockEvent: any = { id: 'error' };
+      const mockEventDispatch: any = {
+        id: 'error',
+        eventType: AnalyticEventType.APP_ERROR_EVENT,
+        location: mockLocation,
+      };
+      eventDispatchService.trackAppError(mockEvent);
+      expect(mockEventBus.dispatch).toHaveBeenCalledWith(mockEventDispatch);
+    });
+  });
+
+  describe('trackValidationError', () => {
+    it('dispatches a VALIDATION_ERROR_EVENT event with model and location', () => {
+      const mockEvent: any = { id: 'error' };
+      const mockEventDispatch: any = {
+        id: 'error',
+        eventType: AnalyticEventType.VALIDATION_ERROR_EVENT,
+        location: mockLocation,
+      };
+      eventDispatchService.trackValidationError(mockEvent);
+      expect(mockEventBus.dispatch).toHaveBeenCalledWith(mockEventDispatch);
     });
   });
 

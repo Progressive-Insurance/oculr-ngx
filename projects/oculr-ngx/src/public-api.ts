@@ -25,14 +25,10 @@ export { AppConfiguration } from './lib/models/app-configuration.interface';
 export { DestinationConfig } from './lib/models/destination-config.interface';
 export { Destinations } from './lib/models/destinations.enum';
 export { PageViewEvent } from './lib/models/page-view-event.interface';
-// TODO: to review expose, lean towards interfaces
-export { EventModel } from './lib/models/event-model.class';
-export { EventPayload } from './lib/models/event-payload.interface';
-export { AnalyticsErrorAction } from './lib/models/actions/analytics-error-action.interface';
-export { AnalyticsGenericAction } from './lib/models/actions/analytics-generic-action.interface';
+export { AppEvent } from './lib/models/app-event.interface';
+export { AppErrorEvent } from './lib/models/app-error-event.interface';
+export { ValidationErrorEvent } from './lib/models/validation-error-event.interface';
 export { Transform } from './lib/models/transform.interface';
-export { AnalyticsAction } from './lib/models/actions/analytics-action.enum';
-export { StandardAction } from './lib/models/actions/standard-action.interface';
 
 export { AnalyticsEventBusService } from './lib/services/analytics-event-bus.service';
 export { ConfigurationService } from './lib/services/configuration.service';

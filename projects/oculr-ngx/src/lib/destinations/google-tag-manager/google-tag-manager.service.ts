@@ -51,7 +51,6 @@ export class GoogleTagManagerService {
           return of(inputAction).pipe(
             map((action) => this.transform(action, appState)),
             catchError((error) => {
-              this.eventDispatchService.trackAnalyticsError(error);
               return EMPTY;
             })
           );
