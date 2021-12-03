@@ -7,6 +7,7 @@
  */
 
 import { HttpErrorResponse, HttpRequest, HttpResponse } from '@angular/common/http';
+import { ValidationErrors } from '@angular/forms';
 import { ActivatedRouteSnapshot } from '@angular/router';
 import { TimeoutError } from 'rxjs';
 import { AnalyticEventType } from './analytic-event-type.enum';
@@ -31,4 +32,6 @@ export interface AnalyticEvent {
   response?: HttpResponse<unknown> | HttpErrorResponse | TimeoutError;
   request?: HttpRequest<unknown>;
   duration?: number;
+  error?: Error;
+  validationErrors?: ValidationErrors;
 }

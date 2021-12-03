@@ -9,26 +9,21 @@
 import { HttpErrorResponse, HttpRequest, HttpResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { TimeoutError } from 'rxjs';
-import { analyticsError, appError, appInit, systemEvent, validationErrorEvent } from '../actions/analytics.actions';
-import { AnalyticsGenericAction } from '../models/actions/analytics-generic-action.interface';
 import { AnalyticEventType } from '../models/analytic-event-type.enum';
 import { AnalyticEvent } from '../models/analytic-event.interface';
 import { ApiCompleteEvent } from '../models/api-complete-event.interface';
 import { ApiContext } from '../models/api-context.interface';
 import { ApiStartEvent } from '../models/api-start-event.interface';
-import { EventModel } from '../models/event-model.class';
-import { EventPayload } from '../models/event-payload.interface';
+import { AppErrorEvent } from '../models/app-error-event.interface';
+import { AppEvent } from '../models/app-event.interface';
 import { PageViewEvent } from '../models/page-view-event.interface';
+import { ValidationErrorEvent } from '../models/validation-error-event.interface';
 import { AnalyticsEventBusService } from './analytics-event-bus.service';
 import { LocationService } from './location.service';
 
 @Injectable()
 export class EventDispatchService {
   constructor(private locationService: LocationService, private eventBus: AnalyticsEventBusService) {}
-
-  trackAnalyticsError(error: unknown): void {
-    this.dispatch(analyticsError(error));
-  }
 
   trackPageView(event?: PageViewEvent): void {
     const eventDispatch = {
@@ -77,36 +72,31 @@ export class EventDispatchService {
     this.dispatchEvent(eventDispatch);
   }
 
-  trackAppInit(scopes: string[]): void {
-    const payload: EventPayload = {
-      eventLocation: this.locationService.getLocation(),
-      eventModel: new EventModel('', '', '', '', '', '', '', '', {}, scopes, '', '', {}),
+  trackAppEvent(event: AppEvent): void {
+    const eventDispatch = {
+      ...event,
+      eventType: AnalyticEventType.APP_EVENT,
+      location: this.locationService.getLocation(),
     };
-    this.dispatch(appInit(payload));
+    this.dispatchEvent(eventDispatch);
   }
 
-  trackAppError(error: Error | string): void {
-    const payload: EventPayload = {
-      eventLocation: this.locationService.getLocation(),
-      eventModel: new EventModel('', '', '', '', '', '', '', '', {}, [], '', '', {}),
+  trackAppError(event: AppErrorEvent): void {
+    const eventDispatch = {
+      ...event,
+      eventType: AnalyticEventType.APP_ERROR_EVENT,
+      location: this.locationService.getLocation(),
     };
-    this.dispatch(appError(payload, { error }));
+    this.dispatchEvent(eventDispatch);
   }
 
-  trackSystemEvent(eventModel: EventModel): void {
-    const payload: EventPayload = {
-      eventModel,
-      eventLocation: this.locationService.getLocation(),
+  trackValidationError(event: ValidationErrorEvent): void {
+    const eventDispatch = {
+      ...event,
+      eventType: AnalyticEventType.VALIDATION_ERROR_EVENT,
+      location: this.locationService.getLocation(),
     };
-    this.dispatch(systemEvent(payload));
-  }
-
-  trackValidationError(eventModel: EventModel): void {
-    const payload: EventPayload = {
-      eventModel,
-      eventLocation: this.locationService.getLocation(),
-    };
-    this.dispatch(validationErrorEvent(payload));
+    this.dispatchEvent(eventDispatch);
   }
 
   trackApiStart(context: ApiContext, request: HttpRequest<unknown>): void {
@@ -138,12 +128,6 @@ export class EventDispatchService {
     this.dispatchEvent(eventDispatch);
   }
 
-  // TODO: Remove once all tracked events are refactored
-  private dispatch(action: AnalyticsGenericAction): void {
-    console.log(action);
-  }
-
-  // TODO: Can probably remove and replace with single call to eventBus.dispatch
   private dispatchEvent(event: AnalyticEvent): void {
     this.eventBus.dispatch(event);
   }

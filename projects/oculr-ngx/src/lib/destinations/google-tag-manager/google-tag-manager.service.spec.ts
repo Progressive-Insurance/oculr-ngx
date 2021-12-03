@@ -58,9 +58,6 @@ describe('Google tag manager service', () => {
     mockTagManagerService.init();
     mockAnalyticsEventBusService.events$.subscribe({
       complete: () => {
-        expect(mockEventDispatchService.trackAnalyticsError).toHaveBeenCalledWith(
-          'it was an exception but we caught it'
-        );
         expect(mockTagManagerService.log).not.toHaveBeenCalled();
         done();
       },
@@ -89,7 +86,6 @@ describe('Google tag manager service', () => {
     mockTagManagerService.init();
     mockAnalyticsEventBusService.events$.subscribe({
       complete: () => {
-        expect(mockEventDispatchService.trackAnalyticsError).not.toHaveBeenCalled();
         expect(mockTagManagerService.log).toHaveBeenCalledTimes(1);
         done();
       },
