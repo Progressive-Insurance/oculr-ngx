@@ -57,7 +57,7 @@ git commit -m "<type>: <short summary>"
 9. Push your branch to GitHub
 
 ```console
-git push origin your-new-branch-name
+git push -u origin your-new-branch-name
 ```
 
 10. In GitHub [create a pull request](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/creating-a-pull-request-from-a-fork) to `oculr:main`
