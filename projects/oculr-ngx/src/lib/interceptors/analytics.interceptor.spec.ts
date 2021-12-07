@@ -8,13 +8,19 @@
 
 import { HttpContext, HttpErrorResponse, HttpRequest, HttpResponse } from '@angular/common/http';
 import { fakeAsync, flush } from '@angular/core/testing';
-import { of, throwError } from 'rxjs';
+import { BehaviorSubject, of, throwError } from 'rxjs';
 import { ApiEventContext } from '../models/api-event-context.interface';
 import { Destinations } from '../models/destinations.enum';
 import { AnalyticsInterceptor, API_EVENT_CONTEXT } from './analytics.interceptor';
 
 describe('Analytics Interceptor', () => {
   const destinationUrl = 'https://prog.com/analytics';
+  const trackedUrl = 'https://oso-web/headlines';
+  const configSubject = new BehaviorSubject({});
+
+  let mockHttpHandler: any;
+  let mockRequest: HttpRequest<any>;
+  let mockEventContext: ApiEventContext;
 
   let mockEventDispatchService: any;
   let mockTimeService: any;
@@ -22,39 +28,38 @@ describe('Analytics Interceptor', () => {
   let analyticsInterceptor: AnalyticsInterceptor;
 
   beforeEach(() => {
+    mockEventContext = { start: { id: 'start' }, success: { id: 'success' }, failure: { id: 'failure' } };
+    mockRequest = new HttpRequest('GET', trackedUrl, {
+      context: new HttpContext().set(API_EVENT_CONTEXT, mockEventContext),
+    });
+    mockHttpHandler = jasmine.createSpyObj('mockHttpHandler', ['handle']);
+    mockHttpHandler.handle.and.callFake((mockRequest: any) => of(mockRequest));
+
     mockEventDispatchService = jasmine.createSpyObj('mockEventDispatchService', ['trackApiStart', 'trackApiComplete']);
     mockTimeService = {
       now: () => 1,
     };
     mockConfigService = {
-      appConfig$: of({
-        destinations: [{ name: Destinations.HttpApi, sendCustomEvents: false, endpoint: destinationUrl }],
-      }),
+      appConfig$: configSubject,
     };
     analyticsInterceptor = new AnalyticsInterceptor(mockEventDispatchService, mockTimeService, mockConfigService);
+    configSubject.next({});
+  });
+
+  describe('after construction', () => {
+    it('should dequeue any intercepts once a config has been set', fakeAsync(() => {
+      analyticsInterceptor.intercept(mockRequest, mockHttpHandler).subscribe();
+      expect(analyticsInterceptor['queuedIntercepts'].length).toEqual(1);
+      configSubject.next({
+        destinations: [{ name: Destinations.HttpApi, sendCustomEvents: false, endpoint: destinationUrl }],
+      });
+      flush();
+      expect(analyticsInterceptor['queuedIntercepts'].length).toEqual(0);
+    }));
   });
 
   describe('intercept', () => {
-    const trackedUrl = 'https://oso-web/headlines';
-    let mockHttpHandler: any;
-    let mockRequest: HttpRequest<any>;
-    let mockEventContext: ApiEventContext;
-
-    beforeEach(() => {
-      mockHttpHandler = jasmine.createSpyObj('mockHttpHandler', ['handle']);
-      mockHttpHandler.handle.and.callFake((mockRequest: any) => of(mockRequest));
-      mockEventContext = { start: { id: 'start' }, success: { id: 'success' }, failure: { id: 'failure' } };
-      mockRequest = new HttpRequest('GET', trackedUrl, {
-        context: new HttpContext().set(API_EVENT_CONTEXT, mockEventContext),
-      });
-    });
-
     describe('when no destinations are defined', () => {
-      beforeEach(() => {
-        mockConfigService = { appConfig$: of({}) };
-        analyticsInterceptor = new AnalyticsInterceptor(mockEventDispatchService, mockTimeService, mockConfigService);
-      });
-
       it('queues the request to be dispatched later', fakeAsync(() => {
         analyticsInterceptor.intercept(mockRequest, mockHttpHandler).subscribe(() => {
           expect(analyticsInterceptor['queuedIntercepts'].length).toEqual(1);
@@ -71,6 +76,12 @@ describe('Analytics Interceptor', () => {
     });
 
     describe('when a destination is defined', () => {
+      beforeEach(() => {
+        configSubject.next({
+          destinations: [{ name: Destinations.HttpApi, sendCustomEvents: false, endpoint: destinationUrl }],
+        });
+      });
+
       describe('when the request url is excluded', () => {
         beforeEach(() => {
           mockRequest = new HttpRequest('GET', destinationUrl, {
