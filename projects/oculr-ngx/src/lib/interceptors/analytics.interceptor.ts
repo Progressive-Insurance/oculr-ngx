@@ -17,7 +17,7 @@ import {
 } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { switchMap, take, tap } from 'rxjs/operators';
+import { filter, switchMap, take, tap } from 'rxjs/operators';
 import { ApiContext } from '../models/api-context.interface';
 import { ApiEventContext } from '../models/api-event-context.interface';
 import { AppConfiguration } from '../models/app-configuration.interface';
@@ -44,7 +44,18 @@ export class AnalyticsInterceptor implements HttpInterceptor {
     private eventDispatchService: EventDispatchService,
     private timeService: TimeService,
     private configService: ConfigurationService
-  ) {}
+  ) {
+    this.configService.appConfig$
+      .pipe(
+        filter((config: AppConfiguration) => !!config.destinations),
+        take(1),
+        tap((config: AppConfiguration) => {
+          const excludedUrls = config.destinations?.map((dest) => dest.endpoint || '') || [];
+          this.dequeueIntercepts(excludedUrls);
+        })
+      )
+      .subscribe();
+  }
 
   intercept(request: HttpRequest<unknown>, next: HttpHandler): Observable<HttpEvent<unknown>> {
     return this.configService.appConfig$.pipe(
@@ -52,8 +63,6 @@ export class AnalyticsInterceptor implements HttpInterceptor {
       switchMap((config: AppConfiguration) => {
         if (config.destinations) {
           const excludedUrls = config.destinations?.map((dest) => dest.endpoint || '') || [];
-
-          this.dequeueIntercepts(excludedUrls);
 
           if (this.isUrlIncluded(request, excludedUrls)) {
             const requestStartTime = this.timeService.now();

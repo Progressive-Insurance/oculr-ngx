@@ -53,7 +53,6 @@ describe('LocationService', () => {
         virtualPageName: '/innersource/catalog',
       };
       const result = locationService.getLocation();
-      console.log(result);
       expect(result).toEqual(expected);
     });
   });
