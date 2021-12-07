@@ -144,6 +144,7 @@ For this select example the following data is captured with the `AnalyticEvent`.
 
 | AnalyticEvent property | Value                         |
 | ---------------------- | ----------------------------- |
+| `id`                   | "favoriteFood"                |
 | `label`                | "What is your favorite food?" |
 | `value`                | "ramen"                       |
 | `displayValue`         | "Ramen"                       |
@@ -166,11 +167,14 @@ For this select example the following data is captured with the `AnalyticEvent`.
 
 For this radio input example the following data is captured. The `label` property is a repeat of the `displayValue` rather than the question being asked in the paragraph element. While the user may see the elements as related, there is nothing technically that links the paragraph element to the following input elements.
 
-| AnalyticEvent property | Value   |
-| ---------------------- | ------- |
-| `label`                | "Ramen" |
-| `value`                | "ramen" |
-| `displayValue`         | "Ramen" |
+Another difference with radio inputs is that they will prioritize the `formControlName` or `name` attributes on the host element when setting the `id` of the `AnalyticEvent`. This helps with the many radio inputs representing a single question situation that is common with this type of control.
+
+| AnalyticEvent property | Value          |
+| ---------------------- | -------------- |
+| `id`                   | "favoriteFood" |
+| `label`                | "Ramen"        |
+| `value`                | "ramen"        |
+| `displayValue`         | "Ramen"        |
 
 To capture the question for the radio input example, it is recommended to prepare an `AnalyticEvent` object and set the `label` property to match what the user would see.
 

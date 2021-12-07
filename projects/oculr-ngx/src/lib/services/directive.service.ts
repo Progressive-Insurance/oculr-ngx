@@ -44,7 +44,15 @@ export class DirectiveService {
   }
 
   setId(analyticEvent: AnalyticEvent, elementRef: ElementRef<HTMLElement>): void {
-    const elementId = elementRef.nativeElement.getAttribute('id');
+    let elementId = elementRef.nativeElement.getAttribute('id');
+    if (
+      this.getElementName(elementRef) === 'input' &&
+      this.getInputType(elementRef as ElementRef<HTMLInputElement>) === 'radio'
+    ) {
+      const elementName = elementRef.nativeElement.getAttribute('name');
+      const reactiveFormName = elementRef.nativeElement.getAttribute('formControlName');
+      elementId = reactiveFormName || elementName || elementId;
+    }
     if (elementId) {
       analyticEvent.id ||= elementId;
     }

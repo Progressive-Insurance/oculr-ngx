@@ -15,6 +15,7 @@ import { AnalyticEvent } from 'oculr-ngx';
 import { EventDispatchService } from '../services/event-dispatch.service';
 import { ChangeDirective } from './change.directive';
 import { DirectiveService } from '../services/directive.service';
+import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 
 describe('ChangeDirective', () => {
   let fixture: ComponentFixture<TestComponent>;
@@ -27,6 +28,7 @@ describe('ChangeDirective', () => {
     console.warn = jasmine.createSpy('warn');
 
     TestBed.configureTestingModule({
+      imports: [ReactiveFormsModule],
       declarations: [TestComponent, NotSupportedComponent, ChangeDirective],
       providers: [{ provide: EventDispatchService, useValue: mockEventDispatchService }, DirectiveService],
     });
@@ -246,6 +248,32 @@ describe('ChangeDirective', () => {
       expect(mockEventDispatchService.trackChange).toHaveBeenCalledTimes(1);
       expect(mockEventDispatchService.trackChange).toHaveBeenCalledWith(expectedEvent);
     }));
+
+    it('uses the reactive form attribute formControlName for id', fakeAsync(() => {
+      expectedEvent.id = 'favoriteSeason';
+      expectedEvent.label = 'Summer';
+      expectedEvent.value = 'summer';
+      expectedEvent.displayValue = 'Summer';
+      const input = fixture.nativeElement.querySelector('#summer');
+      input.dispatchEvent(new Event('mousedown'));
+      input.click();
+      tick();
+      expect(mockEventDispatchService.trackChange).toHaveBeenCalledTimes(1);
+      expect(mockEventDispatchService.trackChange).toHaveBeenCalledWith(expectedEvent);
+    }));
+
+    it('uses the attribute name for id', fakeAsync(() => {
+      expectedEvent.id = 'favoriteCookie';
+      expectedEvent.label = 'Chocolate chip';
+      expectedEvent.value = 'chocolateChip';
+      expectedEvent.displayValue = 'Chocolate chip';
+      const input = fixture.nativeElement.querySelector('#chocolateChip');
+      input.dispatchEvent(new Event('mousedown'));
+      input.click();
+      tick();
+      expect(mockEventDispatchService.trackChange).toHaveBeenCalledTimes(1);
+      expect(mockEventDispatchService.trackChange).toHaveBeenCalledWith(expectedEvent);
+    }));
   });
 
   describe('select', () => {
@@ -307,7 +335,9 @@ describe('ChangeDirective', () => {
     it('does not dispatch a change event when an identifier is missing', fakeAsync(() => {
       const input = fixture.nativeElement.querySelector('.unicorn-background');
       input.dispatchEvent(new Event('mousedown'));
-      input.click();
+      input.dispatchEvent(new Event('keydown'));
+      input.value = 'Spot';
+      input.dispatchEvent(new Event('change'));
       tick();
       expect(mockEventDispatchService.trackChange).toHaveBeenCalledTimes(0);
       expect(console.warn).toHaveBeenCalled();
@@ -358,12 +388,20 @@ describe('ChangeDirective', () => {
     <label for="petName">Your pet's name:</label>
     <input oculrChange type="text" id="petName" />
 
+    <label for="unicornName">Your unicorn's name:</label>
+    <input oculrChange class="unicorn-background" type="text" />
+
     <!-- radio -->
     <input oculrChange type="radio" id="dragon" value="dragon" />
     <label for="dragon">Dragon</label>
 
-    <input oculrChange class="unicorn-background" type="radio" value="unicorn" />
-    <label>Unicorn</label>
+    <form [formGroup]="seasonsForm">
+      <input oculrChange type="radio" id="summer" value="summer" formControlName="favoriteSeason" />
+      <label for="summer">Summer</label>
+    </form>
+
+    <input oculrChange type="radio" id="chocolateChip" value="chocolateChip" name="favoriteCookie" />
+    <label for="chocolateChip">Chocolate chip</label>
 
     <!-- select -->
     <label for="favoriteFood">What is your favorite food?</label>
@@ -378,7 +416,11 @@ describe('ChangeDirective', () => {
     <textarea oculrChange id="story"></textarea>
   `,
 })
-class TestComponent {}
+class TestComponent {
+  seasonsForm = new FormGroup({
+    favoriteSeason: new FormControl(''),
+  });
+}
 
 @Component({
   template: `
