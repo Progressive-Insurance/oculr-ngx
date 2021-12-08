@@ -4,13 +4,13 @@
 
 ## Description
 
-An interface that is used with dispatching analytic event using [ChangeDirective](./change-directive.md), [ClickDirective](./click-directive.md), [DisplayDirective](./display-directive.md), [FocusDirective](./focus-directive.md), and [EventDispatchService]().
+An interface that is used with dispatching analytic event using [ChangeDirective](./change-directive.md), [ClickDirective](./click-directive.md), [DisplayDirective](./display-directive.md), [FocusDirective](./focus-directive.md), and [EventDispatchService](./event-dispatch-service.md).
 
 ## Properties
 
 | Property             | Desciption                                                     |
 | -------------------- | -------------------------------------------------------------- |
-| `id: string`         | A useful indentifier for the event.                            |
+| `id: string`         | A useful identifier for the event.                             |
 | `label?: string`     | **optional** </br> An easier to read description of the event. |
 | `element?: string`   | **optional** </br> The HTML element associated with the event. |
 | `inputType?: string` | **optional** </br> The type of input HTML elements.            |

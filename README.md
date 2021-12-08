@@ -10,11 +10,12 @@ Oculr is an Angular library that helps you capture analytic events occuring in y
 
 - [Page views](docs/page-views.md)
 - [API calls](docs/http-interceptor.md)
-- [Errors]()
+- [Errors](docs/app-error-event.md)
 - [Content display](docs/display-directive.md)
 - [Button and link interactions](docs/click-directive.md)
 - [Form control interactions](docs/change-directive.md)
 - [Sensitive information control interactions](docs/focus-directive.md)
+- [General app events](docs/app-event.md)
 
 ## How can it help?
 
