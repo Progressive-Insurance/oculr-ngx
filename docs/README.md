@@ -36,6 +36,8 @@ Oculr has a set of interfaces that ensure the shape of the objects being passed 
 | | |
 | --- | --- |
 | [AnalyticEvent](./analytic-event.md) | An event interface used by directives. |
+| [AppEvent](./app-event.md) | An interface used for tracking general application events |
+| [AppErrorEvent](./app-error-event.md) | An interface used for tracking application errors |
 
 ## Feedback
 
