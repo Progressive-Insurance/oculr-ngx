@@ -33,7 +33,7 @@ Oculr can point to any destination that you want to use for tracking analytic da
 
 Install Oculr.
 
-```node
+```console
 npm install oculr-ngx --save
 ```
 
@@ -86,12 +86,12 @@ Then add the `oculrClick` directive to any button in your app.
 
 Run your app and you will see an analytic event get logged to your console when clicking the button.
 
-Now that it's working you will likely want it to do more then log a single click to your console. Please check out our [walkthrough]() for more hands-on details to get the most out of Oculr.
+Now that it's working you will likely want it to do more then log a single click to your console. Please check out our [walkthrough](docs/walkthrough/README.md) for more hands-on details to get the most out of Oculr.
 
 ## Documentation
 
 - [Full API](docs/README.md)
-- [Walkthrough]()
+- [Walkthrough](docs/walkthrough/README.md)
 - [Configuration](docs/init-and-config.md)
 - [Directives](docs/README.md#Directives)
 - [Services](docs/README.md#Services)
