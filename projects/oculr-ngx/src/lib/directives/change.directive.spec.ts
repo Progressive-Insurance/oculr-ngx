@@ -20,12 +20,13 @@ import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 describe('ChangeDirective', () => {
   let fixture: ComponentFixture<TestComponent>;
   let mockEventDispatchService: any;
+  let warnSpy: jasmine.Spy;
 
   beforeEach(() => {
     mockEventDispatchService = {
       trackChange: jasmine.createSpy('trackChange'),
     };
-    console.warn = jasmine.createSpy('warn');
+    warnSpy = spyOn(console, 'warn');
 
     TestBed.configureTestingModule({
       imports: [ReactiveFormsModule],
@@ -328,10 +329,6 @@ describe('ChangeDirective', () => {
   });
 
   describe('warnings', () => {
-    beforeEach(() => {
-      console.warn = jasmine.createSpy('warn');
-    });
-
     it('does not dispatch a change event when an identifier is missing', fakeAsync(() => {
       const input = fixture.nativeElement.querySelector('.unicorn-background');
       input.dispatchEvent(new Event('mousedown'));
@@ -340,7 +337,7 @@ describe('ChangeDirective', () => {
       input.dispatchEvent(new Event('change'));
       tick();
       expect(mockEventDispatchService.trackChange).toHaveBeenCalledTimes(0);
-      expect(console.warn).toHaveBeenCalled();
+      expect(warnSpy).toHaveBeenCalled();
     }));
 
     it('does not dispatch a change event with an unsupported host element', fakeAsync(() => {
@@ -352,7 +349,7 @@ describe('ChangeDirective', () => {
       input.dispatchEvent(new Event('change'));
       tick();
       expect(mockEventDispatchService.trackChange).toHaveBeenCalledTimes(0);
-      expect(console.warn).toHaveBeenCalled();
+      expect(warnSpy).toHaveBeenCalled();
     }));
   });
 });

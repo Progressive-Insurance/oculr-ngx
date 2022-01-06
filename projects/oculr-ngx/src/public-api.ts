@@ -8,8 +8,6 @@
 
 export { OculrAngularModule } from './lib/oculr-ngx.module';
 
-export { GoogleTagManagerService } from './lib/destinations/google-tag-manager/google-tag-manager.service';
-
 export { ClickDirective } from './lib/directives/click.directive';
 export { ChangeDirective } from './lib/directives/change.directive';
 export { DisplayDirective } from './lib/directives/display.directive';
@@ -28,10 +26,7 @@ export { PageViewEvent } from './lib/models/page-view-event.interface';
 export { AppEvent } from './lib/models/app-event.interface';
 export { AppErrorEvent } from './lib/models/app-error-event.interface';
 export { ValidationErrorEvent } from './lib/models/validation-error-event.interface';
-export { Transform } from './lib/models/transform.interface';
 
 export { AnalyticsEventBusService } from './lib/services/analytics-event-bus.service';
 export { ConfigurationService } from './lib/services/configuration.service';
 export { EventDispatchService } from './lib/services/event-dispatch.service';
-// TODO: This may or may not need to be exposed. Leaving here for now to match existing exposure.
-export { FormattingService } from './lib/services/formatting.service';

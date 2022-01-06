@@ -23,7 +23,6 @@ import { EventDispatchService } from './services/event-dispatch.service';
 import { InitializationService } from './services/initialization.service';
 import { LocationService } from './services/location.service';
 import { TimeService } from './services/time.service';
-import { WindowService } from './services/window.service';
 
 @NgModule({
   imports: [CommonModule],
@@ -40,7 +39,6 @@ export class OculrAngularModule {
         DirectiveService,
         EventDispatchService,
         LocationService,
-        WindowService,
         TimeService,
         {
           provide: Window,
