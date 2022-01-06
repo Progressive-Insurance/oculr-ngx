@@ -91,11 +91,11 @@ describe('FocusDirective', () => {
   }));
 
   it('does not dispatch a focus event when an identifier is missing', fakeAsync(() => {
-    console.warn = jasmine.createSpy('warn');
+    const warnSpy = spyOn(console, 'warn');
     const input = fixture.nativeElement.querySelector('.email');
     input.dispatchEvent(new Event('focus'));
     expect(mockEventDispatchService.trackFocus).toHaveBeenCalledTimes(0);
-    expect(console.warn).toHaveBeenCalled();
+    expect(warnSpy).toHaveBeenCalled();
   }));
 });
 

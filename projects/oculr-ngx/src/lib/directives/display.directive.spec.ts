@@ -73,12 +73,12 @@ describe('DisplayDirective', () => {
   }));
 
   it('does not dispatch a display event when no identifier is provided', fakeAsync(() => {
-    console.warn = jasmine.createSpy('warn');
+    const warnSpy = spyOn(console, 'warn');
     fixture.componentInstance.missingId.next(true);
     fixture.detectChanges();
     tick();
     expect(mockEventDispatchService.trackDisplay).toHaveBeenCalledTimes(0);
-    expect(console.warn).toHaveBeenCalled();
+    expect(warnSpy).toHaveBeenCalled();
   }));
 
   it('does dispatch a display event when an Event object is provided with an id property', fakeAsync(() => {

@@ -16,8 +16,8 @@ import { AnalyticsInterceptor, API_EVENT_CONTEXT } from './analytics.interceptor
 describe('Analytics Interceptor', () => {
   const destinationUrl = 'https://prog.com/analytics';
   const trackedUrl = 'https://oso-web/headlines';
-  const configSubject = new BehaviorSubject({});
 
+  let configSubject: BehaviorSubject<any>;
   let mockHttpHandler: any;
   let mockRequest: HttpRequest<any>;
   let mockEventContext: ApiEventContext;
@@ -39,6 +39,7 @@ describe('Analytics Interceptor', () => {
     mockTimeService = {
       now: () => 1,
     };
+    configSubject = new BehaviorSubject({});
     mockConfigService = {
       appConfig$: configSubject,
     };
@@ -48,13 +49,18 @@ describe('Analytics Interceptor', () => {
 
   describe('after construction', () => {
     it('should dequeue any intercepts once a config has been set', fakeAsync(() => {
-      analyticsInterceptor.intercept(mockRequest, mockHttpHandler).subscribe();
-      expect(analyticsInterceptor['queuedIntercepts'].length).toEqual(1);
+      analyticsInterceptor.intercept(mockRequest, mockHttpHandler).subscribe(() => {
+        expect(analyticsInterceptor['queuedIntercepts'].length).toEqual(1);
+      });
+
       configSubject.next({
         destinations: [{ name: Destinations.HttpApi, sendCustomEvents: false, endpoint: destinationUrl }],
       });
       flush();
-      expect(analyticsInterceptor['queuedIntercepts'].length).toEqual(0);
+
+      configSubject.subscribe(() => {
+        expect(analyticsInterceptor['queuedIntercepts'].length).toEqual(0);
+      });
     }));
   });
 

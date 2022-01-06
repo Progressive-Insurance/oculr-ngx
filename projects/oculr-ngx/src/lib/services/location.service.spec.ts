@@ -20,7 +20,7 @@ describe('LocationService', () => {
   beforeEach(() => {
     mockLocation = jasmine.createSpyObj('mockLocation', ['path']);
     mockLocation.path.and.returnValue('/home');
-    mockWindowService = { url: 'https://example.org/home' };
+    mockWindowService = { location: { href: 'https://example.org/home' } };
     mockQueryParamMap = convertToParamMap({});
     mockParamMap = convertToParamMap({ licenses: 'approved' });
     mockRouter = {

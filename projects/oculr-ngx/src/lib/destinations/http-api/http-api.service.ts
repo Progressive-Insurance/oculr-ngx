@@ -45,7 +45,7 @@ export class HttpApiService {
       .subscribe();
   }
 
-  private log(event: unknown): void {
+  log(event: unknown): void {
     const { method, endpoint, headers } = this.config as DestinationConfig;
 
     if (method && endpoint) {

@@ -110,13 +110,13 @@ describe('ClickDirective', () => {
   }));
 
   it('does not dispatch a click event when an identifier is missing', fakeAsync(() => {
-    console.warn = jasmine.createSpy('warn');
+    const warnSpy = spyOn(console, 'warn');
     const button = fixture.nativeElement.querySelector('.someClass');
     button.dispatchEvent(new Event('keydown'));
     button.click();
     tick();
     expect(mockEventDispatchService.trackClick).toHaveBeenCalledTimes(0);
-    expect(console.warn).toHaveBeenCalled();
+    expect(warnSpy).toHaveBeenCalled();
   }));
 });
 

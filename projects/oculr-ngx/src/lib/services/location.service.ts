@@ -12,15 +12,14 @@ import { Injectable } from '@angular/core';
 import { ActivatedRouteSnapshot, ParamMap, Router } from '@angular/router';
 import { EventLocation } from '../models/event-location.interface';
 import { ParameterizedRoute } from '../models/parameterized-route.interface';
-import { WindowService } from './window.service';
 
 @Injectable()
 export class LocationService {
   private hostName: string;
 
-  constructor(private routerLocation: Location, private windowService: WindowService, private router: Router) {
+  constructor(private routerLocation: Location, private window: Window, private router: Router) {
     this.hostName = Location.stripTrailingSlash(
-      this.windowService.url.substring(0, this.windowService.url.length - this.routerLocation.path(true).length)
+      this.window.location.href.substring(0, this.window.location.href.length - this.routerLocation.path(true).length)
     );
   }
 
