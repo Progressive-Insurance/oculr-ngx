@@ -38,6 +38,9 @@
           "configurations": {
             "production": {
               "karmaConfig": "projects/oculr-ngx/karma-ci.conf.js"
+            },
+            "development": {
+              "karmaConfig": "projects/oculr-ngx/karma-dev.conf.js"
             }
           }
         },

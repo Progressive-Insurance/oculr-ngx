@@ -12,6 +12,7 @@ export { ClickDirective } from './lib/directives/click.directive';
 export { ChangeDirective } from './lib/directives/change.directive';
 export { DisplayDirective } from './lib/directives/display.directive';
 export { FocusDirective } from './lib/directives/focus.directive';
+export { TrackValidationDirective } from './lib/directives/track-validation.directive';
 
 export { API_EVENT_CONTEXT } from './lib/interceptors/analytics.interceptor';
 
