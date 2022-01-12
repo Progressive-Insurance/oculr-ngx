@@ -9,6 +9,7 @@
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
     "test:ci": "ng test --configuration production",
+    "test:dev": "ng test --configuration development",
     "lint": "ng lint"
   },
   "private": true,

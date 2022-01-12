@@ -11,7 +11,7 @@ import { EventLocation } from './event-location.interface';
 export interface ValidationErrorEvent {
   validationErrors: ValidationErrors;
   id?: string;
-  element?: string;
+  element?: string | number | null;
   eventType?: AnalyticEventType;
   location?: EventLocation;
   scopes?: [];

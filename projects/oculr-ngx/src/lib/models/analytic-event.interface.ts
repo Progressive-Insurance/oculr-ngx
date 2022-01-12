@@ -18,7 +18,7 @@ import { InteractionType } from './interaction-type.enum';
 export interface AnalyticEvent {
   id?: string;
   label?: string;
-  element?: string;
+  element?: string | number | null;
   inputType?: string;
   value?: string;
   displayValue?: string;

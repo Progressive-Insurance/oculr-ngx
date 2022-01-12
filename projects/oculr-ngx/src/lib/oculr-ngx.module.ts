@@ -15,6 +15,7 @@ import { ChangeDirective } from './directives/change.directive';
 import { ClickDirective } from './directives/click.directive';
 import { DisplayDirective } from './directives/display.directive';
 import { FocusDirective } from './directives/focus.directive';
+import { TrackValidationDirective } from './directives/track-validation.directive';
 import { AnalyticsInterceptor } from './interceptors/analytics.interceptor';
 import { AnalyticsEventBusService } from './services/analytics-event-bus.service';
 import { ConfigurationService } from './services/configuration.service';
@@ -26,8 +27,8 @@ import { TimeService } from './services/time.service';
 
 @NgModule({
   imports: [CommonModule],
-  declarations: [DisplayDirective, ClickDirective, ChangeDirective, FocusDirective],
-  exports: [DisplayDirective, ClickDirective, ChangeDirective, FocusDirective],
+  declarations: [DisplayDirective, ClickDirective, ChangeDirective, FocusDirective, TrackValidationDirective],
+  exports: [DisplayDirective, ClickDirective, ChangeDirective, FocusDirective, TrackValidationDirective],
   providers: [],
 })
 export class OculrAngularModule {
