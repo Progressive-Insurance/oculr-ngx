@@ -1,6 +1,6 @@
 {
   "name": "oculr-ngx",
-  "version": "0.0.1-alpha.11",
+  "version": "0.0.1-alpha.12",
   "scripts": {
     "tag-release": "git commit -a -m \"Release %npm_package_version%\" && git tag \"v%npm_package_version%\""
   },
