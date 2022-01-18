@@ -10,22 +10,21 @@ import { Component } from '@angular/core';
 import { ComponentFixture, fakeAsync, TestBed, tick } from '@angular/core/testing';
 import { ActivatedRoute } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
-
+import { AnalyticEvent } from '../models/analytic-event.interface';
 import { InteractionDetail } from '../models/interaction-detail.enum';
 import { InteractionType } from '../models/interaction-type.enum';
-import { AnalyticEvent } from '../models/analytic-event.interface';
 import { DirectiveService } from '../services/directive.service';
-import { EventDispatchService } from '../services/event-dispatch.service';
+import { DispatchService } from '../services/dispatch.service';
 import { ClickDirective } from './click.directive';
 
 describe('ClickDirective', () => {
   let fixture: ComponentFixture<TestComponent>;
-  let mockEventDispatchService: any;
+  let mockDispatchService: any;
   let mockActivatedRoute: any;
   let expectedEvent: AnalyticEvent;
 
   beforeEach(() => {
-    mockEventDispatchService = {
+    mockDispatchService = {
       trackClick: jasmine.createSpy('trackClick'),
     };
     mockActivatedRoute = {
@@ -36,7 +35,7 @@ describe('ClickDirective', () => {
       imports: [RouterTestingModule.withRoutes([{ path: 'somewhere', component: AlternateRouteComponent }])],
       declarations: [TestComponent, AlternateRouteComponent, ClickDirective],
       providers: [
-        { provide: EventDispatchService, useValue: mockEventDispatchService },
+        { provide: DispatchService, useValue: mockDispatchService },
         { provide: ActivatedRoute, useValue: mockActivatedRoute },
         DirectiveService,
       ],
@@ -59,8 +58,8 @@ describe('ClickDirective', () => {
     button.dispatchEvent(new Event('keydown'));
     button.click();
     tick();
-    expect(mockEventDispatchService.trackClick).toHaveBeenCalledTimes(1);
-    expect(mockEventDispatchService.trackClick).toHaveBeenCalledWith(expectedEvent);
+    expect(mockDispatchService.trackClick).toHaveBeenCalledTimes(1);
+    expect(mockDispatchService.trackClick).toHaveBeenCalledWith(expectedEvent);
   }));
 
   it('dispatches a click event when using a mouse', fakeAsync(() => {
@@ -69,8 +68,8 @@ describe('ClickDirective', () => {
     button.dispatchEvent(new Event('mousedown'));
     button.click();
     tick();
-    expect(mockEventDispatchService.trackClick).toHaveBeenCalledTimes(1);
-    expect(mockEventDispatchService.trackClick).toHaveBeenCalledWith(expectedEvent);
+    expect(mockDispatchService.trackClick).toHaveBeenCalledTimes(1);
+    expect(mockDispatchService.trackClick).toHaveBeenCalledWith(expectedEvent);
   }));
 
   it('dispatches a click event when using touch', fakeAsync(() => {
@@ -80,8 +79,8 @@ describe('ClickDirective', () => {
     button.dispatchEvent(new Event('mousedown'));
     button.click();
     tick();
-    expect(mockEventDispatchService.trackClick).toHaveBeenCalledTimes(1);
-    expect(mockEventDispatchService.trackClick).toHaveBeenCalledWith(expectedEvent);
+    expect(mockDispatchService.trackClick).toHaveBeenCalledTimes(1);
+    expect(mockDispatchService.trackClick).toHaveBeenCalledWith(expectedEvent);
   }));
 
   it('dispatches a click event with a url when host element is a link', fakeAsync(() => {
@@ -94,8 +93,8 @@ describe('ClickDirective', () => {
     link.dispatchEvent(new Event('keydown'));
     link.click();
     tick();
-    expect(mockEventDispatchService.trackClick).toHaveBeenCalledTimes(1);
-    expect(mockEventDispatchService.trackClick).toHaveBeenCalledWith(expectedEvent);
+    expect(mockDispatchService.trackClick).toHaveBeenCalledTimes(1);
+    expect(mockDispatchService.trackClick).toHaveBeenCalledWith(expectedEvent);
   }));
 
   it('prioritizes bound properties over host element attributes when both are provided', fakeAsync(() => {
@@ -105,8 +104,8 @@ describe('ClickDirective', () => {
     button.dispatchEvent(new Event('keydown'));
     button.click();
     tick();
-    expect(mockEventDispatchService.trackClick).toHaveBeenCalledTimes(1);
-    expect(mockEventDispatchService.trackClick).toHaveBeenCalledWith(expectedEvent);
+    expect(mockDispatchService.trackClick).toHaveBeenCalledTimes(1);
+    expect(mockDispatchService.trackClick).toHaveBeenCalledWith(expectedEvent);
   }));
 
   it('does not dispatch a click event when an identifier is missing', fakeAsync(() => {
@@ -115,7 +114,7 @@ describe('ClickDirective', () => {
     button.dispatchEvent(new Event('keydown'));
     button.click();
     tick();
-    expect(mockEventDispatchService.trackClick).toHaveBeenCalledTimes(0);
+    expect(mockDispatchService.trackClick).toHaveBeenCalledTimes(0);
     expect(warnSpy).toHaveBeenCalled();
   }));
 });

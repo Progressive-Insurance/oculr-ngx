@@ -22,7 +22,7 @@ import { ApiContext } from '../models/api-context.interface';
 import { ApiEventContext } from '../models/api-event-context.interface';
 import { AppConfiguration } from '../models/app-configuration.interface';
 import { ConfigurationService } from '../services/configuration.service';
-import { EventDispatchService } from '../services/event-dispatch.service';
+import { DispatchService } from '../services/dispatch.service';
 import { TimeService } from '../services/time.service';
 
 export const API_EVENT_CONTEXT = new HttpContextToken(() => {
@@ -41,7 +41,7 @@ export class AnalyticsInterceptor implements HttpInterceptor {
   private queuedIntercepts: QueuedIntercept[] = [];
 
   constructor(
-    private eventDispatchService: EventDispatchService,
+    private dispatchService: DispatchService,
     private timeService: TimeService,
     private configService: ConfigurationService
   ) {
@@ -68,7 +68,7 @@ export class AnalyticsInterceptor implements HttpInterceptor {
             const requestStartTime = this.timeService.now();
             const { start, success, failure } = request.context.get<ApiEventContext>(API_EVENT_CONTEXT);
 
-            this.eventDispatchService.trackApiStart(start, request);
+            this.dispatchService.trackApiStart(start, request);
 
             return next.handle(request).pipe(
               tap(
@@ -77,7 +77,7 @@ export class AnalyticsInterceptor implements HttpInterceptor {
                     const requestEndTime = this.timeService.now();
                     const duration = Math.round(requestEndTime - requestStartTime);
 
-                    this.eventDispatchService.trackApiComplete(success, event, request, duration);
+                    this.dispatchService.trackApiComplete(success, event, request, duration);
                   }
                 },
                 (error: unknown) => {
@@ -85,7 +85,7 @@ export class AnalyticsInterceptor implements HttpInterceptor {
                     const requestEndTime = this.timeService.now();
                     const duration = Math.round(requestEndTime - requestStartTime);
 
-                    this.eventDispatchService.trackApiComplete(failure, error, request, duration);
+                    this.dispatchService.trackApiComplete(failure, error, request, duration);
                   }
                 }
               )
@@ -142,14 +142,14 @@ export class AnalyticsInterceptor implements HttpInterceptor {
 
       if (intercept && this.isUrlIncluded(intercept?.request, excludedUrls)) {
         if (intercept.response) {
-          this.eventDispatchService.trackApiComplete(
+          this.dispatchService.trackApiComplete(
             intercept.context,
             intercept.response,
             intercept.request,
             intercept.duration || 0
           );
         } else {
-          this.eventDispatchService.trackApiStart(intercept.context, intercept.request);
+          this.dispatchService.trackApiStart(intercept.context, intercept.request);
         }
       }
     }

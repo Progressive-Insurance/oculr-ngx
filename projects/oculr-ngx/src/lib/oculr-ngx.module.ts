@@ -20,6 +20,7 @@ import { AnalyticsInterceptor } from './interceptors/analytics.interceptor';
 import { AnalyticsEventBusService } from './services/analytics-event-bus.service';
 import { ConfigurationService } from './services/configuration.service';
 import { DirectiveService } from './services/directive.service';
+import { DispatchService } from './services/dispatch.service';
 import { EventDispatchService } from './services/event-dispatch.service';
 import { InitializationService } from './services/initialization.service';
 import { LocationService } from './services/location.service';
@@ -38,6 +39,7 @@ export class OculrAngularModule {
       providers: [
         AnalyticsEventBusService,
         DirectiveService,
+        DispatchService,
         EventDispatchService,
         LocationService,
         TimeService,
