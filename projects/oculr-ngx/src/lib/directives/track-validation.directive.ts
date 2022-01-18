@@ -1,7 +1,7 @@
 import { Directive, HostListener, Input } from '@angular/core';
 import { NgControl } from '@angular/forms';
 import { AnalyticEvent } from '../models/analytic-event.interface';
-import { EventDispatchService } from '../services/event-dispatch.service';
+import { DispatchService } from '../services/dispatch.service';
 
 @Directive({
   selector: '[oculrTrackValidation]',
@@ -9,12 +9,12 @@ import { EventDispatchService } from '../services/event-dispatch.service';
 export class TrackValidationDirective {
   @Input('oculrTrackValidation') analyticEventInput: AnalyticEvent | '' = '';
 
-  constructor(private control: NgControl, private eventDispatch: EventDispatchService) {}
+  constructor(private control: NgControl, private dispatchService: DispatchService) {}
 
   @HostListener('focusout')
   onBlur(): void {
     if (this.control.touched && this.control.errors) {
-      this.eventDispatch.trackValidationError({
+      this.dispatchService.trackValidationError({
         element: this.control.name,
         validationErrors: this.control.errors,
         ...this.analyticEventInput,

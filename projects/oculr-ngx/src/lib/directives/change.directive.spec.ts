@@ -12,18 +12,18 @@ import { ComponentFixture, fakeAsync, TestBed, tick } from '@angular/core/testin
 import { InteractionDetail } from '../models/interaction-detail.enum';
 import { InteractionType } from '../models/interaction-type.enum';
 import { AnalyticEvent } from 'oculr-ngx';
-import { EventDispatchService } from '../services/event-dispatch.service';
 import { ChangeDirective } from './change.directive';
 import { DirectiveService } from '../services/directive.service';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { DispatchService } from '../services/dispatch.service';
 
 describe('ChangeDirective', () => {
   let fixture: ComponentFixture<TestComponent>;
-  let mockEventDispatchService: any;
+  let mockDispatchService: any;
   let warnSpy: jasmine.Spy;
 
   beforeEach(() => {
-    mockEventDispatchService = {
+    mockDispatchService = {
       trackChange: jasmine.createSpy('trackChange'),
     };
     warnSpy = spyOn(console, 'warn');
@@ -31,7 +31,7 @@ describe('ChangeDirective', () => {
     TestBed.configureTestingModule({
       imports: [ReactiveFormsModule],
       declarations: [TestComponent, NotSupportedComponent, ChangeDirective],
-      providers: [{ provide: EventDispatchService, useValue: mockEventDispatchService }, DirectiveService],
+      providers: [{ provide: DispatchService, useValue: mockDispatchService }, DirectiveService],
     });
     fixture = TestBed.createComponent(TestComponent);
     fixture.detectChanges();
@@ -58,8 +58,8 @@ describe('ChangeDirective', () => {
       input.dispatchEvent(new Event('mousedown'));
       input.click();
       tick();
-      expect(mockEventDispatchService.trackChange).toHaveBeenCalledTimes(1);
-      expect(mockEventDispatchService.trackChange).toHaveBeenCalledWith(expectedEvent);
+      expect(mockDispatchService.trackChange).toHaveBeenCalledTimes(1);
+      expect(mockDispatchService.trackChange).toHaveBeenCalledWith(expectedEvent);
     }));
 
     it('dispatches a change event when using a keyboard', fakeAsync(() => {
@@ -68,8 +68,8 @@ describe('ChangeDirective', () => {
       input.dispatchEvent(new Event('keydown'));
       input.click();
       tick();
-      expect(mockEventDispatchService.trackChange).toHaveBeenCalledTimes(1);
-      expect(mockEventDispatchService.trackChange).toHaveBeenCalledWith(expectedEvent);
+      expect(mockDispatchService.trackChange).toHaveBeenCalledTimes(1);
+      expect(mockDispatchService.trackChange).toHaveBeenCalledWith(expectedEvent);
     }));
 
     it('dispatches a change event when using touch', fakeAsync(() => {
@@ -79,8 +79,8 @@ describe('ChangeDirective', () => {
       input.dispatchEvent(new Event('mousedown'));
       input.click();
       tick();
-      expect(mockEventDispatchService.trackChange).toHaveBeenCalledTimes(1);
-      expect(mockEventDispatchService.trackChange).toHaveBeenCalledWith(expectedEvent);
+      expect(mockDispatchService.trackChange).toHaveBeenCalledTimes(1);
+      expect(mockDispatchService.trackChange).toHaveBeenCalledWith(expectedEvent);
     }));
 
     it('prioritizes event properties over host element attributes', fakeAsync(() => {
@@ -91,8 +91,8 @@ describe('ChangeDirective', () => {
       input.dispatchEvent(new Event('mousedown'));
       input.click();
       tick();
-      expect(mockEventDispatchService.trackChange).toHaveBeenCalledTimes(1);
-      expect(mockEventDispatchService.trackChange).toHaveBeenCalledWith(expectedEvent);
+      expect(mockDispatchService.trackChange).toHaveBeenCalledTimes(1);
+      expect(mockDispatchService.trackChange).toHaveBeenCalledWith(expectedEvent);
     }));
 
     it('dispatches a change event when cleared', fakeAsync(() => {
@@ -104,8 +104,8 @@ describe('ChangeDirective', () => {
       input.dispatchEvent(new Event('mousedown'));
       input.click();
       tick();
-      expect(mockEventDispatchService.trackChange).toHaveBeenCalledTimes(1);
-      expect(mockEventDispatchService.trackChange).toHaveBeenCalledWith(expectedEvent);
+      expect(mockDispatchService.trackChange).toHaveBeenCalledTimes(1);
+      expect(mockDispatchService.trackChange).toHaveBeenCalledWith(expectedEvent);
     }));
   });
 
@@ -130,8 +130,8 @@ describe('ChangeDirective', () => {
       input.value = '2021-11-16';
       input.dispatchEvent(new Event('change'));
       tick();
-      expect(mockEventDispatchService.trackChange).toHaveBeenCalledTimes(1);
-      expect(mockEventDispatchService.trackChange).toHaveBeenCalledWith(expectedEvent);
+      expect(mockDispatchService.trackChange).toHaveBeenCalledTimes(1);
+      expect(mockDispatchService.trackChange).toHaveBeenCalledWith(expectedEvent);
     }));
 
     it('does not dispatch a change event due to sensitive data', fakeAsync(() => {
@@ -142,8 +142,8 @@ describe('ChangeDirective', () => {
       input.value = '2001-11-16';
       input.dispatchEvent(new Event('change'));
       tick();
-      expect(mockEventDispatchService.trackChange).toHaveBeenCalledTimes(1);
-      expect(mockEventDispatchService.trackChange).toHaveBeenCalledWith(expectedEvent);
+      expect(mockDispatchService.trackChange).toHaveBeenCalledTimes(1);
+      expect(mockDispatchService.trackChange).toHaveBeenCalledWith(expectedEvent);
     }));
   });
 
@@ -168,8 +168,8 @@ describe('ChangeDirective', () => {
       input.value = '5';
       input.dispatchEvent(new Event('change'));
       tick();
-      expect(mockEventDispatchService.trackChange).toHaveBeenCalledTimes(1);
-      expect(mockEventDispatchService.trackChange).toHaveBeenCalledWith(expectedEvent);
+      expect(mockDispatchService.trackChange).toHaveBeenCalledTimes(1);
+      expect(mockDispatchService.trackChange).toHaveBeenCalledWith(expectedEvent);
     }));
   });
 
@@ -194,8 +194,8 @@ describe('ChangeDirective', () => {
       input.value = 'things';
       input.dispatchEvent(new Event('change'));
       tick();
-      expect(mockEventDispatchService.trackChange).toHaveBeenCalledTimes(1);
-      expect(mockEventDispatchService.trackChange).toHaveBeenCalledWith(expectedEvent);
+      expect(mockDispatchService.trackChange).toHaveBeenCalledTimes(1);
+      expect(mockDispatchService.trackChange).toHaveBeenCalledWith(expectedEvent);
     }));
   });
 
@@ -220,8 +220,8 @@ describe('ChangeDirective', () => {
       input.value = 'Spot';
       input.dispatchEvent(new Event('change'));
       tick();
-      expect(mockEventDispatchService.trackChange).toHaveBeenCalledTimes(1);
-      expect(mockEventDispatchService.trackChange).toHaveBeenCalledWith(expectedEvent);
+      expect(mockDispatchService.trackChange).toHaveBeenCalledTimes(1);
+      expect(mockDispatchService.trackChange).toHaveBeenCalledWith(expectedEvent);
     }));
   });
 
@@ -246,8 +246,8 @@ describe('ChangeDirective', () => {
       input.dispatchEvent(new Event('mousedown'));
       input.click();
       tick();
-      expect(mockEventDispatchService.trackChange).toHaveBeenCalledTimes(1);
-      expect(mockEventDispatchService.trackChange).toHaveBeenCalledWith(expectedEvent);
+      expect(mockDispatchService.trackChange).toHaveBeenCalledTimes(1);
+      expect(mockDispatchService.trackChange).toHaveBeenCalledWith(expectedEvent);
     }));
 
     it('uses the reactive form attribute formControlName for id', fakeAsync(() => {
@@ -259,8 +259,8 @@ describe('ChangeDirective', () => {
       input.dispatchEvent(new Event('mousedown'));
       input.click();
       tick();
-      expect(mockEventDispatchService.trackChange).toHaveBeenCalledTimes(1);
-      expect(mockEventDispatchService.trackChange).toHaveBeenCalledWith(expectedEvent);
+      expect(mockDispatchService.trackChange).toHaveBeenCalledTimes(1);
+      expect(mockDispatchService.trackChange).toHaveBeenCalledWith(expectedEvent);
     }));
 
     it('uses the attribute name for id', fakeAsync(() => {
@@ -272,8 +272,8 @@ describe('ChangeDirective', () => {
       input.dispatchEvent(new Event('mousedown'));
       input.click();
       tick();
-      expect(mockEventDispatchService.trackChange).toHaveBeenCalledTimes(1);
-      expect(mockEventDispatchService.trackChange).toHaveBeenCalledWith(expectedEvent);
+      expect(mockDispatchService.trackChange).toHaveBeenCalledTimes(1);
+      expect(mockDispatchService.trackChange).toHaveBeenCalledWith(expectedEvent);
     }));
   });
 
@@ -298,8 +298,8 @@ describe('ChangeDirective', () => {
       input.value = 'ramen';
       input.dispatchEvent(new Event('change'));
       tick();
-      expect(mockEventDispatchService.trackChange).toHaveBeenCalledTimes(1);
-      expect(mockEventDispatchService.trackChange).toHaveBeenCalledWith(expectedEvent);
+      expect(mockDispatchService.trackChange).toHaveBeenCalledTimes(1);
+      expect(mockDispatchService.trackChange).toHaveBeenCalledWith(expectedEvent);
     }));
   });
 
@@ -323,8 +323,8 @@ describe('ChangeDirective', () => {
       input.value = 'Once upon a time...';
       input.dispatchEvent(new Event('change'));
       tick();
-      expect(mockEventDispatchService.trackChange).toHaveBeenCalledTimes(1);
-      expect(mockEventDispatchService.trackChange).toHaveBeenCalledWith(expectedEvent);
+      expect(mockDispatchService.trackChange).toHaveBeenCalledTimes(1);
+      expect(mockDispatchService.trackChange).toHaveBeenCalledWith(expectedEvent);
     }));
   });
 
@@ -336,7 +336,7 @@ describe('ChangeDirective', () => {
       input.value = 'Spot';
       input.dispatchEvent(new Event('change'));
       tick();
-      expect(mockEventDispatchService.trackChange).toHaveBeenCalledTimes(0);
+      expect(mockDispatchService.trackChange).toHaveBeenCalledTimes(0);
       expect(warnSpy).toHaveBeenCalled();
     }));
 
@@ -348,7 +348,7 @@ describe('ChangeDirective', () => {
       input.value = '123';
       input.dispatchEvent(new Event('change'));
       tick();
-      expect(mockEventDispatchService.trackChange).toHaveBeenCalledTimes(0);
+      expect(mockDispatchService.trackChange).toHaveBeenCalledTimes(0);
       expect(warnSpy).toHaveBeenCalled();
     }));
   });

@@ -8,27 +8,26 @@
 
 import { Component } from '@angular/core';
 import { ComponentFixture, fakeAsync, TestBed } from '@angular/core/testing';
-
 import { AnalyticEvent } from '../models/analytic-event.interface';
-import { EventDispatchService } from '../services/event-dispatch.service';
-import { FocusDirective } from './focus.directive';
 import { InteractionDetail } from '../models/interaction-detail.enum';
 import { InteractionType } from '../models/interaction-type.enum';
 import { DirectiveService } from '../services/directive.service';
+import { DispatchService } from '../services/dispatch.service';
+import { FocusDirective } from './focus.directive';
 
 describe('FocusDirective', () => {
   let fixture: ComponentFixture<TestComponent>;
-  let mockEventDispatchService: any;
+  let mockDispatchService: any;
   let expectedEvent: AnalyticEvent;
 
   beforeEach(() => {
-    mockEventDispatchService = {
+    mockDispatchService = {
       trackFocus: jasmine.createSpy('trackFocus'),
     };
 
     TestBed.configureTestingModule({
       declarations: [TestComponent, FocusDirective],
-      providers: [{ provide: EventDispatchService, useValue: mockEventDispatchService }, DirectiveService],
+      providers: [{ provide: DispatchService, useValue: mockDispatchService }, DirectiveService],
     });
     fixture = TestBed.createComponent(TestComponent);
     fixture.detectChanges();
@@ -48,15 +47,15 @@ describe('FocusDirective', () => {
     const input = fixture.nativeElement.querySelector('#password');
     input.dispatchEvent(new Event('mousedown'));
     input.dispatchEvent(new Event('focus'));
-    expect(mockEventDispatchService.trackFocus).toHaveBeenCalledTimes(1);
-    expect(mockEventDispatchService.trackFocus).toHaveBeenCalledWith(expectedEvent);
+    expect(mockDispatchService.trackFocus).toHaveBeenCalledTimes(1);
+    expect(mockDispatchService.trackFocus).toHaveBeenCalledWith(expectedEvent);
   }));
 
   it('dispatches a focus event when using a keyboard', fakeAsync(() => {
     const input = fixture.nativeElement.querySelector('#password');
     input.dispatchEvent(new Event('focus'));
-    expect(mockEventDispatchService.trackFocus).toHaveBeenCalledTimes(1);
-    expect(mockEventDispatchService.trackFocus).toHaveBeenCalledWith(expectedEvent);
+    expect(mockDispatchService.trackFocus).toHaveBeenCalledTimes(1);
+    expect(mockDispatchService.trackFocus).toHaveBeenCalledWith(expectedEvent);
   }));
 
   it('dispatches a focus event when using touch', fakeAsync(() => {
@@ -65,8 +64,8 @@ describe('FocusDirective', () => {
     input.dispatchEvent(new Event('touchstart'));
     input.dispatchEvent(new Event('mousedown'));
     input.dispatchEvent(new Event('focus'));
-    expect(mockEventDispatchService.trackFocus).toHaveBeenCalledTimes(1);
-    expect(mockEventDispatchService.trackFocus).toHaveBeenCalledWith(expectedEvent);
+    expect(mockDispatchService.trackFocus).toHaveBeenCalledTimes(1);
+    expect(mockDispatchService.trackFocus).toHaveBeenCalledWith(expectedEvent);
   }));
 
   it('prioritizes event properties over host element attributes', fakeAsync(() => {
@@ -75,8 +74,8 @@ describe('FocusDirective', () => {
     expectedEvent.label = 'Enter your phone number:';
     const input = fixture.nativeElement.querySelector('#phone');
     input.dispatchEvent(new Event('focus'));
-    expect(mockEventDispatchService.trackFocus).toHaveBeenCalledTimes(1);
-    expect(mockEventDispatchService.trackFocus).toHaveBeenCalledWith(expectedEvent);
+    expect(mockDispatchService.trackFocus).toHaveBeenCalledTimes(1);
+    expect(mockDispatchService.trackFocus).toHaveBeenCalledWith(expectedEvent);
   }));
 
   it('elements that are not inputs do not include input type', fakeAsync(() => {
@@ -86,15 +85,15 @@ describe('FocusDirective', () => {
     delete expectedEvent.inputType;
     const input = fixture.nativeElement.querySelector('#continue');
     input.dispatchEvent(new Event('focus'));
-    expect(mockEventDispatchService.trackFocus).toHaveBeenCalledTimes(1);
-    expect(mockEventDispatchService.trackFocus).toHaveBeenCalledWith(expectedEvent);
+    expect(mockDispatchService.trackFocus).toHaveBeenCalledTimes(1);
+    expect(mockDispatchService.trackFocus).toHaveBeenCalledWith(expectedEvent);
   }));
 
   it('does not dispatch a focus event when an identifier is missing', fakeAsync(() => {
     const warnSpy = spyOn(console, 'warn');
     const input = fixture.nativeElement.querySelector('.email');
     input.dispatchEvent(new Event('focus'));
-    expect(mockEventDispatchService.trackFocus).toHaveBeenCalledTimes(0);
+    expect(mockDispatchService.trackFocus).toHaveBeenCalledTimes(0);
     expect(warnSpy).toHaveBeenCalled();
   }));
 });

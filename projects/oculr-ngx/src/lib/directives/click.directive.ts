@@ -12,7 +12,7 @@ import { AnalyticEvent } from '../models/analytic-event.interface';
 import { InteractionDetail } from '../models/interaction-detail.enum';
 import { InteractionType } from '../models/interaction-type.enum';
 import { DirectiveService } from '../services/directive.service';
-import { EventDispatchService } from '../services/event-dispatch.service';
+import { DispatchService } from '../services/dispatch.service';
 
 @Directive({
   selector: '[oculrClick]',
@@ -55,7 +55,7 @@ export class ClickDirective {
 
   constructor(
     private elementRef: ElementRef<HTMLButtonElement | HTMLLinkElement>,
-    private eventDispatchService: EventDispatchService,
+    private dispatchService: DispatchService,
     private directiveService: DirectiveService,
     private activatedRoute: ActivatedRoute
   ) {}
@@ -82,7 +82,7 @@ export class ClickDirective {
   }
 
   private handleEvent(analyticEvent: AnalyticEvent) {
-    this.eventDispatchService.trackClick(analyticEvent);
+    this.dispatchService.trackClick(analyticEvent);
   }
 
   private shouldDispatch(analyticEvent: AnalyticEvent): boolean {

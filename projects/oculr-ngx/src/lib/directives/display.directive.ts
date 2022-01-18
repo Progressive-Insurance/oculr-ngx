@@ -7,10 +7,9 @@
  */
 
 import { Directive, ElementRef, Input, OnInit } from '@angular/core';
-
 import { AnalyticEvent } from '../models/analytic-event.interface';
 import { DirectiveService } from '../services/directive.service';
-import { EventDispatchService } from '../services/event-dispatch.service';
+import { DispatchService } from '../services/dispatch.service';
 
 @Directive({
   selector: '[oculrDisplay]',
@@ -20,7 +19,7 @@ export class DisplayDirective implements OnInit {
 
   constructor(
     private elementRef: ElementRef<HTMLElement>,
-    private eventDispatchService: EventDispatchService,
+    private dispatchService: DispatchService,
     private directiveService: DirectiveService
   ) {}
 
@@ -34,7 +33,7 @@ export class DisplayDirective implements OnInit {
   }
 
   private handleEvent(analyticEvent: AnalyticEvent) {
-    this.eventDispatchService.trackDisplay(analyticEvent);
+    this.dispatchService.trackDisplay(analyticEvent);
   }
 
   private shouldDispatch(analyticEvent: AnalyticEvent): boolean {

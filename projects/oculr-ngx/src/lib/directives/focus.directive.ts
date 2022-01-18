@@ -7,12 +7,11 @@
  */
 
 import { Directive, ElementRef, HostListener, Input } from '@angular/core';
-
 import { AnalyticEvent } from '../models/analytic-event.interface';
 import { InteractionDetail } from '../models/interaction-detail.enum';
 import { InteractionType } from '../models/interaction-type.enum';
 import { DirectiveService } from '../services/directive.service';
-import { EventDispatchService } from '../services/event-dispatch.service';
+import { DispatchService } from '../services/dispatch.service';
 
 @Directive({
   selector: '[oculrFocus]',
@@ -50,7 +49,7 @@ export class FocusDirective {
 
   constructor(
     private elementRef: ElementRef<HTMLElement>,
-    private eventDispatchService: EventDispatchService,
+    private dispatchService: DispatchService,
     private directiveService: DirectiveService
   ) {}
 
@@ -64,7 +63,7 @@ export class FocusDirective {
   }
 
   private handleEvent(analyticEvent: AnalyticEvent) {
-    this.eventDispatchService.trackFocus(analyticEvent);
+    this.dispatchService.trackFocus(analyticEvent);
   }
 
   private resetInteractionDetail() {

@@ -11,7 +11,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { AnalyticEvent } from '../models/analytic-event.interface';
 import { DirectiveService } from '../services/directive.service';
-import { EventDispatchService } from '../services/event-dispatch.service';
+import { DispatchService } from '../services/dispatch.service';
 import { TrackValidationDirective } from './track-validation.directive';
 
 function touchControl(id: string, fixture: ComponentFixture<TestComponent>): void {
@@ -24,17 +24,17 @@ function touchControl(id: string, fixture: ComponentFixture<TestComponent>): voi
 
 describe('TrackValidationDirective', () => {
   let fixture: ComponentFixture<TestComponent>;
-  let mockEventDispatchService: any;
+  let mockDispatchService: any;
 
   beforeEach(() => {
-    mockEventDispatchService = {
+    mockDispatchService = {
       trackValidationError: jasmine.createSpy('trackValidationError'),
     };
 
     TestBed.configureTestingModule({
       imports: [ReactiveFormsModule],
       declarations: [TestComponent, TrackValidationDirective],
-      providers: [{ provide: EventDispatchService, useValue: mockEventDispatchService }, DirectiveService],
+      providers: [{ provide: DispatchService, useValue: mockDispatchService }, DirectiveService],
     });
     fixture = TestBed.createComponent(TestComponent);
     fixture.detectChanges();
@@ -43,7 +43,7 @@ describe('TrackValidationDirective', () => {
   it('allows a pre-built AnalyticEvent and dispatches a validation error event', () => {
     touchControl('first-name', fixture);
 
-    expect(mockEventDispatchService.trackValidationError).toHaveBeenCalledOnceWith({
+    expect(mockDispatchService.trackValidationError).toHaveBeenCalledOnceWith({
       id: 'validation-error',
       element: 'firstName',
       validationErrors: { required: true },
@@ -53,7 +53,7 @@ describe('TrackValidationDirective', () => {
   it('allows an inline object and dispatches a validation error event', () => {
     touchControl('last-name', fixture);
 
-    expect(mockEventDispatchService.trackValidationError).toHaveBeenCalledOnceWith({
+    expect(mockDispatchService.trackValidationError).toHaveBeenCalledOnceWith({
       id: 'last-name',
       element: 'lastName',
       validationErrors: { required: true },
@@ -63,7 +63,7 @@ describe('TrackValidationDirective', () => {
   it('allows for no input to be specified', () => {
     touchControl('address', fixture);
 
-    expect(mockEventDispatchService.trackValidationError).toHaveBeenCalledOnceWith({
+    expect(mockDispatchService.trackValidationError).toHaveBeenCalledOnceWith({
       element: 'address',
       validationErrors: { required: true },
     });
@@ -74,13 +74,13 @@ describe('TrackValidationDirective', () => {
     input.dispatchEvent(new Event('focus'));
     fixture.detectChanges();
 
-    expect(mockEventDispatchService.trackValidationError).not.toHaveBeenCalled();
+    expect(mockDispatchService.trackValidationError).not.toHaveBeenCalled();
   });
 
   it('will not fire if there are no validation errors on the control', () => {
     touchControl('nickname', fixture);
 
-    expect(mockEventDispatchService.trackValidationError).not.toHaveBeenCalled();
+    expect(mockDispatchService.trackValidationError).not.toHaveBeenCalled();
   });
 });
 

@@ -7,12 +7,11 @@
  */
 
 import { Directive, ElementRef, HostListener, Input, OnInit } from '@angular/core';
-
 import { AnalyticEvent } from '../models/analytic-event.interface';
 import { InteractionDetail } from '../models/interaction-detail.enum';
 import { InteractionType } from '../models/interaction-type.enum';
 import { DirectiveService } from '../services/directive.service';
-import { EventDispatchService } from '../services/event-dispatch.service';
+import { DispatchService } from '../services/dispatch.service';
 
 @Directive({
   selector: '[oculrChange]',
@@ -62,7 +61,7 @@ export class ChangeDirective implements OnInit {
 
   constructor(
     private elementRef: ElementRef<HTMLSelectElement | HTMLTextAreaElement | HTMLInputElement>,
-    private eventDispatchService: EventDispatchService,
+    private dispatchService: DispatchService,
     private directiveService: DirectiveService
   ) {}
 
@@ -122,7 +121,7 @@ export class ChangeDirective implements OnInit {
   }
 
   private handleEvent(analyticEvent: AnalyticEvent) {
-    this.eventDispatchService.trackChange(analyticEvent);
+    this.dispatchService.trackChange(analyticEvent);
   }
 
   private checkHost(): void {
