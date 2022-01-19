@@ -16,7 +16,7 @@ export class ConfigurationService {
   appConfig$: Observable<AppConfiguration>;
 
   constructor() {
-    this._appConfig$ = new BehaviorSubject({});
+    this._appConfig$ = new BehaviorSubject<AppConfiguration>({ logHttpTraffic: false });
     this.appConfig$ = this._appConfig$.asObservable();
   }
 

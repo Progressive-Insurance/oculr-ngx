@@ -14,6 +14,8 @@ Oculr has a set of directives that help capture various display or interaction e
 | [oculrChange](./change-directive.md) | A directive that captures input, select, and textarea changes. |
 | [oculrClick](./click-directive.md) | A directive that captures button and anchor clicks. |
 | [oculrDisplay](./display-directive.md) | A directive that captures when a host element is rendered. |
+| [oculrFocus](./focus-directive.md) | A directive that captures when a host element gains focus. |
+| [oculrTrackValidation](./track-validation-directive.md) | A directive that captures validation errors on a Reactive form control. |
 
 ## Page Views
 

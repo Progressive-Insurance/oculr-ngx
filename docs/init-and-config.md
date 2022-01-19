@@ -4,7 +4,6 @@
 
 After the library has been installed, it can be loaded into your application by importing it into your root module (typically an `AppModule`).
 
-
 ```typescript
 import { OculrAngularModule } from 'oculr-ngx';
 
@@ -44,25 +43,26 @@ function initializeAppFactory(oculrConfigService: ConfigurationService): () => O
 
 ### AppConfiguration
 
-| Property | Description |
-| -------- | ----------- |
-| `destinations` | An array containing one to many `DestinationConfig` [objects](#destinationconfig). Each destination option is a pre-defined service that is responsible for forwarding on emitted events to another location. |
+| Property         | Description                                                                                                                                                                                                   |
+| ---------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `logHttpTraffic` | `true` if you want to log HTTP calls from your app; `false` otherwise.                                                                                                                                        |
+| `destinations`   | An array containing one to many `DestinationConfig` [objects](#destinationconfig). Each destination option is a pre-defined service that is responsible for forwarding on emitted events to another location. |
 
 ### DestinationConfig
 
-| Property | Description |
-| -------- | ----------- |
-| `name`| Any available option defined by the `Destinations` [enum](../projects/oculr-ngx/src/lib/models/destinations.enum.ts). A basic description for each is listed [below](#available-destinations). |
+| Property           | Description                                                                                                                                                                                           |
+| ------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `name`             | Any available option defined by the `Destinations` [enum](../projects/oculr-ngx/src/lib/models/destinations.enum.ts). A basic description for each is listed [below](#available-destinations).        |
 | `sendCustomEvents` | A `boolean` value denoting whether you'd like your own custom event structure dispatched. [More information](#using-your-own-custom-event-object) can be found below on how this can be accomplished. |
-| `endpoint` | The URL to send events to |
-| `method` | The HTTP method (`POST` or `PUT`) to be used when calling `endpoint`. |
-| `headers` | An `HttpHeaders` [object](https://angular.io/api/common/http/HttpHeaders) containing any required headers for calling `endpoint`. |
+| `endpoint`         | The URL to send events to                                                                                                                                                                             |
+| `method`           | The HTTP method (`POST` or `PUT`) to be used when calling `endpoint`.                                                                                                                                 |
+| `headers`          | An `HttpHeaders` [object](https://angular.io/api/common/http/HttpHeaders) containing any required headers for calling `endpoint`.                                                                     |
 
 ### Available destinations
 
-| Name | Description | Required properties |
-| ---- | ----------- | ------------------- |
-| Console | Equivalent to sending every event to `console.log`. | `name` |
+| Name    | Description                                            | Required properties          |
+| ------- | ------------------------------------------------------ | ---------------------------- |
+| Console | Equivalent to sending every event to `console.log`.    | `name`                       |
 | HttpApi | Used for sending events to a single HTTP API endpoint. | `name`, `endpoint`, `method` |
 
 ## Using your own custom event object

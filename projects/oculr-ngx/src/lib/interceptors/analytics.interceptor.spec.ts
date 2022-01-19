@@ -44,7 +44,7 @@ describe('Analytics Interceptor', () => {
       appConfig$: configSubject,
     };
     analyticsInterceptor = new AnalyticsInterceptor(mockEventDispatchService, mockTimeService, mockConfigService);
-    configSubject.next({});
+    configSubject.next({ logHttpTraffic: true });
   });
 
   describe('after construction', () => {
@@ -54,6 +54,7 @@ describe('Analytics Interceptor', () => {
       });
 
       configSubject.next({
+        logHttpTraffic: true,
         destinations: [{ name: Destinations.HttpApi, sendCustomEvents: false, endpoint: destinationUrl }],
       });
       flush();
@@ -65,6 +66,19 @@ describe('Analytics Interceptor', () => {
   });
 
   describe('intercept', () => {
+    describe('when HTTP logging is off', () => {
+      it('should just forward the request on', fakeAsync(() => {
+        configSubject.next({
+          logHttpTraffic: false,
+          destinations: [{ name: Destinations.HttpApi, sendCustomEvents: false, endpoint: destinationUrl }],
+        });
+        analyticsInterceptor.intercept(mockRequest, mockHttpHandler).subscribe(() => {
+          expect(mockHttpHandler.handle).toHaveBeenCalledOnceWith(mockRequest);
+        });
+        flush();
+      }));
+    });
+
     describe('when no destinations are defined', () => {
       it('queues the request to be dispatched later', fakeAsync(() => {
         analyticsInterceptor.intercept(mockRequest, mockHttpHandler).subscribe(() => {
@@ -84,6 +98,7 @@ describe('Analytics Interceptor', () => {
     describe('when a destination is defined', () => {
       beforeEach(() => {
         configSubject.next({
+          logHttpTraffic: true,
           destinations: [{ name: Destinations.HttpApi, sendCustomEvents: false, endpoint: destinationUrl }],
         });
       });

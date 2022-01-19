@@ -15,6 +15,7 @@ describe('ConfigurationService', () => {
 
   it('should allow an app config to be loaded on demand', () => {
     const expectedConfig: AppConfiguration = {
+      logHttpTraffic: false,
       destinations: [{ name: Destinations.Console, sendCustomEvents: false }],
     };
     service.loadAppConfig(expectedConfig);
