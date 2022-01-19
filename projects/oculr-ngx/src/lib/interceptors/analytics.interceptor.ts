@@ -51,7 +51,7 @@ export class AnalyticsInterceptor implements HttpInterceptor {
         take(1),
         tap((config: AppConfiguration) => {
           const excludedUrls = config.destinations?.map((dest) => dest.endpoint || '') || [];
-          this.dequeueIntercepts(excludedUrls);
+          this.dequeueIntercepts(config, excludedUrls);
         })
       )
       .subscribe();
@@ -62,6 +62,10 @@ export class AnalyticsInterceptor implements HttpInterceptor {
       take(1),
       switchMap((config: AppConfiguration) => {
         if (config.destinations) {
+          if (!config.logHttpTraffic) {
+            return next.handle(request);
+          }
+
           const excludedUrls = config.destinations?.map((dest) => dest.endpoint || '') || [];
 
           if (this.isUrlIncluded(request, excludedUrls)) {
@@ -136,7 +140,12 @@ export class AnalyticsInterceptor implements HttpInterceptor {
     );
   }
 
-  private dequeueIntercepts(excludedUrls: string[]): void {
+  private dequeueIntercepts(config: AppConfiguration, excludedUrls: string[]): void {
+    if (!config.logHttpTraffic) {
+      this.queuedIntercepts = [];
+      return;
+    }
+
     while (this.queuedIntercepts.length > 0) {
       const intercept = this.queuedIntercepts.shift();
 
