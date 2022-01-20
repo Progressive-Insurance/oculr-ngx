@@ -67,6 +67,7 @@ export class AppModule {}
 
 function initializeAppFactory(oculrConfigService: ConfigurationService): () => Observable<boolean> {
   oculrConfigService.loadAppConfig({
+    logHttpTraffic: true,
     destinations: [
       {
         name: Destinations.Console,

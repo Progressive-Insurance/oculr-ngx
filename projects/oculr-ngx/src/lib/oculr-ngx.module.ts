@@ -7,7 +7,7 @@
  */
 
 import { CommonModule } from '@angular/common';
-import { HTTP_INTERCEPTORS } from '@angular/common/http';
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { APP_INITIALIZER, ModuleWithProviders, NgModule } from '@angular/core';
 import { ConsoleService } from './destinations/console/console.service';
 import { HttpApiService } from './destinations/http-api/http-api.service';
@@ -27,7 +27,7 @@ import { LocationService } from './services/location.service';
 import { TimeService } from './services/time.service';
 
 @NgModule({
-  imports: [CommonModule],
+  imports: [CommonModule, HttpClientModule],
   declarations: [DisplayDirective, ClickDirective, ChangeDirective, FocusDirective, TrackValidationDirective],
   exports: [DisplayDirective, ClickDirective, ChangeDirective, FocusDirective, TrackValidationDirective],
   providers: [],
