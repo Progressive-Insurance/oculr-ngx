@@ -6,7 +6,7 @@ An analytics library that makes collecting data in an Angular app simple.
 
 ## What does it do?
 
-Oculr is an Angular library that helps you capture analytic events occuring in your app. The following features give you insight into what your users are doing in your app and how your app is handling data and errors in the background.
+Oculr is an Angular library that helps you capture analytic events occurring in your app. The following features give you insight into what your users are doing in your app and how your app is handling data and errors in the background.
 
 - [Page views](docs/page-views.md)
 - [API calls](docs/http-interceptor.md)
@@ -87,12 +87,11 @@ Then add the `oculrClick` directive to any button in your app.
 
 Run your app and you will see an analytic event get logged to your console when clicking the button.
 
-Now that it's working you will likely want it to do more then log a single click to your console. Please check out our [walkthrough](docs/walkthrough/README.md) for more hands-on details to get the most out of Oculr.
+Now that it's working you will likely want it to do more then log a single click to your console. Please check out our [Full API](docs/README.md) for more hands-on details to get the most out of Oculr.
 
 ## Documentation
 
 - [Full API](docs/README.md)
-- [Walkthrough](docs/walkthrough/README.md)
 - [Configuration](docs/init-and-config.md)
 - [Directives](docs/README.md#Directives)
 - [Services](docs/README.md#Services)
