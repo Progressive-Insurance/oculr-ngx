@@ -15,6 +15,5 @@ export interface ApiStartEvent {
   id?: string;
   eventType?: AnalyticEventType;
   location?: EventLocation;
-  // TODO: needs a new type, possible generics
   scopes?: [];
 }

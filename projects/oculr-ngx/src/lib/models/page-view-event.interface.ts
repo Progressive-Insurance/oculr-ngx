@@ -15,6 +15,5 @@ export interface PageViewEvent {
   activatedRoute?: ActivatedRouteSnapshot;
   eventType?: AnalyticEventType;
   location?: EventLocation;
-  // TODO: needs a new type, possible generics
   scopes?: [];
 }

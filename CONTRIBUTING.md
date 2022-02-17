@@ -78,5 +78,3 @@ git push -u origin your-new-branch-name
 ## Signing the CLA
 
 Please sign our Contributor License Agreement (CLA) before sending pull requests. It is required for us to accept your changes.
-
-TODO: create CLA process
