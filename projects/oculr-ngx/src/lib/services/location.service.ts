@@ -50,7 +50,6 @@ export class LocationService {
     };
   }
 
-  // TODO: double check null check here
   private getRouteFromSnapshot(snapshot: ActivatedRouteSnapshot | null): string {
     if (snapshot == null) {
       return '';

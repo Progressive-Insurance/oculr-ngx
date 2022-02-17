@@ -128,7 +128,6 @@ describe('HttpApiService', () => {
       });
     }));
 
-    // TODO: revisit this test to see if we can cover the retry flow
     xit('should retry failed requests according to the strategy', fakeAsync(() => {
       const warnSpy = spyOn(console, 'warn');
 
@@ -152,7 +151,6 @@ describe('HttpApiService', () => {
     }));
   });
 
-  // TODO: try and get this to actually test the retry
   xdescribe('retryStrategy', () => {
     const error = new HttpErrorResponse({ status: 500, statusText: 'Internal server error' });
     const errorPipe = new BehaviorSubject<any>(error);

@@ -18,6 +18,5 @@ export interface ApiCompleteEvent {
   id?: string;
   eventType?: AnalyticEventType;
   location?: EventLocation;
-  // TODO: needs a new type, possible generics
   scopes?: [];
 }

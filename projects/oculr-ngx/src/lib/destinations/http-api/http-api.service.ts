@@ -66,7 +66,6 @@ export class HttpApiService {
     }
   }
 
-  // TODO: Need to move default values to DestinationConfig (AppConfiguration?)
   private retryStrategy =
     (maxRetryAttempts = 3, scalingDuration = 1000, includedStatusCodes = [0]) =>
     (attempts: Observable<HttpErrorResponse>) => {

@@ -70,7 +70,7 @@ export class DispatchService {
   trackApiStart(context: ApiContext, request: HttpRequest<unknown>): void {
     const eventDispatch: ApiStartEvent = {
       request,
-      id: context.id || request.url, // TODO: request.url likely needs to be normalized
+      id: context.id || request.url,
       scopes: context.scopes || [],
       eventType: AnalyticEventType.API_START_EVENT,
       location: this.locationService.getLocation(),
@@ -88,7 +88,7 @@ export class DispatchService {
       response,
       request,
       duration,
-      id: context.id || request.url, // TODO: request.url likely needs to be normalized
+      id: context.id || request.url,
       scopes: context.scopes || [],
       eventType: AnalyticEventType.API_COMPLETE_EVENT,
       location: this.locationService.getLocation(),
