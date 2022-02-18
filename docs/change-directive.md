@@ -102,6 +102,30 @@ export class FormComponent implements OnInit {
 }
 ```
 
+## Example output
+
+The following data is an example of the output when using the `oculrChange` directive on select element.
+
+```json
+{
+  "id": "favoriteFood",
+  "interactionType": "change",
+  "interactionDetail": "mouse",
+  "element": "select",
+  "label": "What is you favorite food?",
+  "value": "ramen",
+  "displayValue": "Ramen",
+  "eventType": "CHANGE_EVENT",
+  "location": {
+    "hostName": "http://example-site.com",
+    "path": "/menu",
+    "url": "http://example-site.com/menu",
+    "queryString": "",
+    "virtualPageName": "/menu"
+  }
+}
+```
+
 ## Deeper dive
 
 ### Sensitive data
