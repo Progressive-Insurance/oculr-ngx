@@ -59,6 +59,28 @@ export class FormComponent implements OnInit {
 }
 ```
 
+## Example output
+
+The following data is an example of the output when using the `oculrFocus` directive on password input element.
+
+```json
+{
+  "id": "password",
+  "interactionType": "focus",
+  "interactionDetail": "mouse",
+  "element": "input",
+  "label": "Passord:",
+  "eventType": "FOCUS_EVENT",
+  "location": {
+    "hostName": "http://example-site.com",
+    "path": "/login",
+    "url": "http://example-site.com/login",
+    "queryString": "",
+    "virtualPageName": "/login"
+  }
+}
+```
+
 ## Feedback
 
 Is something not working or unclear? Please create an [issue](https://github.com/Progressive/oculr-ngx/issues/new/choose) or [PR](https://github.com/Progressive/oculr-ngx/blob/main/CONTRIBUTING.md).

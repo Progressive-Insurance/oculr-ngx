@@ -25,13 +25,13 @@ Add the directive `oculrClick` to a host button or anchor element in an Angular 
 ### Button
 
 ```html
-<button oculrClick id="myButton">Continue</button>
+<button oculrClick id="addToOrder">Add to order</button>
 ```
 
 ### Link
 
 ```html
-<a oculrClick routerLink="/home" id="myLink">Cancel</a>
+<a oculrClick routerLink="/order" id="currentOrder">Order</a>
 ```
 
 It is required to include an identifier with the interaction event to help with analysis later. By default the directive will use the host element's `id` attribute if no other identifier is provided.
@@ -48,13 +48,35 @@ An `AnalyticEvent` type object is being used in this property binding. There are
 import { AnalyticEvent } from 'oculr-ngx';
 
 @Component({
-  template: `<button [oculrClick]="myButtonEvent">Continue</button>`,
+  template: `<button [oculrClick]="addToOrderEvent">Add to order</button>`,
 })
 export class MyComponent implements OnInit {
-  myButtonEvent: AnalyticEvent;
+  addToOrderEvent: AnalyticEvent;
 
   ngOnInit() {
-    myButtonEvent = { id: 'myButton' };
+    addToOrderEvent = { id: 'addToOrder' };
+  }
+}
+```
+
+## Example output
+
+The following data is an example of the output when using the `oculrClick` directive on button element.
+
+```json
+{
+  "id": "addToOrder",
+  "interactionType": "click",
+  "interactionDetail": "mouse",
+  "element": "button",
+  "label": "Add to order",
+  "eventType": "CLICK_EVENT",
+  "location": {
+    "hostName": "http://example-site.com",
+    "path": "/menu",
+    "url": "http://example-site.com/menu",
+    "queryString": "",
+    "virtualPageName": "/menu"
   }
 }
 ```
