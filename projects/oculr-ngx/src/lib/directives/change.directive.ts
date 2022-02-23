@@ -8,6 +8,7 @@
 
 import { Directive, ElementRef, HostListener, Input, OnInit } from '@angular/core';
 import { AnalyticEvent } from '../models/analytic-event.interface';
+import { DirectiveEvent } from '../models/directive-event.interface';
 import { InteractionDetail } from '../models/interaction-detail.enum';
 import { InteractionType } from '../models/interaction-type.enum';
 import { DirectiveService } from '../services/directive.service';
@@ -17,7 +18,7 @@ import { DispatchService } from '../services/dispatch.service';
   selector: '[oculrChange]',
 })
 export class ChangeDirective implements OnInit {
-  @Input('oculrChange') analyticEventInput: AnalyticEvent | '' = '';
+  @Input('oculrChange') directiveEvent: DirectiveEvent | '' = '';
   @Input() sensitiveData = false;
   successfulInit = true;
   interactionDetail: InteractionDetail | undefined = undefined;
@@ -26,7 +27,7 @@ export class ChangeDirective implements OnInit {
   @HostListener('change', ['$event'])
   onChange(): void {
     if (this.successfulInit) {
-      const analyticEvent = this.directiveService.getAnalyticEvent(this.analyticEventInput);
+      const analyticEvent = this.directiveService.getAnalyticEvent(this.directiveEvent);
       this.directiveService.setId(analyticEvent, this.elementRef);
       if (this.shouldDispatch(analyticEvent)) {
         this.setInteractionType(analyticEvent);

@@ -9,7 +9,7 @@
 import { Component } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { AnalyticEvent } from '../models/analytic-event.interface';
+import { DirectiveEvent } from '../models/directive-event.interface';
 import { DirectiveService } from '../services/directive.service';
 import { DispatchService } from '../services/dispatch.service';
 import { TrackValidationDirective } from './track-validation.directive';
@@ -40,7 +40,7 @@ describe('TrackValidationDirective', () => {
     fixture.detectChanges();
   });
 
-  it('allows a pre-built AnalyticEvent and dispatches a validation error event', () => {
+  it('allows a pre-built DirectiveEvent and dispatches a validation error event', () => {
     touchControl('first-name', fixture);
 
     expect(mockDispatchService.trackValidationError).toHaveBeenCalledOnceWith({
@@ -101,5 +101,5 @@ class TestComponent {
     address: new FormControl('', Validators.required),
     nickname: new FormControl(''),
   });
-  validationEventInput: AnalyticEvent = { id: 'validation-error' };
+  validationEventInput: DirectiveEvent = { id: 'validation-error' };
 }

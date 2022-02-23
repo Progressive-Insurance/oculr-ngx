@@ -8,6 +8,7 @@
 
 import { Directive, ElementRef, HostListener, Input } from '@angular/core';
 import { AnalyticEvent } from '../models/analytic-event.interface';
+import { DirectiveEvent } from '../models/directive-event.interface';
 import { InteractionDetail } from '../models/interaction-detail.enum';
 import { InteractionType } from '../models/interaction-type.enum';
 import { DirectiveService } from '../services/directive.service';
@@ -17,12 +18,12 @@ import { DispatchService } from '../services/dispatch.service';
   selector: '[oculrFocus]',
 })
 export class FocusDirective {
-  @Input('oculrFocus') analyticEventInput: AnalyticEvent | '' = '';
+  @Input('oculrFocus') directiveEvent: DirectiveEvent | '' = '';
   interactionDetail: InteractionDetail | undefined = undefined;
 
   @HostListener('focus', ['$event'])
   onFocus(): void {
-    const analyticEvent = this.directiveService.getAnalyticEvent(this.analyticEventInput);
+    const analyticEvent = this.directiveService.getAnalyticEvent(this.directiveEvent);
     this.directiveService.setId(analyticEvent, this.elementRef);
     if (this.shouldDispatch(analyticEvent)) {
       this.setInteractionType(analyticEvent);

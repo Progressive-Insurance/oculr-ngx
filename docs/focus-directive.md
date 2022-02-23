@@ -14,9 +14,9 @@ oculrFocus
 
 ## Properties
 
-| Property                    | Description                                                                                                                        |
-| --------------------------- | ---------------------------------------------------------------------------------------------------------------------------------- |
-| `oculrFocus: AnalyticEvent` | **optional** </br> [AnalyticEvent](./analytic-event.md) holds useful identifiers and data determined by the consuming application. |
+| Property                     | Description                                                                                                                          |
+| ---------------------------- | ------------------------------------------------------------------------------------------------------------------------------------ |
+| `oculrFocus: DirectiveEvent` | **optional** </br> [DirectiveEvent](./directive-event.md) holds useful identifiers and data determined by the consuming application. |
 
 ## Quick start
 
@@ -37,12 +37,12 @@ Another way to include an identifier is by using property binding with the `ocul
 <input [oculrFocus]="{ id: 'confirmPassword' }" type="password" id="password" formControlName="password" />
 ```
 
-An `AnalyticEvent` type object is being used in this property binding, where `confirmPassword` will be used as the identifier since it takes priority over the host element's `id` attribute. It is recommended to still include an `id` attribute in this scenario as it is used for linking the label to the form control. There are other properties that can be set on the `AnalyticEvent` object, which you can read about more in the [AnalyticEvent](./analytic-event.md) documentation.
+An `DirectiveEvent` type object is being used in this property binding, where `confirmPassword` will be used as the identifier since it takes priority over the host element's `id` attribute. It is recommended to still include an `id` attribute in this scenario as it is used for linking the label to the form control. There are other properties that can be set on the `DirectiveEvent` object, which you can read about more in the [DirectiveEvent](./directive-event.md) documentation.
 
-To minimize the amount of content done in the component's template, it is recommended to prepare any `AnalyticEvent` objects in the `ngOnInit()` of the component.
+To minimize the amount of content done in the component's template, it is recommended to prepare any `DirectiveEvent` objects in the `ngOnInit()` of the component.
 
 ```typescript
-import { AnalyticEvent } from 'oculr-ngx';
+import { DirectiveEvent } from 'oculr-ngx';
 
 @Component({
   template: `
@@ -51,7 +51,7 @@ import { AnalyticEvent } from 'oculr-ngx';
   `,
 })
 export class FormComponent implements OnInit {
-  passwordEvent: AnalyticEvent;
+  passwordEvent: DirectiveEvent;
 
   ngOnInit() {
     passwordEvent = { id: 'confirmPassword' };

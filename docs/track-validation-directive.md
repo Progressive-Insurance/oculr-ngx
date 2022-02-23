@@ -14,9 +14,9 @@ oculrTrackValidation
 
 ## Properties
 
-| Property                              | Description                                                                                                     |
-| ------------------------------------- | --------------------------------------------------------------------------------------------------------------- |
-| `oculrTrackValidation: AnalyticEvent` | [AnalyticEvent](./analytic-event.md) holds useful identifiers and data determined by the consuming application. |
+| Property                               | Description                                                                                                       |
+| -------------------------------------- | ----------------------------------------------------------------------------------------------------------------- |
+| `oculrTrackValidation: DirectiveEvent` | [DirectiveEvent](./directive-event.md) holds useful identifiers and data determined by the consuming application. |
 
 ## Quick start
 
@@ -26,7 +26,7 @@ Add the `oculrTrackValidation` directive to any Reactive Forms control.
 <input oculrTrackValidation type="text" formControlName="projectUrl" />
 ```
 
-It is possible to override any [AnalyticEvent](./analytic-event.md) property value by passing it in. To minimize the amount of content done in the component's template, it is recommended to prepare any `AnalyticEvent` objects in the `ngOnInit()` of the component.
+It is possible to override any [DirectiveEvent](./directive-event.md) property value by passing it in. To minimize the amount of content done in the component's template, it is recommended to prepare any `DirectiveEvent` objects in the `ngOnInit()` of the component.
 
 ```html
 <input [oculrTrackValidation]="validationEventInput" type="text" formControlName="projectUrl" />
@@ -35,11 +35,11 @@ It is possible to override any [AnalyticEvent](./analytic-event.md) property val
 ```typescript
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { AnalyticEvent } from 'oculr-ngx';
+import { DirectiveEvent } from 'oculr-ngx';
 
 @Component()
 export class FormComponent implements OnInit {
-  validationEventInput: AnalyticEvent;
+  validationEventInput: DirectiveEvent;
   contactForm: FormGroup;
 
   ngOnInit() {
