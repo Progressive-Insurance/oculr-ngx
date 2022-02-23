@@ -4,7 +4,7 @@
 
 ## Description
 
-An interface that is used when dispatching events using [ChangeDirective](./change-directive.md), [ClickDirective](./click-directive.md), [DisplayDirective](./display-directive.md), [FocusDirective](./focus-directive.md), and [EventDispatchService](./event-dispatch-service.md).
+An interface that is used when dispatching events using [ChangeDirective](./change-directive.md), [ClickDirective](./click-directive.md), [DisplayDirective](./display-directive.md), [FocusDirective](./focus-directive.md), and [TrackValidationDirective](./track-validation-directive.md).
 
 ## Properties
 
