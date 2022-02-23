@@ -14,10 +14,10 @@ oculrChange
 
 ## Properties
 
-| Property                     | Description                                                                                                                        |
-| ---------------------------- | ---------------------------------------------------------------------------------------------------------------------------------- |
-| `oculrChange: AnalyticEvent` | **optional** </br> [AnalyticEvent](./analytic-event.md) holds useful identifiers and data determined by the consuming application. |
-| `sensitiveData: boolean`     | **optional** </br> Controls whether or not the directive captures the value of the input or select element. Defaulted to `false`.  |
+| Property                      | Description                                                                                                                          |
+| ----------------------------- | ------------------------------------------------------------------------------------------------------------------------------------ |
+| `oculrChange: DirectiveEvent` | **optional** </br> [DirectiveEvent](./directive-event.md) holds useful identifiers and data determined by the consuming application. |
+| `sensitiveData: boolean`      | **optional** </br> Controls whether or not the directive captures the value of the input or select element. Defaulted to `false`.    |
 
 ## Quick start
 
@@ -80,12 +80,12 @@ Another way to include an identifier is by using property binding with the `ocul
 <label for="attestation">Do you agree to the terms?</label>
 ```
 
-An `AnalyticEvent` type object is being used in this property binding, where `alternateAttestation` will be used as the identifier since it takes priority over the host element's `id` attribute. It is recommended to still include an `id` attribute in this scenario as it is used for linking the label to the form control. There are other properties that can be set on the `AnalyticEvent` object, which you can read about more in the [AnalyticEvent](./analytic-event.md) documentation.
+An `DirectiveEvent` type object is being used in this property binding, where `alternateAttestation` will be used as the identifier since it takes priority over the host element's `id` attribute. It is recommended to still include an `id` attribute in this scenario as it is used for linking the label to the form control. There are other properties that can be set on the `DirectiveEvent` object, which you can read about more in the [DirectiveEvent](./directive-event.md) documentation.
 
-To minimize the amount of content done in the component's template, it is recommended to prepare any `AnalyticEvent` objects in the `ngOnInit()` of the component.
+To minimize the amount of content done in the component's template, it is recommended to prepare any `DirectiveEvent` objects in the `ngOnInit()` of the component.
 
 ```typescript
-import { AnalyticEvent } from 'oculr-ngx';
+import { DirectiveEvent } from 'oculr-ngx';
 
 @Component({
   template: `
@@ -94,7 +94,7 @@ import { AnalyticEvent } from 'oculr-ngx';
   `,
 })
 export class FormComponent implements OnInit {
-  attestationEvent: AnalyticEvent;
+  attestationEvent: DirectiveEvent;
 
   ngOnInit() {
     attestationEvent = { id: 'alternateAttestation' };
@@ -164,14 +164,14 @@ The `oculrChange` directive captures similar data for each control type. The exc
 </select>
 ```
 
-For this select example the following data is captured with the `AnalyticEvent`. The `label` captured is the question being asked to the user.
+For this select example the following data is captured in the output. The `label` captured is the question being asked to the user.
 
-| AnalyticEvent property | Value                         |
-| ---------------------- | ----------------------------- |
-| `id`                   | "favoriteFood"                |
-| `label`                | "What is your favorite food?" |
-| `value`                | "ramen"                       |
-| `displayValue`         | "Ramen"                       |
+| Output property | Value                         |
+| --------------- | ----------------------------- |
+| `id`            | "favoriteFood"                |
+| `label`         | "What is your favorite food?" |
+| `value`         | "ramen"                       |
+| `displayValue`  | "Ramen"                       |
 
 ```html
 <p>What is your favorite food?</p>
@@ -191,19 +191,19 @@ For this select example the following data is captured with the `AnalyticEvent`.
 
 For this radio input example the following data is captured. The `label` property is a repeat of the `displayValue` rather than the question being asked in the paragraph element. While the user may see the elements as related, there is nothing technically that links the paragraph element to the following input elements.
 
-Another difference with radio inputs is that they will prioritize the `formControlName` or `name` attributes on the host element when setting the `id` of the `AnalyticEvent`. This helps with the many radio inputs representing a single question situation that is common with this type of control.
+Another difference with radio inputs is that they will prioritize the `formControlName` or `name` attributes on the host element when setting the `id` of the `DirectiveEvent`. This helps with the many radio inputs representing a single question situation that is common with this type of control.
 
-| AnalyticEvent property | Value          |
-| ---------------------- | -------------- |
-| `id`                   | "favoriteFood" |
-| `label`                | "Ramen"        |
-| `value`                | "ramen"        |
-| `displayValue`         | "Ramen"        |
+| Output property | Value          |
+| --------------- | -------------- |
+| `id`            | "favoriteFood" |
+| `label`         | "Ramen"        |
+| `value`         | "ramen"        |
+| `displayValue`  | "Ramen"        |
 
-To capture the question for the radio input example, it is recommended to prepare an `AnalyticEvent` object and set the `label` property to match what the user would see.
+To capture the question for the radio input example, it is recommended to prepare an `DirectiveEvent` object and set the `label` property to match what the user would see.
 
 ```typescript
-import { AnalyticEvent } from 'oculr-ngx';
+import { DirectiveEvent } from 'oculr-ngx';
 
 @Component({
   template: `
@@ -222,7 +222,7 @@ import { AnalyticEvent } from 'oculr-ngx';
   `,
 })
 export class FormComponent implements OnInit {
-  favoriteFoodEvent: AnalyticEvent;
+  favoriteFoodEvent: DirectiveEvent;
 
   ngOnInit() {
     favoriteFoodEvent = { label: 'What is your favorite food?' };

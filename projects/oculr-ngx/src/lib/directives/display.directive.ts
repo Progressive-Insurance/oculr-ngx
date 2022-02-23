@@ -8,6 +8,7 @@
 
 import { Directive, ElementRef, Input, OnInit } from '@angular/core';
 import { AnalyticEvent } from '../models/analytic-event.interface';
+import { DirectiveEvent } from '../models/directive-event.interface';
 import { DirectiveService } from '../services/directive.service';
 import { DispatchService } from '../services/dispatch.service';
 
@@ -15,7 +16,7 @@ import { DispatchService } from '../services/dispatch.service';
   selector: '[oculrDisplay]',
 })
 export class DisplayDirective implements OnInit {
-  @Input('oculrDisplay') analyticEventInput: AnalyticEvent | '' = '';
+  @Input('oculrDisplay') directiveEvent: DirectiveEvent | '' = '';
 
   constructor(
     private elementRef: ElementRef<HTMLElement>,
@@ -24,7 +25,7 @@ export class DisplayDirective implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    const analyticEvent = this.directiveService.getAnalyticEvent(this.analyticEventInput);
+    const analyticEvent = this.directiveService.getAnalyticEvent(this.directiveEvent);
     this.directiveService.setId(analyticEvent, this.elementRef);
     if (this.shouldDispatch(analyticEvent)) {
       this.directiveService.setElement(analyticEvent, this.elementRef);

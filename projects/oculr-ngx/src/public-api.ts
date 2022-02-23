@@ -23,6 +23,7 @@ export { ApiEventContext } from './lib/models/api-event-context.interface';
 export { AppConfiguration } from './lib/models/app-configuration.interface';
 export { DestinationConfig } from './lib/models/destination-config.interface';
 export { Destinations } from './lib/models/destinations.enum';
+export { DirectiveEvent } from './lib/models/directive-event.interface';
 export { PageViewEvent } from './lib/models/page-view-event.interface';
 export { AppEvent } from './lib/models/app-event.interface';
 export { AppErrorEvent } from './lib/models/app-error-event.interface';

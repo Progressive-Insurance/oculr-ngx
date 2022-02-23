@@ -9,10 +9,11 @@
 import { ElementRef, Injectable } from '@angular/core';
 
 import { AnalyticEvent } from '../models/analytic-event.interface';
+import { DirectiveEvent } from '../models/directive-event.interface';
 
 @Injectable()
 export class DirectiveService {
-  getAnalyticEvent(analyticEvent: AnalyticEvent | ''): AnalyticEvent {
+  getAnalyticEvent(analyticEvent: DirectiveEvent | ''): AnalyticEvent {
     return analyticEvent ? { ...analyticEvent } : { id: '' };
   }
 

@@ -37,7 +37,7 @@ Oculr has a set of services that simplify library initionalization and capturing
 Oculr has a set of interfaces that ensure the shape of the objects being passed around are consistent.
 | | |
 | --- | --- |
-| [AnalyticEvent](./analytic-event.md) | An event interface used by directives. |
+| [DirectiveEvent](./directive-event.md) | An event interface used by directives. |
 | [AppEvent](./app-event.md) | An interface used for tracking general application events |
 | [AppErrorEvent](./app-error-event.md) | An interface used for tracking application errors |
 
