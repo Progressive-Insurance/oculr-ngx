@@ -12,7 +12,6 @@
     "test:dev": "ng test --configuration development",
     "lint": "ng lint"
   },
-  "private": true,
   "dependencies": {
     "@angular/animations": "^12.2.15",
     "@angular/common": "^12.2.15",
