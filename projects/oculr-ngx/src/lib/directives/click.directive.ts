@@ -3,7 +3,7 @@
  * Copyright 2021-2022 Progressive Casualty Insurance Company. All Rights Reserved.
  *
  * Use of this source code is governed by an MIT license that can be found in
- * the LICENSE file at https://github.com/Progressive/oculr-ngx/blob/main/LICENSE.md
+ * the LICENSE file at https://github.com/progressive-insurance/oculr-ngx/blob/main/LICENSE.md
  */
 
 import { Directive, ElementRef, HostListener, Input } from '@angular/core';
@@ -90,7 +90,7 @@ export class ClickDirective {
     return this.directiveService.shouldDispatch(
       analyticEvent,
       'oculrClick',
-      'https://github.com/Progressive/oculr-ngx/blob/main/docs/click-directive.md'
+      'https://github.com/progressive-insurance/oculr-ngx/blob/main/docs/click-directive.md'
     );
   }
 }

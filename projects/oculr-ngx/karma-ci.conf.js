@@ -3,7 +3,7 @@
  * Copyright 2021-2022 Progressive Casualty Insurance Company. All Rights Reserved.
  *
  * Use of this source code is governed by an MIT license that can be found in
- * the LICENSE file at https://github.com/Progressive/oculr-ngx/blob/main/LICENSE.md
+ * the LICENSE file at https://github.com/progressive-insurance/oculr-ngx/blob/main/LICENSE.md
  */
 
 // Karma configuration file, see link for more information

@@ -3,7 +3,7 @@
  * Copyright 2021-2022 Progressive Casualty Insurance Company. All Rights Reserved.
  *
  * Use of this source code is governed by an MIT license that can be found in
- * the LICENSE file at https://github.com/Progressive/oculr-ngx/blob/main/LICENSE.md
+ * the LICENSE file at https://github.com/progressive-insurance/oculr-ngx/blob/main/LICENSE.md
  */
 
 import { Directive, ElementRef, HostListener, Input, OnInit } from '@angular/core';
@@ -138,7 +138,7 @@ export class ChangeDirective implements OnInit {
       console.warn(`
 The oculrChange directive only works with select, textarea, or input elements of the following types.
 ${this.supportedInputTypes.join('\r\n')}
-More information can be found here: https://github.com/Progressive/oculr-ngx/blob/main/docs/change-directive.md
+More information can be found here: https://github.com/progressive-insurance/oculr-ngx/blob/main/docs/change-directive.md
       `);
     }
   }
@@ -147,7 +147,7 @@ More information can be found here: https://github.com/Progressive/oculr-ngx/blo
     return this.directiveService.shouldDispatch(
       analyticEvent,
       'oculrChange',
-      'https://github.com/Progressive/oculr-ngx/blob/main/docs/change-directive.md'
+      'https://github.com/progressive-insurance/oculr-ngx/blob/main/docs/change-directive.md'
     );
   }
 }
