@@ -2,7 +2,7 @@
 
 An analytics library that makes collecting data in an Angular app simple.
 
-![build workflow](https://github.com/Progressive/oculr-ngx/actions/workflows/build.yml/badge.svg) ![publish workflow](https://github.com/Progressive/oculr-ngx/actions/workflows/publish.yml/badge.svg)
+![build workflow](https://github.com/progressive-insurance/oculr-ngx/actions/workflows/build.yml/badge.svg) ![publish workflow](https://github.com/progressive-insurance/oculr-ngx/actions/workflows/publish.yml/badge.svg)
 
 ## What does it do?
 
@@ -99,7 +99,7 @@ Now that it's working you will likely want it to do more then log a single click
 ## Updates
 
 - [Check out our improvements](CHANGELOG.md)
-- [See our latest release](https://github.com/Progressive/oculr-ngx/releases/latest)
+- [See our latest release](https://github.com/progressive-insurance/oculr-ngx/releases/latest)
 
 ## Contributing
 
@@ -109,14 +109,14 @@ Now that it's working you will likely want it to do more then log a single click
 
 ### Want to help?
 
-We're excited about your interest in the project. Have an idea, want to contribute some code, found a bug, expand some documentation? Awesome! Check out our [contribution guide](CONTRIBUTING.md) and then take a look at our [issues](https://github.com/Progressive/oculr-ngx/issues) and [discussions](https://github.com/Progressive/oculr-ngx/discussions). We recommend issues that have been labeled as `help wanted` or `good first issue`.
+We're excited about your interest in the project. Have an idea, want to contribute some code, found a bug, expand some documentation? Awesome! Check out our [contribution guide](CONTRIBUTING.md) and then take a look at our [issues](https://github.com/progressive-insurance/oculr-ngx/issues) and [discussions](https://github.com/progressive-insurance/oculr-ngx/discussions). We recommend issues that have been labeled as `help wanted` or `good first issue`.
 
 ### Local setup
 
 Local setup and a quick few steps.
 
 ```node
-git clone https://github.com/Progressive/oculr-ngx
+git clone https://github.com/progressive-insurance/oculr-ngx
 cd oculr-ngx
 npm install
 npm run test

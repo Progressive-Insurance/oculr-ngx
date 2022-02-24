@@ -12,15 +12,15 @@ Help us ensure a welcoming and inspiring community. Please read our [Code of Con
 
 ## Found a bug?
 
-If you've discovered a bug you can [submit an issue](https://github.com/Progressive/oculr-ngx/issues), or skip straight to [creating a pull request](#submitting-a-pr).
+If you've discovered a bug you can [submit an issue](https://github.com/progressive-insurance/oculr-ngx/issues), or skip straight to [creating a pull request](#submitting-a-pr).
 
 ## Missing feature?
 
 We can't wait to hear about your new ideas. Please consider the size of the feature you're proposing before taking your next steps.
 
-**Small** - You can [submit an issue](https://github.com/Progressive/oculr-ngx/issues), or just [create a pull request](#submitting-a-pr).
+**Small** - You can [submit an issue](https://github.com/progressive-insurance/oculr-ngx/issues), or just [create a pull request](#submitting-a-pr).
 
-**Large** - Please [detail an issue](https://github.com/Progressive/oculr-ngx/issues) so that it can be discussed. This gives us a chance to make sure we can coordinate the changes and helps ensure the easiest path forward for your changes.
+**Large** - Please [detail an issue](https://github.com/progressive-insurance/oculr-ngx/issues) so that it can be discussed. This gives us a chance to make sure we can coordinate the changes and helps ensure the easiest path forward for your changes.
 
 ## Submitting a PR
 
