@@ -33,4 +33,6 @@ jobs:
           npm run test:ci
 
       - name: Publish
-        # COMING SOON!
+        run: npm publish
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
