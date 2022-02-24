@@ -1,0 +1,35 @@
+name: Bug Report
+description: Report a bug in oculr-ngx
+labels: [bug]
+
+body:
+  - type: dropdown
+    id: affected-area
+    attributes:
+      label: Which area is impacted by the bug?
+      options:
+        - configuration
+        - directives
+        - interceptors
+        - models
+        - services
+        - don't know/not listed
+      multiple: true
+    validations:
+      required: true
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Describe the bug
+      placeholder: |
+        Please include steps to reproduce and expected behavior.
+    validations:
+      required: true
+
+  - type: textarea
+    id: other
+    attributes:
+      label: Anything else?
+    validations:
+      required: false
