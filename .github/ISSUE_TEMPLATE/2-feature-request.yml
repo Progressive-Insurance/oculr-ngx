@@ -1,0 +1,45 @@
+name: Feature Request
+description: Suggest a feature for oculr-ngx
+labels: [enhancement]
+
+body:
+  - type: dropdown
+    id: affected-area
+    attributes:
+      label: Which of these features are related to this request?
+      options:
+        - configuration
+        - directives
+        - interceptors
+        - models
+        - services
+        - maintenance
+        - other/new
+      multiple: true
+    validations:
+      required: true
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Description
+      placeholder: |
+        A concise description of what the opportunity is (e.g. I think we need [...] to help with [...])
+    validations:
+      required: true
+
+  - type: textarea
+    id: proposed-solution
+    attributes:
+      label: What do you propose?
+      placeholder: |
+        Please include measurable outcomes, or acceptance criteria.
+    validations:
+      required: true
+
+  - type: textarea
+    id: alternatives-considered
+    attributes:
+      label: Have you considered any alternatives?
+    validations:
+      required: false

@@ -1,0 +1,28 @@
+name: Documentation
+description: Suggest a change or addition to oculr-ngx's documentation
+labels: [documentation]
+
+body:
+  - type: dropdown
+    id: affected-area
+    attributes:
+      label: Which documentation is impacted?
+      options:
+        - configuration
+        - directives
+        - interceptors
+        - models
+        - services
+        - other/new
+      multiple: true
+    validations:
+      required: true
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Describe the documentation need
+      placeholder: |
+        Please include rationale.
+    validations:
+      required: true
