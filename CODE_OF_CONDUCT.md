@@ -37,7 +37,7 @@ This Code of Conduct applies both within project spaces and in public spaces whe
 
 ## Enforcement
 
-We encourage all communities to resolve issues on their own whenever possible. Instances of abusive, harassing, or otherwise unacceptable behavior may be reported to the project maintainers responsible for enforcement at opensourceoffice@progressive.com.
+We encourage all communities to resolve issues on their own whenever possible. Instances of abusive, harassing, or otherwise unacceptable behavior may be reported to the project maintainers responsible for enforcement at open_source_office@progressive.com.
 
 All project maintainers are obligated to respect the privacy and security of the reporter of any incident.
 

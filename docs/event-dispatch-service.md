@@ -1,4 +1,4 @@
-[API](./README.md) > [Interceptors](./README.md#Services)
+[API](./README.md) > [Services](./README.md#Services)
 
 # Event Dispatch Service
 
