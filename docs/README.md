@@ -30,7 +30,7 @@ Oculr comes with an [HTTP interceptor](./http-interceptor.md) ready to go out of
 Oculr has a set of services that simplify library initionalization and capturing targeted analytic events.
 | | |
 | --- | --- |
-| [EventDispatchService](./event-displace-service.md) | A service that allows client apps to target analytic events. |
+| [EventDispatchService](./event-dispatch-service.md) | A service that allows client apps to target analytic events. |
 
 ## Interfaces
 
