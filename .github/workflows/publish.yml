@@ -33,10 +33,4 @@ jobs:
           npm run test:ci
 
       - name: Publish
-        run: |
-          curl -u ${ARTIFACTORY_USER}:${ARTIFACTORY_TOKEN} https://progressive.jfrog.io/progressive/api/npm/auth > ~/.npmrc
-          npm publish dist/oculr-ngx --registry https://$ARTIFACTORY_USER:$ARTIFACTORY_TOKEN@progressive.jfrog.io/progressive/api/npm/pgr-npm
-        env:
-          ARTIFACTORY_USER: ${{ secrets.ARTIFACTORY_USER }}
-          ARTIFACTORY_TOKEN: ${{ secrets.ARTIFACTORY_TOKEN }}
-          NPM_CONFIG_registry: 'https://progressive.jfrog.io/progressive/api/npm/pgr-npm/'
+        # COMING SOON!
