@@ -15,6 +15,7 @@
 - [ ] Refactor
 - [ ] Pipeline
 - [ ] Documentation
+- [ ] Maintenance
 
 **Which issue(s) does this PR address?**
 
