@@ -14,7 +14,7 @@ import { InteractionType } from '../models/interaction-type.enum';
 import { AnalyticEvent } from 'oculr-ngx';
 import { ChangeDirective } from './change.directive';
 import { DirectiveService } from '../services/directive.service';
-import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { UntypedFormControl, UntypedFormGroup, ReactiveFormsModule } from '@angular/forms';
 import { DispatchService } from '../services/dispatch.service';
 
 describe('ChangeDirective', () => {
@@ -414,8 +414,8 @@ describe('ChangeDirective', () => {
   `,
 })
 class TestComponent {
-  seasonsForm = new FormGroup({
-    favoriteSeason: new FormControl(''),
+  seasonsForm = new UntypedFormGroup({
+    favoriteSeason: new UntypedFormControl(''),
   });
 }
 

@@ -8,7 +8,7 @@
 
 import { Component } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { UntypedFormControl, UntypedFormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { DirectiveEvent } from '../models/directive-event.interface';
 import { DirectiveService } from '../services/directive.service';
 import { DispatchService } from '../services/dispatch.service';
@@ -95,11 +95,11 @@ describe('TrackValidationDirective', () => {
   `,
 })
 class TestComponent {
-  testForm = new FormGroup({
-    firstName: new FormControl('', Validators.required),
-    lastName: new FormControl('', Validators.required),
-    address: new FormControl('', Validators.required),
-    nickname: new FormControl(''),
+  testForm = new UntypedFormGroup({
+    firstName: new UntypedFormControl('', Validators.required),
+    lastName: new UntypedFormControl('', Validators.required),
+    address: new UntypedFormControl('', Validators.required),
+    nickname: new UntypedFormControl(''),
   });
   validationEventInput: DirectiveEvent = { id: 'validation-error' };
 }
