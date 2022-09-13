@@ -103,10 +103,6 @@ Now that it's working you will likely want it to do more then log a single click
 
 ## Contributing
 
-> ### **Please hold off on contributing**
->
-> We're currently in the process of finalizing our Contributor License Agreement (CLA) and cannot legally accept contributions at this time. We are very close on completing our automated CLA workflow so please check back soon if you're looking to contribute.
-
 ### Want to help?
 
 We're excited about your interest in the project. Have an idea, want to contribute some code, found a bug, expand some documentation? Awesome! Check out our [contribution guide](CONTRIBUTING.md) and then take a look at our [issues](https://github.com/progressive-insurance/oculr-ngx/issues) and [discussions](https://github.com/progressive-insurance/oculr-ngx/discussions). We recommend issues that have been labeled as `help wanted` or `good first issue`.

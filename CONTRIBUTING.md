@@ -1,9 +1,5 @@
 # Contributing to Oculr
 
-> ### **Please hold off on contributing**
->
-> We're currently in the process of finalizing our Contributor License Agreement (CLA) and cannot legally accept contributions at this time. We are very close on completing our automated CLA workflow so please check back soon if you're looking to contribute.
-
 We warmly welcome any community contributions to this repository. As a contributor here are some helpful guidelines.
 
 ## Code of Conduct
