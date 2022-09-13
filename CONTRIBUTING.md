@@ -1,9 +1,5 @@
 # Contributing to Oculr
 
-> ### **Please hold off on contributing**
->
-> We're currently in the process of finalizing our Contributor License Agreement (CLA) and cannot legally accept contributions at this time. We are very close on completing our automated CLA workflow so please check back soon if you're looking to contribute.
-
 We warmly welcome any community contributions to this repository. As a contributor here are some helpful guidelines.
 
 ## Code of Conduct
@@ -77,4 +73,8 @@ git push -u origin your-new-branch-name
 
 ## Signing the CLA
 
-Please sign our Contributor License Agreement (CLA) before sending pull requests. It is required for us to accept your changes.
+Before we can accept your contribution, we require that you sign our Contributor License Agreement (CLA). The process is automated via our pull request flow. Upon submitting your PR, our GitHub bot will determine whether or not you've previously signed our CLA. If you have not, it will provide a link for you to review. Once you have, you have two choices: 
+
+1. Accept the agreement by directing a comment to our bot - `@progressive-open-source I accept`. Your answer will be recorded and your PR can move forward. You won't have to repeat the process for future submissions unless the agreement has been updated.
+1. Reject the agreement by directing a comment to our bot - `@progressive-open-source I reject`. Your answer will be recorded and your PR will be blocked from moving forward. You can always accept the agreement later if you change your mind.
+
