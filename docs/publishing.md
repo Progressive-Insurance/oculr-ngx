@@ -16,7 +16,8 @@ There are just a few steps to follow when releasing a new version of the library
 4. Update the _package.json_ file with the desired version value. This can be done manually or by using the [npm version](https://docs.npmjs.com/cli/v7/commands/npm-version) command.
 5. Create a tag commit.
    ```node
-   npm run tag-release
+   git commit -a -m "Release [version here]"
+   git tag "[version here]"
    ```
 6. Push this new commit and its tag to the server.
    ```node
