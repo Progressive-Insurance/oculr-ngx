@@ -49,10 +49,21 @@
         "lint": {
           "builder": "@angular-eslint/builder:lint",
           "options": {
-            "lintFilePatterns": ["projects/oculr-ngx/**/*.ts", "projects/oculr-ngx/**/*.html"]
+            "lintFilePatterns": [
+              "projects/oculr-ngx/**/*.ts",
+              "projects/oculr-ngx/**/*.html"
+            ]
           }
         }
       }
+    }
+  },
+  "schematics": {
+    "@angular-eslint/schematics:application": {
+      "setParserOptionsProject": true
+    },
+    "@angular-eslint/schematics:library": {
+      "setParserOptionsProject": true
     }
   }
 }
