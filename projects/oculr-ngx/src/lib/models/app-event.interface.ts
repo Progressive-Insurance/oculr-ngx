@@ -13,5 +13,5 @@ export interface AppEvent {
   id?: string;
   eventType?: AnalyticEventType;
   location?: EventLocation;
-  scopes?: [];
+  scopes?: any[];
 }

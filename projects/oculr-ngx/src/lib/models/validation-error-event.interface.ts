@@ -16,5 +16,5 @@ export interface ValidationErrorEvent {
   element?: string | number | null;
   eventType?: AnalyticEventType;
   location?: EventLocation;
-  scopes?: [];
+  scopes?: any[];
 }

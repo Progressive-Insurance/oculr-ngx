@@ -9,5 +9,5 @@
 export interface DirectiveEvent {
   id?: string;
   label?: string;
-  scopes?: [];
+  scopes?: any[];
 }

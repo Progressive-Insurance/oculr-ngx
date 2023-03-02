@@ -15,5 +15,5 @@ export interface ApiStartEvent {
   id?: string;
   eventType?: AnalyticEventType;
   location?: EventLocation;
-  scopes?: [];
+  scopes?: any[];
 }
