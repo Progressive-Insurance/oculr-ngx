@@ -14,5 +14,5 @@ export interface AppErrorEvent {
   id?: string;
   eventType?: AnalyticEventType;
   location?: EventLocation;
-  scopes?: [];
+  scopes?: any[];
 }

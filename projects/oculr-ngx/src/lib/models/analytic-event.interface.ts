@@ -28,7 +28,7 @@ export interface AnalyticEvent {
   location?: EventLocation;
   interactionType?: InteractionType;
   interactionDetail?: InteractionDetail;
-  scopes?: [];
+  scopes?: any[];
   response?: HttpResponse<unknown> | HttpErrorResponse | TimeoutError;
   request?: HttpRequest<unknown>;
   duration?: number;

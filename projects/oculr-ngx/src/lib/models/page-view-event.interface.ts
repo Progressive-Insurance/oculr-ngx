@@ -15,5 +15,5 @@ export interface PageViewEvent {
   activatedRoute?: ActivatedRouteSnapshot;
   eventType?: AnalyticEventType;
   location?: EventLocation;
-  scopes?: [];
+  scopes?: any[];
 }

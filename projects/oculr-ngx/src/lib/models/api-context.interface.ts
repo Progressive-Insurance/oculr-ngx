@@ -8,5 +8,5 @@
 
 export interface ApiContext {
   id?: string;
-  scopes?: [];
+  scopes?: any[];
 }

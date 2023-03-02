@@ -18,5 +18,5 @@ export interface ApiCompleteEvent {
   id?: string;
   eventType?: AnalyticEventType;
   location?: EventLocation;
-  scopes?: [];
+  scopes?: any[];
 }
