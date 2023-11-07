@@ -27,8 +27,8 @@ export class ConsoleService {
       .pipe(
         filter((config: AppConfiguration) => !!config),
         map((config: AppConfiguration) => config.destinations?.find((dest) => dest.name === Destinations.Console)),
-        filter((config?: DestinationConfig) => !!config),
-        switchMap((config?: DestinationConfig) => {
+        filter((config: DestinationConfig | undefined): config is DestinationConfig => !!config),
+        switchMap((config: DestinationConfig) => {
           const eventPipe = config?.sendCustomEvents ? this.eventBus.customEvents$ : this.eventBus.events$;
           return eventPipe.pipe(
             filter((event: unknown) => !!event),
