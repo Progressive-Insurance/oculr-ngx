@@ -21,47 +21,46 @@ We can't wait to hear about your new ideas. Please consider the size of the feat
 ## Submitting a PR
 
 1. It's always good to double check existing PRs to avoid duplicating effort.
-2. Please sign our [CLA](#signing-the-cla) before creating a PR. This is required for us to accept your changes.
-3. [Fork](https://docs.github.com/en/get-started/quickstart/fork-a-repo) the repo.
-4. Clone the newly forked repo under your account.
 
-```console
-git clone https://github.com/your-account/oculr-ngx.git
-```
+1. Please sign our [CLA](#signing-the-cla) before creating a PR. This is required for us to accept your changes.
 
-5. Create a new branch for your changes.
+1. [Fork](https://docs.github.com/en/get-started/quickstart/fork-a-repo) the repo.
 
-```console
-git checkout -b your-new-branch-name
-```
+1. Clone the newly forked repo under your account.
+    ```console
+    git clone https://github.com/your-account/oculr-ngx.git
+    ```
+
+1. Create a new branch for your changes.
+    ```console
+    git checkout -b your-new-branch-name
+    ```
 
 1. Make your changes, including any related testing and documentation. See our [coding standards](#coding-standards) for more details.
-2. Run the full test suite.
 
-```console
-npm run test
-```
+1. Run the full test suite.
+    ```console
+    npm run test
+    ```
 
 1. Commit your changes using a descriptive commit message following our message conventions. We use these commit messages when generating release notes.
+    ```console
+    git add --all
+    git commit -m "<type>: <short summary>"
+                      |           |
+                      |           └─> present tense, lower case, and no period at end
+                      |
+                      └─> feature|fix|test|docs|refactor|ci
+    ```
 
-```console
-git add --all
-git commit -m "<type>: <short summary>"
-                  |           |
-                  |           └─> present tense, lower case, and no period at end
-                  |
-                  └─> feature|fix|test|docs|refactor|ci
+1. Push your branch to GitHub
+    ```console
+    git push -u origin your-new-branch-name
+    ```
 
-```
+1. In GitHub [create a pull request](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/creating-a-pull-request-from-a-fork) to `oculr:main`.
 
-9. Push your branch to GitHub
-
-```console
-git push -u origin your-new-branch-name
-```
-
-10. In GitHub [create a pull request](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/creating-a-pull-request-from-a-fork) to `oculr:main`
-11. Respond to feedback provided on the PR.
+1. Respond to feedback provided on the PR.
 
 ## Coding standards
 
@@ -77,4 +76,3 @@ Before we can accept your contribution, we require that you sign our Contributor
 
 1. Accept the agreement by directing a comment to our bot - `@progressive-open-source I accept`. Your answer will be recorded and your PR can move forward. You won't have to repeat the process for future submissions unless the agreement has been updated.
 1. Reject the agreement by directing a comment to our bot - `@progressive-open-source I reject`. Your answer will be recorded and your PR will be blocked from moving forward. You can always accept the agreement later if you change your mind.
-
