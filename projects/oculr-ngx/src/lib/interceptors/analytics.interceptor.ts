@@ -6,15 +6,7 @@
  * the LICENSE file at https://github.com/progressive-insurance/oculr-ngx/blob/main/LICENSE.md
  */
 
-import {
-  HttpContextToken,
-  HttpErrorResponse,
-  HttpEvent,
-  HttpHandler,
-  HttpInterceptor,
-  HttpRequest,
-  HttpResponse,
-} from '@angular/common/http';
+import { HttpContextToken, HttpErrorResponse, HttpEvent, HttpHandler, HttpInterceptor, HttpRequest, HttpResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { filter, switchMap, take, tap } from 'rxjs/operators';
