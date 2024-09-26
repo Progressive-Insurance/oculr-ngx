@@ -26,8 +26,24 @@ import { InitializationService } from './services/initialization.service';
 import { LocationService } from './services/location.service';
 import { TimeService } from './services/time.service';
 
-@NgModule({ declarations: [DisplayDirective, ClickDirective, ChangeDirective, FocusDirective, TrackValidationDirective],
-    exports: [DisplayDirective, ClickDirective, ChangeDirective, FocusDirective, TrackValidationDirective], imports: [CommonModule], providers: [provideHttpClient(withInterceptorsFromDi())] })
+@NgModule({
+  declarations: [
+    DisplayDirective,
+    ClickDirective,
+    ChangeDirective, 
+    FocusDirective, 
+    TrackValidationDirective
+  ],
+  exports: [
+    DisplayDirective,
+    ClickDirective,
+    ChangeDirective,
+    FocusDirective, 
+    TrackValidationDirective
+  ],
+  imports: [CommonModule], 
+  providers: [provideHttpClient(withInterceptorsFromDi())]
+})
 export class OculrAngularModule {
   static forRoot(): ModuleWithProviders<OculrAngularModule> {
     return {
