@@ -1,7 +1,7 @@
 {
   "name": "oculr-ngx",
   "description": "An analytics library that makes collecting data in an Angular app simple.",
-  "version": "5.0.0",
+  "version": "6.0.0",
   "author": "Progressive Insurance",
   "license": "MIT",
   "keywords": [
@@ -14,10 +14,10 @@
   },
   "scripts": {},
   "peerDependencies": {
-    "@angular/common": "^18.2.6",
-    "@angular/core": "^18.2.6"
+    "@angular/common": "^19.1.7",
+    "@angular/core": "^19.1.7"
   },
   "dependencies": {
-    "tslib": "^2.3.0"
+    "tslib": "^2.6.2"
   }
 }
