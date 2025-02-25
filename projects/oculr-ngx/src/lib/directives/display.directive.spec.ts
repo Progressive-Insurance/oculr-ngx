@@ -37,7 +37,8 @@ describe('DisplayDirective', () => {
 });
 
 @Component({
-  template: `<div oculrDisplay id="testId"></div>`,
+    template: `<div oculrDisplay id="testId"></div>`,
+    standalone: false
 })
 class SimpleTestComponent {}
 
@@ -98,12 +99,13 @@ describe('DisplayDirective', () => {
 });
 
 @Component({
-  template: `
+    template: `
     <div oculrDisplay id="testId" *ngIf="conditional | async">Conditional element</div>
     <div oculrDisplay *ngIf="missingId | async">Missing id element</div>
     <div [oculrDisplay]="{ id: 'eventId' }" *ngIf="eventId | async">Event id element</div>
     <div [oculrDisplay]="{ id: 'eventId' }" id="testId" *ngIf="competingId | async">Competing id element</div>
   `,
+    standalone: false
 })
 class ConditionalTestComponent {
   conditional = new Subject<boolean>();

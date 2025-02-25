@@ -15,7 +15,8 @@ import { DirectiveService } from '../services/directive.service';
 import { DispatchService } from '../services/dispatch.service';
 
 @Directive({
-  selector: '[oculrFocus]',
+    selector: '[oculrFocus]',
+    standalone: false
 })
 export class FocusDirective {
   @Input('oculrFocus') directiveEvent: DirectiveEvent | '' = '';

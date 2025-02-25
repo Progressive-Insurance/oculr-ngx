@@ -16,7 +16,8 @@ import { DirectiveService } from '../services/directive.service';
 import { DispatchService } from '../services/dispatch.service';
 
 @Directive({
-  selector: '[oculrClick]',
+    selector: '[oculrClick]',
+    standalone: false
 })
 export class ClickDirective {
   @Input('oculrClick') directiveEvent: DirectiveEvent | '' = '';

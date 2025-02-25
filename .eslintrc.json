@@ -30,7 +30,8 @@
           }
         ],
         "@typescript-eslint/no-explicit-any": "off",
-        "@typescript-eslint/unbound-method": "off" // Throws errors on Form Validators
+        "@typescript-eslint/unbound-method": "off",
+        "@angular-eslint/prefer-standalone": "off"
       }
     },
     {

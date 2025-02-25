@@ -12,7 +12,8 @@ import { DirectiveEvent } from '../models/directive-event.interface';
 import { DispatchService } from '../services/dispatch.service';
 
 @Directive({
-  selector: '[oculrTrackValidation]',
+    selector: '[oculrTrackValidation]',
+    standalone: false
 })
 export class TrackValidationDirective {
   @Input('oculrTrackValidation') directiveEvent: DirectiveEvent | '' = '';

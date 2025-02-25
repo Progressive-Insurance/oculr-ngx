@@ -13,7 +13,8 @@ import { DirectiveService } from '../services/directive.service';
 import { DispatchService } from '../services/dispatch.service';
 
 @Directive({
-  selector: '[oculrDisplay]',
+    selector: '[oculrDisplay]',
+    standalone: false
 })
 export class DisplayDirective implements OnInit {
   @Input('oculrDisplay') directiveEvent: DirectiveEvent | '' = '';
