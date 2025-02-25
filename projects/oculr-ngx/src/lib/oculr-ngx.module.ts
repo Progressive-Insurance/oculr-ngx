@@ -8,7 +8,7 @@
 
 import { CommonModule } from '@angular/common';
 import { HTTP_INTERCEPTORS, provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
-import { APP_INITIALIZER, ModuleWithProviders, NgModule } from '@angular/core';
+import { ModuleWithProviders, NgModule, inject, provideAppInitializer } from '@angular/core';
 import { ConsoleService } from './destinations/console/console.service';
 import { HttpApiService } from './destinations/http-api/http-api.service';
 import { ChangeDirective } from './directives/change.directive';
@@ -68,12 +68,10 @@ export class OculrAngularModule {
         ConsoleService,
         HttpApiService,
         InitializationService,
-        {
-          provide: APP_INITIALIZER,
-          useFactory: initializeLibrary,
-          deps: [InitializationService],
-          multi: true,
-        },
+        provideAppInitializer(() => {
+        const initializerFn = (initializeLibrary)(inject(InitializationService));
+        return initializerFn();
+      }),
       ],
     };
   }

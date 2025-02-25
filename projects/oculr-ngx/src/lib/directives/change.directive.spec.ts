@@ -355,7 +355,7 @@ describe('ChangeDirective', () => {
 });
 
 @Component({
-  template: `
+    template: `
     <!-- checkbox -->
     <input oculrChange type="checkbox" id="attestation" />
     <label for="attestation">Do you agree to the terms?</label>
@@ -412,6 +412,7 @@ describe('ChangeDirective', () => {
     <label for="story">Tell us a story:</label>
     <textarea oculrChange id="story"></textarea>
   `,
+    standalone: false
 })
 class TestComponent {
   seasonsForm = new UntypedFormGroup({
@@ -420,10 +421,11 @@ class TestComponent {
 }
 
 @Component({
-  template: `
+    template: `
     <!-- password, not supported -->
     <label for="password">Password:</label>
     <input oculrChange type="password" id="password" />
   `,
+    standalone: false
 })
 class NotSupportedComponent {}

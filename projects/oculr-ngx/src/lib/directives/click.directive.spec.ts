@@ -120,17 +120,19 @@ describe('ClickDirective', () => {
 });
 
 @Component({
-  template: `
+    template: `
     <button oculrClick id="testId">Simple button</button>
     <a oculrClick routerLink="/somewhere" id="linkWithRouterLink">Simple routerLink</a>
     <button [oculrClick]="{ id: 'eventId', label: 'Event label' }" id="useEventId">Event object button</button>
     <button oculrClick class="someClass">Missing id button</button>
     <router-outlet></router-outlet>
   `,
+    standalone: false
 })
 class TestComponent {}
 
 @Component({
-  template: '',
+    template: '',
+    standalone: false
 })
 class AlternateRouteComponent {}

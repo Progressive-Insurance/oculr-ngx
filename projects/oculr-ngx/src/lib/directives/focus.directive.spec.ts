@@ -99,7 +99,7 @@ describe('FocusDirective', () => {
 });
 
 @Component({
-  template: `
+    template: `
     <label for="password">Password:</label>
     <input oculrFocus type="password" id="password" />
 
@@ -110,5 +110,6 @@ describe('FocusDirective', () => {
 
     <button oculrFocus id="continue">Continue</button>
   `,
+    standalone: false
 })
 class TestComponent {}

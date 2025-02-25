@@ -85,7 +85,7 @@ describe('TrackValidationDirective', () => {
 });
 
 @Component({
-  template: `
+    template: `
     <form [formGroup]="testForm">
       <input id="first-name" type="text" formControlName="firstName" [oculrTrackValidation]="validationEventInput" />
       <input id="last-name" type="text" formControlName="lastName" [oculrTrackValidation]="{ id: 'last-name' }" />
@@ -93,6 +93,7 @@ describe('TrackValidationDirective', () => {
       <input id="nickname" type="text" formControlName="nickname" oculrTrackValidation />
     </form>
   `,
+    standalone: false
 })
 class TestComponent {
   testForm = new UntypedFormGroup({

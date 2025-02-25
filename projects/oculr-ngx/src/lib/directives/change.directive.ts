@@ -15,7 +15,8 @@ import { DirectiveService } from '../services/directive.service';
 import { DispatchService } from '../services/dispatch.service';
 
 @Directive({
-  selector: '[oculrChange]',
+    selector: '[oculrChange]',
+    standalone: false
 })
 export class ChangeDirective implements OnInit {
   @Input('oculrChange') directiveEvent: DirectiveEvent | '' = '';
