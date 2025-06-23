@@ -11,4 +11,5 @@ import { DestinationConfig } from './destination-config.interface';
 export interface AppConfiguration {
   logHttpTraffic: boolean;
   destinations?: DestinationConfig[];
+  applicationName?: string;
 }

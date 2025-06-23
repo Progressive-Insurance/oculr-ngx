@@ -10,4 +10,5 @@ export enum InteractionType {
   click = 'click',
   change = 'change',
   focus = 'focus',
+  none = ''
 }

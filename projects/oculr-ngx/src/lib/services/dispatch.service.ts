@@ -31,6 +31,15 @@ export class DispatchService {
     this.dispatchEvent(eventDispatch);
   }
 
+  trackPageView(event: AnalyticEvent): void {
+    const eventDispatch = {
+      ...event,
+      eventType: AnalyticEventType.PAGE_VIEW_EVENT,
+      location: this.locationService.getLocation(),
+    };
+    this.dispatchEvent(eventDispatch);
+  }
+
   trackClick(event: AnalyticEvent): void {
     const eventDispatch = {
       ...event,

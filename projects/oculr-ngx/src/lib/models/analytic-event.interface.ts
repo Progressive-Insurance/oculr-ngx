@@ -20,7 +20,7 @@ export interface AnalyticEvent {
   label?: string;
   element?: string | number | null;
   inputType?: string;
-  value?: string;
+  value?: any;
   displayValue?: string;
   eventType?: AnalyticEventType;
   linkUrl?: string;

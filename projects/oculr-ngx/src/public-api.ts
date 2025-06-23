@@ -32,3 +32,5 @@ export { ValidationErrorEvent } from './lib/models/validation-error-event.interf
 export { AnalyticsEventBusService } from './lib/services/analytics-event-bus.service';
 export { ConfigurationService } from './lib/services/configuration.service';
 export { EventDispatchService } from './lib/services/event-dispatch.service';
+export { PageViewTimingsService } from './lib/services/page-view-timings.service';
+export { PageLoadPerformanceService } from './lib/services/page-load-performance.service';
