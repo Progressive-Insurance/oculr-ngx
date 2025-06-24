@@ -1,3 +1,11 @@
+/* 
+ * @license
+ * Copyright (c) 2025 Progressive Casualty Insurance Company. All Rights Reserved.
+ *
+ * Use of this source code is governed by an MIT license that can be found at
+ * https://opensource.progressive.com/resources/license
+*/ 
+ 
 import { ApplicationRef, Injectable } from '@angular/core';
 import { Event, NavigationEnd, NavigationStart, Router } from '@angular/router';
 import { debounceTime, filter, Observable, switchMap, take } from 'rxjs';
