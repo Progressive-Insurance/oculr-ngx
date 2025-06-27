@@ -1,10 +1,10 @@
 /*
  * @license
- * Copyright 2021-2022 Progressive Casualty Insurance Company. All Rights Reserved.
+ * Copyright (c) 2025 Progressive Casualty Insurance Company. All Rights Reserved.
  *
- * Use of this source code is governed by an MIT license that can be found in
- * the LICENSE file at https://github.com/progressive-insurance/oculr-ngx/blob/main/LICENSE.md
- */
+ * Use of this source code is governed by an MIT license that can be found at
+ * https://opensource.progressive.com/resources/license
+*/
 
 export { OculrAngularModule } from './lib/oculr-ngx.module';
 
@@ -32,3 +32,5 @@ export { ValidationErrorEvent } from './lib/models/validation-error-event.interf
 export { AnalyticsEventBusService } from './lib/services/analytics-event-bus.service';
 export { ConfigurationService } from './lib/services/configuration.service';
 export { EventDispatchService } from './lib/services/event-dispatch.service';
+export { PageViewTimingsService } from './lib/services/page-view-timings.service';
+export { PageLoadPerformanceService } from './lib/services/page-load-performance.service';

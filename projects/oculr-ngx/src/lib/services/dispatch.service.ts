@@ -1,10 +1,10 @@
 /*
  * @license
- * Copyright 2021-2022 Progressive Casualty Insurance Company. All Rights Reserved.
+ * Copyright (c) 2025 Progressive Casualty Insurance Company. All Rights Reserved.
  *
- * Use of this source code is governed by an MIT license that can be found in
- * the LICENSE file at https://github.com/progressive-insurance/oculr-ngx/blob/main/LICENSE.md
- */
+ * Use of this source code is governed by an MIT license that can be found at
+ * https://opensource.progressive.com/resources/license
+*/
 
 import { HttpErrorResponse, HttpRequest, HttpResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
@@ -26,6 +26,15 @@ export class DispatchService {
     const eventDispatch = {
       ...event,
       eventType: AnalyticEventType.CHANGE_EVENT,
+      location: this.locationService.getLocation(),
+    };
+    this.dispatchEvent(eventDispatch);
+  }
+
+  trackPageView(event: AnalyticEvent): void {
+    const eventDispatch = {
+      ...event,
+      eventType: AnalyticEventType.PAGE_VIEW_EVENT,
       location: this.locationService.getLocation(),
     };
     this.dispatchEvent(eventDispatch);
