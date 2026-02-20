@@ -8,7 +8,7 @@
  
 import { ApplicationRef, Injectable } from '@angular/core';
 import { Event, NavigationEnd, NavigationStart, Router } from '@angular/router';
-import { debounceTime, filter, Observable, switchMap, take } from 'rxjs';
+import { debounceTime, filter, take } from 'rxjs';
 import { DispatchService } from './dispatch.service';
 import { createAnalyticEvent } from '../models/create-analytic-event';
 import { AnalyticEventType } from '../models/analytic-event-type.enum';

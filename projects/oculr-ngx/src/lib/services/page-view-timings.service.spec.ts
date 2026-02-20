@@ -11,7 +11,7 @@
 import { ApplicationRef, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { Router, Event, NavigationStart, NavigationEnd } from '@angular/router';
-import { BehaviorSubject, Observable, of, ReplaySubject } from 'rxjs';
+import { BehaviorSubject, ReplaySubject } from 'rxjs';
 import { debounceTime, filter, switchMap } from 'rxjs/operators';
 import { PageViewTimingsService } from './page-view-timings.service';
 import { DispatchService } from './dispatch.service';
@@ -29,14 +29,12 @@ describe('PageViewTimingsService', () => {
     mockContext = { test: 'test ' };
     mockIsStableSubject$ = new BehaviorSubject(false);
     mockAppRef = {
-      // eslint-disable-next-line rxjs/finnish
       isStable: mockIsStableSubject$.asObservable(),
     } as unknown as ApplicationRef;
     mockRouterEventsSubject$ = new ReplaySubject<
       NavigationStart | NavigationEnd
     >(1);
     mockRouter = {
-      // eslint-disable-next-line rxjs/finnish
       events: mockRouterEventsSubject$.asObservable(),
     } as unknown as Router;
     mockDispatchService = {
