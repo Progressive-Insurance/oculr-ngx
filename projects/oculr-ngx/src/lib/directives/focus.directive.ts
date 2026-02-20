@@ -22,7 +22,7 @@ export class FocusDirective {
   @Input('oculrFocus') directiveEvent: DirectiveEvent | '' = '';
   interactionDetail: InteractionDetail | undefined = undefined;
 
-  @HostListener('focus', ['$event'])
+  @HostListener('focus')
   onFocus(): void {
     const analyticEvent = this.directiveService.getAnalyticEvent(this.directiveEvent);
     this.directiveService.setId(analyticEvent, this.elementRef);
@@ -37,14 +37,14 @@ export class FocusDirective {
     this.resetInteractionDetail();
   }
 
-  @HostListener('mousedown', ['$event'])
+  @HostListener('mousedown')
   onMousedown(): void {
     if (this.interactionDetail !== InteractionDetail.touch) {
       this.interactionDetail = InteractionDetail.mouse;
     }
   }
 
-  @HostListener('touchstart', ['$event'])
+  @HostListener('touchstart')
   onTouchstart(): void {
     this.interactionDetail = InteractionDetail.touch;
   }

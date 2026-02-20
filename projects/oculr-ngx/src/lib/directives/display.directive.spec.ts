@@ -100,11 +100,19 @@ describe('DisplayDirective', () => {
 
 @Component({
     template: `
-    <div oculrDisplay id="testId" *ngIf="conditional | async">Conditional element</div>
-    <div oculrDisplay *ngIf="missingId | async">Missing id element</div>
-    <div [oculrDisplay]="{ id: 'eventId' }" *ngIf="eventId | async">Event id element</div>
-    <div [oculrDisplay]="{ id: 'eventId' }" id="testId" *ngIf="competingId | async">Competing id element</div>
-  `,
+    @if (conditional | async) {
+      <div oculrDisplay id="testId">Conditional element</div>
+    }
+    @if (missingId | async) {
+      <div oculrDisplay>Missing id element</div>
+    }
+    @if (eventId | async) {
+      <div [oculrDisplay]="{ id: 'eventId' }">Event id element</div>
+    }
+    @if (competingId | async) {
+      <div [oculrDisplay]="{ id: 'eventId' }" id="testId">Competing id element</div>
+    }
+    `,
     standalone: false
 })
 class ConditionalTestComponent {

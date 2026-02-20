@@ -5,8 +5,7 @@
  * Use of this source code is governed by an MIT license that can be found at
  * https://opensource.progressive.com/resources/license
 */ 
- 
-import { ActivatedRouteSnapshot } from "@angular/router";
+
 import { AnalyticEventType } from "./analytic-event-type.enum";
 import { AnalyticEvent } from "./analytic-event.interface";
 import { InteractionType } from "./interaction-type.enum";

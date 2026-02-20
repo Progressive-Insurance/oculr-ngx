@@ -5,11 +5,6 @@
  * Use of this source code is governed by an MIT license that can be found at
  * https://opensource.progressive.com/resources/license
 */ 
- 
-import { ApplicationRef } from '@angular/core';
-import { BehaviorSubject, Observable, of } from 'rxjs';
-import { debounceTime, filter, take } from 'rxjs/operators';
-
 
 import { PageLoadPerformanceService } from './page-load-performance.service';
 import { DispatchService } from './dispatch.service';

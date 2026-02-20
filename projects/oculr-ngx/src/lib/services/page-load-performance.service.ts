@@ -8,7 +8,7 @@
  
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Injectable } from '@angular/core';
-import { Observable, first, take } from 'rxjs';
+import { Observable, take } from 'rxjs';
 import { ConfigurationService } from './configuration.service';
 import { AppConfiguration } from '../models/app-configuration.interface';
 import { createAnalyticEvent } from '../models/create-analytic-event';
@@ -60,9 +60,11 @@ export class PageLoadPerformanceService {
     // Only include logs if flag is passed in as true
     if (this._includeFocusUnfocusLogs) {
       // Set initial value for duration time
-      document.hasFocus()
-        ? (this.focused = Date.now())
-        : (this.blurred = Date.now());
+      if (document.hasFocus()) {
+        this.focused = Date.now();
+      } else {
+        this.blurred = Date.now();
+      }
       // Log for Every Blur Event on Window. Indicates Time User was Focused on Window/App
       this.nativeWindow.onblur = () => {
         this.blurred = Date.now();
