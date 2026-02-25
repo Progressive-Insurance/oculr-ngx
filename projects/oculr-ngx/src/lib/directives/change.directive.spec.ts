@@ -1,375 +1,397 @@
-import type { Mock } from "vitest";
+import type { Mock } from 'vitest';
 /*
  * @license
  * Copyright (c) 2025 Progressive Casualty Insurance Company. All Rights Reserved.
  *
  * Use of this source code is governed by an MIT license that can be found at
  * https://opensource.progressive.com/resources/license
-*/
+ */
 
 import { Component } from '@angular/core';
-import { ComponentFixture, fakeAsync, TestBed, tick } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 
+import { ReactiveFormsModule, UntypedFormControl, UntypedFormGroup } from '@angular/forms';
+import { AnalyticEvent } from '../models/analytic-event.interface';
 import { InteractionDetail } from '../models/interaction-detail.enum';
 import { InteractionType } from '../models/interaction-type.enum';
-import { AnalyticEvent } from '../models/analytic-event.interface';
-import { ChangeDirective } from './change.directive';
+import { OculrAngularModule } from '../oculr-ngx.module';
 import { DirectiveService } from '../services/directive.service';
-import { UntypedFormControl, UntypedFormGroup, ReactiveFormsModule } from '@angular/forms';
 import { DispatchService } from '../services/dispatch.service';
-import { OculrAngularModule } from "../oculr-ngx.module";
+import { ChangeDirective } from './change.directive';
 
 describe('ChangeDirective', () => {
-    let fixture: ComponentFixture<TestComponent>;
-    let mockDispatchService: any;
-    let warnSpy: Mock;
+  let fixture: ComponentFixture<TestComponent>;
+  let mockDispatchService: any;
+  let warnSpy: Mock;
+
+  beforeEach(() => {
+    mockDispatchService = {
+      trackChange: vi.fn(),
+    };
+    warnSpy = vi.spyOn(console, 'warn');
+
+    TestBed.configureTestingModule({
+      imports: [ReactiveFormsModule, TestComponent, NotSupportedComponent],
+      declarations: [ChangeDirective],
+      providers: [{ provide: DispatchService, useValue: mockDispatchService }, DirectiveService],
+    });
+    fixture = TestBed.createComponent(TestComponent);
+    fixture.detectChanges();
+  });
+
+  describe('input checkbox', () => {
+    let expectedEvent: AnalyticEvent;
 
     beforeEach(() => {
-        mockDispatchService = {
-            trackChange: vi.fn(),
-        };
-        warnSpy = vi.spyOn(console, 'warn');
-
-        TestBed.configureTestingModule({
-            imports: [ReactiveFormsModule],
-            declarations: [TestComponent, NotSupportedComponent, ChangeDirective],
-            providers: [{ provide: DispatchService, useValue: mockDispatchService }, DirectiveService],
-        });
-        fixture = TestBed.createComponent(TestComponent);
-        fixture.detectChanges();
+      expectedEvent = {
+        id: 'attestation',
+        element: 'input',
+        interactionType: InteractionType.change,
+        interactionDetail: InteractionDetail.mouse,
+        inputType: 'checkbox',
+        label: 'Do you agree to the terms?',
+        value: 'checked',
+        displayValue: 'Do you agree to the terms?',
+      };
     });
 
-    describe('input checkbox', () => {
-        let expectedEvent: AnalyticEvent;
-
-        beforeEach(() => {
-            expectedEvent = {
-                id: 'attestation',
-                element: 'input',
-                interactionType: InteractionType.change,
-                interactionDetail: InteractionDetail.mouse,
-                inputType: 'checkbox',
-                label: 'Do you agree to the terms?',
-                value: 'checked',
-                displayValue: 'Do you agree to the terms?',
-            };
-        });
-
-        it('dispatches a change event when clicked with a mouse', async() => {
-            vi.useFakeTimers();
-            const input = fixture.nativeElement.querySelector('#attestation');
-            input.dispatchEvent(new Event('mousedown'));
-            input.click();
-            await vi.runAllTimersAsync();
-            await expect(mockDispatchService.trackChange).toHaveBeenCalledTimes(1);
-            await expect(mockDispatchService.trackChange).toHaveBeenCalledWith(expectedEvent);
-            vi.useRealTimers();
-        });
-
-        it('dispatches a change event when using a keyboard', async() => {
-            vi.useFakeTimers();
-            expectedEvent.interactionDetail = InteractionDetail.keyboard;
-            const input = fixture.nativeElement.querySelector('#attestation');
-            input.dispatchEvent(new Event('keydown'));
-            input.click();
-            await vi.runAllTimersAsync();
-            await expect(mockDispatchService.trackChange).toHaveBeenCalledTimes(1);
-            await expect(mockDispatchService.trackChange).toHaveBeenCalledWith(expectedEvent);
-            vi.useRealTimers();
-        });
-
-        it('dispatches a change event when using touch', async() => {
-            vi.useFakeTimers();
-            expectedEvent.interactionDetail = InteractionDetail.touch;
-            const input = fixture.nativeElement.querySelector('#attestation');
-            input.dispatchEvent(new Event('touchstart'));
-            input.dispatchEvent(new Event('mousedown'));
-            input.click();
-            tick();
-            expect(mockDispatchService.trackChange).toHaveBeenCalledTimes(1);
-            expect(mockDispatchService.trackChange).toHaveBeenCalledWith(expectedEvent);
-        });
-
-        it('prioritizes event properties over host element attributes', fakeAsync(() => {
-            vi.useFakeTimers();
-            expectedEvent.id = 'updates';
-            expectedEvent.label = 'Update notification';
-            expectedEvent.displayValue = 'Yes';
-            const input = fixture.nativeElement.querySelector('#notify');
-            input.dispatchEvent(new Event('mousedown'));
-            input.click();
-            tick();
-            expect(mockDispatchService.trackChange).toHaveBeenCalledTimes(1);
-            expect(mockDispatchService.trackChange).toHaveBeenCalledWith(expectedEvent);
-        }));
-
-        it('dispatches a change event when cleared', fakeAsync(() => {
-            vi.useFakeTimers();
-            expectedEvent.id = 'feedback';
-            expectedEvent.label = 'Would you like to provide feedback?';
-            expectedEvent.displayValue = 'Would you like to provide feedback?';
-            expectedEvent.value = 'cleared';
-            const input = fixture.nativeElement.querySelector('#feedback');
-            input.dispatchEvent(new Event('mousedown'));
-            input.click();
-            tick();
-            expect(mockDispatchService.trackChange).toHaveBeenCalledTimes(1);
-            expect(mockDispatchService.trackChange).toHaveBeenCalledWith(expectedEvent);
-        }));
+    it('dispatches a change event when clicked with a mouse', async () => {
+      vi.useFakeTimers();
+      const input = fixture.nativeElement.querySelector('#attestation');
+      input.dispatchEvent(new Event('mousedown'));
+      input.click();
+      await vi.runAllTimersAsync();
+      await expect(mockDispatchService.trackChange).toHaveBeenCalledTimes(1);
+      await expect(mockDispatchService.trackChange).toHaveBeenCalledWith(expectedEvent);
+      vi.useRealTimers();
     });
 
-    describe('input date', () => {
-        let expectedEvent: AnalyticEvent;
-
-        beforeEach(() => {
-            expectedEvent = {
-                id: 'return',
-                element: 'input',
-                interactionType: InteractionType.change,
-                interactionDetail: InteractionDetail.keyboard,
-                inputType: 'date',
-                label: 'Return date:',
-            };
-        });
-
-        it('dispatches a change event when changed', fakeAsync(() => {
-            vi.useFakeTimers();
-            expectedEvent.value = '2021-11-16';
-            const input = fixture.nativeElement.querySelector('#return');
-            input.dispatchEvent(new Event('keydown'));
-            input.value = '2021-11-16';
-            input.dispatchEvent(new Event('change'));
-            tick();
-            expect(mockDispatchService.trackChange).toHaveBeenCalledTimes(1);
-            expect(mockDispatchService.trackChange).toHaveBeenCalledWith(expectedEvent);
-        }));
-
-        it('does not dispatch a change event due to sensitive data', fakeAsync(() => {
-            vi.useFakeTimers();
-            expectedEvent.id = 'dob';
-            expectedEvent.label = 'Date of birth:';
-            const input = fixture.nativeElement.querySelector('#dob');
-            input.dispatchEvent(new Event('keydown'));
-            input.value = '2001-11-16';
-            input.dispatchEvent(new Event('change'));
-            tick();
-            expect(mockDispatchService.trackChange).toHaveBeenCalledTimes(1);
-            expect(mockDispatchService.trackChange).toHaveBeenCalledWith(expectedEvent);
-        }));
+    it('dispatches a change event when using a keyboard', async () => {
+      vi.useFakeTimers();
+      expectedEvent.interactionDetail = InteractionDetail.keyboard;
+      const input = fixture.nativeElement.querySelector('#attestation');
+      input.dispatchEvent(new Event('keydown'));
+      input.click();
+      await vi.runAllTimersAsync();
+      await expect(mockDispatchService.trackChange).toHaveBeenCalledTimes(1);
+      await expect(mockDispatchService.trackChange).toHaveBeenCalledWith(expectedEvent);
+      vi.useRealTimers();
     });
 
-    describe('input number', () => {
-        let expectedEvent: AnalyticEvent;
-
-        beforeEach(() => {
-            expectedEvent = {
-                id: 'weekDays',
-                element: 'input',
-                interactionType: InteractionType.change,
-                interactionDetail: InteractionDetail.keyboard,
-                inputType: 'number',
-                label: 'How many weekdays?',
-                value: '5',
-            };
-        });
-
-        it('dispatches a change event when changed', fakeAsync(() => {
-            vi.useFakeTimers();
-            const input = fixture.nativeElement.querySelector('#weekDays');
-            input.dispatchEvent(new Event('keydown'));
-            input.value = '5';
-            input.dispatchEvent(new Event('change'));
-            tick();
-            expect(mockDispatchService.trackChange).toHaveBeenCalledTimes(1);
-            expect(mockDispatchService.trackChange).toHaveBeenCalledWith(expectedEvent);
-        }));
+    it('dispatches a change event when using touch', async () => {
+      vi.useFakeTimers();
+      expectedEvent.interactionDetail = InteractionDetail.touch;
+      const input = fixture.nativeElement.querySelector('#attestation');
+      input.dispatchEvent(new Event('touchstart'));
+      input.dispatchEvent(new Event('mousedown'));
+      input.click();
+      await vi.runAllTimersAsync();
+      await expect(mockDispatchService.trackChange).toHaveBeenCalledTimes(1);
+      await expect(mockDispatchService.trackChange).toHaveBeenCalledWith(expectedEvent);
+      vi.useRealTimers();
     });
 
-    describe('input search', () => {
-        let expectedEvent: AnalyticEvent;
-
-        beforeEach(() => {
-            expectedEvent = {
-                id: 'search',
-                element: 'input',
-                interactionType: InteractionType.change,
-                interactionDetail: InteractionDetail.keyboard,
-                inputType: 'search',
-                label: 'What are you looking for?',
-                value: 'things',
-            };
-        });
-
-        it('dispatches a change event when changed', fakeAsync(() => {
-            vi.useFakeTimers();
-            const input = fixture.nativeElement.querySelector('#search');
-            input.dispatchEvent(new Event('keydown'));
-            input.value = 'things';
-            input.dispatchEvent(new Event('change'));
-            tick();
-            expect(mockDispatchService.trackChange).toHaveBeenCalledTimes(1);
-            expect(mockDispatchService.trackChange).toHaveBeenCalledWith(expectedEvent);
-        }));
+    it('prioritizes event properties over host element attributes', async () => {
+      vi.useFakeTimers();
+      expectedEvent.id = 'updates';
+      expectedEvent.label = 'Update notification';
+      expectedEvent.displayValue = 'Yes';
+      const input = fixture.nativeElement.querySelector('#notify');
+      input.dispatchEvent(new Event('mousedown'));
+      input.click();
+      await vi.runAllTimersAsync();
+      await expect(mockDispatchService.trackChange).toHaveBeenCalledTimes(1);
+      await expect(mockDispatchService.trackChange).toHaveBeenCalledWith(expectedEvent);
+      vi.useRealTimers();
     });
 
-    describe('input text', () => {
-        let expectedEvent: AnalyticEvent;
+    it('dispatches a change event when cleared', async () => {
+      vi.useFakeTimers();
+      expectedEvent.id = 'feedback';
+      expectedEvent.label = 'Would you like to provide feedback?';
+      expectedEvent.displayValue = 'Would you like to provide feedback?';
+      expectedEvent.value = 'cleared';
+      const input = fixture.nativeElement.querySelector('#feedback');
+      input.dispatchEvent(new Event('mousedown'));
+      input.click();
+      await vi.runAllTimersAsync();
+      await expect(mockDispatchService.trackChange).toHaveBeenCalledTimes(1);
+      await expect(mockDispatchService.trackChange).toHaveBeenCalledWith(expectedEvent);
+      vi.useRealTimers();
+    });
+  });
 
-        beforeEach(() => {
-            expectedEvent = {
-                id: 'petName',
-                element: 'input',
-                interactionType: InteractionType.change,
-                interactionDetail: InteractionDetail.keyboard,
-                inputType: 'text',
-                label: `Your pet's name:`,
-                value: 'Spot',
-            };
-        });
+  describe('input date', () => {
+    let expectedEvent: AnalyticEvent;
 
-        it('dispatches a change event when changed', fakeAsync(() => {
-            vi.useFakeTimers();
-            const input = fixture.nativeElement.querySelector('#petName');
-            input.dispatchEvent(new Event('keydown'));
-            input.value = 'Spot';
-            input.dispatchEvent(new Event('change'));
-            tick();
-            expect(mockDispatchService.trackChange).toHaveBeenCalledTimes(1);
-            expect(mockDispatchService.trackChange).toHaveBeenCalledWith(expectedEvent);
-        }));
+    beforeEach(() => {
+      expectedEvent = {
+        id: 'return',
+        element: 'input',
+        interactionType: InteractionType.change,
+        interactionDetail: InteractionDetail.keyboard,
+        inputType: 'date',
+        label: 'Return date:',
+      };
     });
 
-    describe('input radio', () => {
-        let expectedEvent: AnalyticEvent;
-
-        beforeEach(() => {
-            expectedEvent = {
-                id: 'dragon',
-                element: 'input',
-                interactionType: InteractionType.change,
-                interactionDetail: InteractionDetail.mouse,
-                inputType: 'radio',
-                label: 'Dragon',
-                value: 'dragon',
-                displayValue: 'Dragon',
-            };
-        });
-
-        it('dispatches a change event when changed', fakeAsync(() => {
-            const input = fixture.nativeElement.querySelector('#dragon');
-            input.dispatchEvent(new Event('mousedown'));
-            input.click();
-            tick();
-            expect(mockDispatchService.trackChange).toHaveBeenCalledTimes(1);
-            expect(mockDispatchService.trackChange).toHaveBeenCalledWith(expectedEvent);
-        }));
-
-        it('uses the reactive form attribute formControlName for id', fakeAsync(() => {
-            expectedEvent.id = 'favoriteSeason';
-            expectedEvent.label = 'Summer';
-            expectedEvent.value = 'summer';
-            expectedEvent.displayValue = 'Summer';
-            const input = fixture.nativeElement.querySelector('#summer');
-            input.dispatchEvent(new Event('mousedown'));
-            input.click();
-            tick();
-            expect(mockDispatchService.trackChange).toHaveBeenCalledTimes(1);
-            expect(mockDispatchService.trackChange).toHaveBeenCalledWith(expectedEvent);
-        }));
-
-        it('uses the attribute name for id', fakeAsync(() => {
-            expectedEvent.id = 'favoriteCookie';
-            expectedEvent.label = 'Chocolate chip';
-            expectedEvent.value = 'chocolateChip';
-            expectedEvent.displayValue = 'Chocolate chip';
-            const input = fixture.nativeElement.querySelector('#chocolateChip');
-            input.dispatchEvent(new Event('mousedown'));
-            input.click();
-            tick();
-            expect(mockDispatchService.trackChange).toHaveBeenCalledTimes(1);
-            expect(mockDispatchService.trackChange).toHaveBeenCalledWith(expectedEvent);
-        }));
+    it('dispatches a change event when changed', async () => {
+      vi.useFakeTimers();
+      expectedEvent.value = '2021-11-16';
+      const input = fixture.nativeElement.querySelector('#return');
+      input.dispatchEvent(new Event('keydown'));
+      input.value = '2021-11-16';
+      input.dispatchEvent(new Event('change'));
+      await vi.runAllTimersAsync();
+      await expect(mockDispatchService.trackChange).toHaveBeenCalledTimes(1);
+      await expect(mockDispatchService.trackChange).toHaveBeenCalledWith(expectedEvent);
+      vi.useRealTimers();
     });
 
-    describe('select', () => {
-        let expectedEvent: AnalyticEvent;
+    it('does not dispatch a change event due to sensitive data', async () => {
+      vi.useFakeTimers();
+      expectedEvent.id = 'dob';
+      expectedEvent.label = 'Date of birth:';
+      const input = fixture.nativeElement.querySelector('#dob');
+      input.dispatchEvent(new Event('keydown'));
+      input.value = '2001-11-16';
+      input.dispatchEvent(new Event('change'));
+      await vi.runAllTimersAsync();
+      await expect(mockDispatchService.trackChange).toHaveBeenCalledTimes(1);
+      await expect(mockDispatchService.trackChange).toHaveBeenCalledWith(expectedEvent);
+      vi.useRealTimers();
+    });
+  });
 
-        beforeEach(() => {
-            expectedEvent = {
-                id: 'favoriteFood',
-                element: 'select',
-                interactionType: InteractionType.change,
-                interactionDetail: InteractionDetail.mouse,
-                label: 'What is your favorite food?',
-                value: 'ramen',
-                displayValue: 'Ramen',
-            };
-        });
+  describe('input number', () => {
+    let expectedEvent: AnalyticEvent;
 
-        it('dispatches a change event when changed', fakeAsync(() => {
-            const input = fixture.nativeElement.querySelector('#favoriteFood');
-            input.dispatchEvent(new Event('mousedown'));
-            input.value = 'ramen';
-            input.dispatchEvent(new Event('change'));
-            tick();
-            expect(mockDispatchService.trackChange).toHaveBeenCalledTimes(1);
-            expect(mockDispatchService.trackChange).toHaveBeenCalledWith(expectedEvent);
-        }));
+    beforeEach(() => {
+      expectedEvent = {
+        id: 'weekDays',
+        element: 'input',
+        interactionType: InteractionType.change,
+        interactionDetail: InteractionDetail.keyboard,
+        inputType: 'number',
+        label: 'How many weekdays?',
+        value: '5',
+      };
     });
 
-    describe('textarea', () => {
-        let expectedEvent: AnalyticEvent;
+    it('dispatches a change event when changed', async () => {
+      vi.useFakeTimers();
+      const input = fixture.nativeElement.querySelector('#weekDays');
+      input.dispatchEvent(new Event('keydown'));
+      input.value = '5';
+      input.dispatchEvent(new Event('change'));
+      await vi.runAllTimersAsync();
+      await expect(mockDispatchService.trackChange).toHaveBeenCalledTimes(1);
+      await expect(mockDispatchService.trackChange).toHaveBeenCalledWith(expectedEvent);
+      vi.useRealTimers();
+    });
+  });
 
-        beforeEach(() => {
-            expectedEvent = {
-                id: 'story',
-                element: 'textarea',
-                interactionType: InteractionType.change,
-                interactionDetail: InteractionDetail.keyboard,
-                label: 'Tell us a story:',
-                value: 'Once upon a time...',
-            };
-        });
+  describe('input search', () => {
+    let expectedEvent: AnalyticEvent;
 
-        it('dispatches a change event when changed', fakeAsync(() => {
-            const input = fixture.nativeElement.querySelector('#story');
-            input.dispatchEvent(new Event('keydown'));
-            input.value = 'Once upon a time...';
-            input.dispatchEvent(new Event('change'));
-            tick();
-            expect(mockDispatchService.trackChange).toHaveBeenCalledTimes(1);
-            expect(mockDispatchService.trackChange).toHaveBeenCalledWith(expectedEvent);
-        }));
+    beforeEach(() => {
+      expectedEvent = {
+        id: 'search',
+        element: 'input',
+        interactionType: InteractionType.change,
+        interactionDetail: InteractionDetail.keyboard,
+        inputType: 'search',
+        label: 'What are you looking for?',
+        value: 'things',
+      };
     });
 
-    describe('warnings', () => {
-        it('does not dispatch a change event when an identifier is missing', fakeAsync(() => {
-            const input = fixture.nativeElement.querySelector('.unicorn-background');
-            input.dispatchEvent(new Event('mousedown'));
-            input.dispatchEvent(new Event('keydown'));
-            input.value = 'Spot';
-            input.dispatchEvent(new Event('change'));
-            tick();
-            expect(mockDispatchService.trackChange).toHaveBeenCalledTimes(0);
-            expect(warnSpy).toHaveBeenCalled();
-        }));
-
-        it('does not dispatch a change event with an unsupported host element', fakeAsync(() => {
-            const notSupportedFixture = TestBed.createComponent(NotSupportedComponent);
-            notSupportedFixture.detectChanges();
-            const input = notSupportedFixture.nativeElement.querySelector('#password');
-            input.dispatchEvent(new Event('keydown'));
-            input.value = '123';
-            input.dispatchEvent(new Event('change'));
-            tick();
-            expect(mockDispatchService.trackChange).toHaveBeenCalledTimes(0);
-            expect(warnSpy).toHaveBeenCalled();
-        }));
+    it('dispatches a change event when changed', async () => {
+      vi.useFakeTimers();
+      const input = fixture.nativeElement.querySelector('#search');
+      input.dispatchEvent(new Event('keydown'));
+      input.value = 'things';
+      input.dispatchEvent(new Event('change'));
+      await vi.runAllTimersAsync();
+      await expect(mockDispatchService.trackChange).toHaveBeenCalledTimes(1);
+      await expect(mockDispatchService.trackChange).toHaveBeenCalledWith(expectedEvent);
+      vi.useRealTimers();
     });
+  });
+
+  describe('input text', () => {
+    let expectedEvent: AnalyticEvent;
+
+    beforeEach(() => {
+      expectedEvent = {
+        id: 'petName',
+        element: 'input',
+        interactionType: InteractionType.change,
+        interactionDetail: InteractionDetail.keyboard,
+        inputType: 'text',
+        label: `Your pet's name:`,
+        value: 'Spot',
+      };
+    });
+
+    it('dispatches a change event when changed', async () => {
+      vi.useFakeTimers();
+      const input = fixture.nativeElement.querySelector('#petName');
+      input.dispatchEvent(new Event('keydown'));
+      input.value = 'Spot';
+      input.dispatchEvent(new Event('change'));
+      await vi.runAllTimersAsync();
+      await expect(mockDispatchService.trackChange).toHaveBeenCalledTimes(1);
+      await expect(mockDispatchService.trackChange).toHaveBeenCalledWith(expectedEvent);
+      vi.useRealTimers();
+    });
+  });
+
+  describe('input radio', () => {
+    let expectedEvent: AnalyticEvent;
+
+    beforeEach(() => {
+      expectedEvent = {
+        id: 'dragon',
+        element: 'input',
+        interactionType: InteractionType.change,
+        interactionDetail: InteractionDetail.mouse,
+        inputType: 'radio',
+        label: 'Dragon',
+        value: 'dragon',
+        displayValue: 'Dragon',
+      };
+    });
+
+    it('dispatches a change event when changed', async () => {
+      vi.useFakeTimers();
+      const input = fixture.nativeElement.querySelector('#dragon');
+      input.dispatchEvent(new Event('mousedown'));
+      input.click();
+      await vi.runAllTimersAsync();
+      await expect(mockDispatchService.trackChange).toHaveBeenCalledTimes(1);
+      await expect(mockDispatchService.trackChange).toHaveBeenCalledWith(expectedEvent);
+      vi.useRealTimers();
+    });
+
+    it('uses the reactive form attribute formControlName for id', async () => {
+      vi.useFakeTimers();
+      expectedEvent.id = 'favoriteSeason';
+      expectedEvent.label = 'Summer';
+      expectedEvent.value = 'summer';
+      expectedEvent.displayValue = 'Summer';
+      const input = fixture.nativeElement.querySelector('#summer');
+      input.dispatchEvent(new Event('mousedown'));
+      input.click();
+      await vi.runAllTimersAsync();
+      await expect(mockDispatchService.trackChange).toHaveBeenCalledTimes(1);
+      await expect(mockDispatchService.trackChange).toHaveBeenCalledWith(expectedEvent);
+      vi.useRealTimers();
+    });
+
+    it('uses the attribute name for id', async () => {
+      vi.useFakeTimers();
+      expectedEvent.id = 'favoriteCookie';
+      expectedEvent.label = 'Chocolate chip';
+      expectedEvent.value = 'chocolateChip';
+      expectedEvent.displayValue = 'Chocolate chip';
+      const input = fixture.nativeElement.querySelector('#chocolateChip');
+      input.dispatchEvent(new Event('mousedown'));
+      input.click();
+      await vi.runAllTimersAsync();
+      await expect(mockDispatchService.trackChange).toHaveBeenCalledTimes(1);
+      await expect(mockDispatchService.trackChange).toHaveBeenCalledWith(expectedEvent);
+      vi.useRealTimers();
+    });
+  });
+
+  describe('select', () => {
+    let expectedEvent: AnalyticEvent;
+
+    beforeEach(() => {
+      expectedEvent = {
+        id: 'favoriteFood',
+        element: 'select',
+        interactionType: InteractionType.change,
+        interactionDetail: InteractionDetail.mouse,
+        label: 'What is your favorite food?',
+        value: 'ramen',
+        displayValue: 'Ramen',
+      };
+    });
+
+    it('dispatches a change event when changed', async () => {
+      vi.useFakeTimers();
+      const input = fixture.nativeElement.querySelector('#favoriteFood');
+      input.dispatchEvent(new Event('mousedown'));
+      input.value = 'ramen';
+      input.dispatchEvent(new Event('change'));
+      await vi.runAllTimersAsync();
+      await expect(mockDispatchService.trackChange).toHaveBeenCalledTimes(1);
+      await expect(mockDispatchService.trackChange).toHaveBeenCalledWith(expectedEvent);
+      vi.useRealTimers();
+    });
+  });
+
+  describe('textarea', () => {
+    let expectedEvent: AnalyticEvent;
+
+    beforeEach(() => {
+      expectedEvent = {
+        id: 'story',
+        element: 'textarea',
+        interactionType: InteractionType.change,
+        interactionDetail: InteractionDetail.keyboard,
+        label: 'Tell us a story:',
+        value: 'Once upon a time...',
+      };
+    });
+
+    it('dispatches a change event when changed', async () => {
+      vi.useFakeTimers();
+      const input = fixture.nativeElement.querySelector('#story');
+      input.dispatchEvent(new Event('keydown'));
+      input.value = 'Once upon a time...';
+      input.dispatchEvent(new Event('change'));
+      await vi.runAllTimersAsync();
+      await expect(mockDispatchService.trackChange).toHaveBeenCalledTimes(1);
+      await expect(mockDispatchService.trackChange).toHaveBeenCalledWith(expectedEvent);
+      vi.useRealTimers();
+    });
+  });
+
+  describe('warnings', () => {
+    it('does not dispatch a change event when an identifier is missing', async () => {
+      vi.useFakeTimers();
+      const input = fixture.nativeElement.querySelector('.unicorn-background');
+      input.dispatchEvent(new Event('mousedown'));
+      input.dispatchEvent(new Event('keydown'));
+      input.value = 'Spot';
+      input.dispatchEvent(new Event('change'));
+      await vi.runAllTimersAsync();
+      await expect(mockDispatchService.trackChange).toHaveBeenCalledTimes(0);
+      await expect(warnSpy).toHaveBeenCalled();
+      vi.useRealTimers();
+    });
+
+    it('does not dispatch a change event with an unsupported host element', async () => {
+      vi.useFakeTimers();
+      const notSupportedFixture = TestBed.createComponent(NotSupportedComponent);
+      notSupportedFixture.detectChanges();
+      const input = notSupportedFixture.nativeElement.querySelector('#password');
+      input.dispatchEvent(new Event('keydown'));
+      input.value = '123';
+      input.dispatchEvent(new Event('change'));
+      await vi.runAllTimersAsync();
+      await expect(mockDispatchService.trackChange).toHaveBeenCalledTimes(0);
+      await expect(warnSpy).toHaveBeenCalled();
+      vi.useRealTimers();
+    });
+  });
 });
 
 @Component({
-    template: `
+  template: `
     <!-- checkbox -->
     <input oculrChange type="checkbox" id="attestation" />
     <label for="attestation">Do you agree to the terms?</label>
@@ -426,22 +448,21 @@ describe('ChangeDirective', () => {
     <label for="story">Tell us a story:</label>
     <textarea oculrChange id="story"></textarea>
   `,
-    standalone: true,
-    imports: [OculrAngularModule, ReactiveFormsModule]
+  standalone: true,
+  imports: [OculrAngularModule, ReactiveFormsModule],
 })
 class TestComponent {
-    seasonsForm = new UntypedFormGroup({
-        favoriteSeason: new UntypedFormControl(''),
-    });
+  seasonsForm = new UntypedFormGroup({
+    favoriteSeason: new UntypedFormControl(''),
+  });
 }
 
 @Component({
-    template: `
+  template: `
     <!-- password, not supported -->
     <label for="password">Password:</label>
     <input oculrChange type="password" id="password" />
   `,
-    standalone: false
+  standalone: true,
 })
-class NotSupportedComponent {
-}
+class NotSupportedComponent {}

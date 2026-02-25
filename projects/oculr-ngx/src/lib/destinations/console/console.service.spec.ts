@@ -1,98 +1,105 @@
-import type { Mock } from "vitest";
 /*
  * @license
  * Copyright (c) 2025 Progressive Casualty Insurance Company. All Rights Reserved.
  *
  * Use of this source code is governed by an MIT license that can be found at
  * https://opensource.progressive.com/resources/license
-*/
+ */
 
-import { fakeAsync, flush } from '@angular/core/testing';
 import { BehaviorSubject } from 'rxjs';
+import type { Mock } from 'vitest';
 import { Destinations } from '../../models/destinations.enum';
 import { ConsoleService } from './console.service';
 
 describe('ConsoleService', () => {
-    let mockZone: any;
-    let mockEventBus: any;
-    let mockConfiguration: any;
+  let mockZone: any;
+  let mockEventBus: any;
+  let mockConfiguration: any;
 
-    let mockEvents: BehaviorSubject<any>;
-    let mockCustomEvents: BehaviorSubject<any>;
-    let mockConfig: BehaviorSubject<any>;
+  let mockEvents: BehaviorSubject<any>;
+  let mockCustomEvents: BehaviorSubject<any>;
+  let mockConfig: BehaviorSubject<any>;
 
-    let service: ConsoleService;
+  let service: ConsoleService;
+
+  beforeEach(() => {
+    mockEvents = new BehaviorSubject<any>(undefined);
+    mockCustomEvents = new BehaviorSubject<any>(undefined);
+    mockConfig = new BehaviorSubject<any>(undefined);
+
+    mockZone = { runOutsideAngular: (func: () => void) => func.apply(this) };
+    mockEventBus = { customEvents$: mockCustomEvents, events$: mockEvents };
+    mockConfiguration = { appConfig$: mockConfig };
+
+    service = new ConsoleService(mockConfiguration, mockEventBus, mockZone);
+  });
+
+  describe('init', () => {
+    let logSpy: Mock;
 
     beforeEach(() => {
-        mockEvents = new BehaviorSubject<any>(undefined);
-        mockCustomEvents = new BehaviorSubject<any>(undefined);
-        mockConfig = new BehaviorSubject<any>(undefined);
-
-        mockZone = { runOutsideAngular: (func: () => void) => func.apply(this) };
-        mockEventBus = { customEvents$: mockCustomEvents, events$: mockEvents };
-        mockConfiguration = { appConfig$: mockConfig };
-
-        service = new ConsoleService(mockConfiguration, mockEventBus, mockZone);
+      logSpy = vi.spyOn(console, 'log');
     });
 
-    describe('init', () => {
-        let logSpy: Mock;
+    it('events should not be logged before a config is set', async () => {
+      vi.useFakeTimers();
+      service.init();
 
-        beforeEach(() => {
-            logSpy = vi.spyOn(console, 'log');
-        });
+      const event = { id: 'id' };
+      mockEvents.next(event);
+      mockCustomEvents.next(event);
+      await vi.runAllTimersAsync();
 
-        it('events should not be logged before a config is set', fakeAsync(() => {
-            service.init();
-
-            const event = { id: 'id' };
-            mockEvents.next(event);
-            mockCustomEvents.next(event);
-            flush();
-
-            expect(logSpy).not.toHaveBeenCalled();
-        }));
-
-        it('events should not be logged when there is no Console destination', fakeAsync(() => {
-            service.init();
-
-            mockConfig.next({ destinations: [{ name: Destinations.HttpApi, sendCustomEvents: false }] });
-            const event = { id: 'id' };
-            mockEvents.next(event);
-            mockCustomEvents.next(event);
-            flush();
-
-            expect(logSpy).not.toHaveBeenCalled();
-        }));
-
-        it('events should be logged to the standard event bus when sendCustomEvents is false', fakeAsync(() => {
-            service.init();
-
-            mockConfig.next({
-                destinations: [{ name: Destinations.Console, sendCustomEvents: false }],
-            });
-            const event = { id: 'event' };
-            const customEvent = { id: 'custom' };
-            mockEvents.next(event);
-            mockCustomEvents.next(customEvent);
-            flush();
-
-            expect(logSpy).toHaveBeenCalledWith(event);
-        }));
-
-        it('events should be logged to the custom event bus when sendCustomEvents is true', fakeAsync(() => {
-            service.init();
-
-            mockConfig.next({
-                destinations: [{ name: Destinations.Console, sendCustomEvents: true }],
-            });
-            const event = { id: 'event' };
-            const customEvent = { id: 'custom' };
-            mockEvents.next(event);
-            mockCustomEvents.next(customEvent);
-            flush();
-
-            expect(logSpy).toHaveBeenCalledWith(customEvent);
-        }));
+      expect(logSpy).not.toHaveBeenCalled();
+      vi.useRealTimers();
     });
+
+    it('events should not be logged when there is no Console destination', async () => {
+      vi.useFakeTimers();
+      service.init();
+
+      mockConfig.next({ destinations: [{ name: Destinations.HttpApi, sendCustomEvents: false }] });
+      const event = { id: 'id' };
+      mockEvents.next(event);
+      mockCustomEvents.next(event);
+      await vi.runAllTimersAsync();
+
+      expect(logSpy).not.toHaveBeenCalled();
+      vi.useRealTimers();
+    });
+
+    it('events should be logged to the standard event bus when sendCustomEvents is false', async () => {
+      vi.useFakeTimers();
+      service.init();
+
+      mockConfig.next({
+        destinations: [{ name: Destinations.Console, sendCustomEvents: false }],
+      });
+      const event = { id: 'event' };
+      const customEvent = { id: 'custom' };
+      mockEvents.next(event);
+      mockCustomEvents.next(customEvent);
+      await vi.runAllTimersAsync();
+
+      expect(logSpy).toHaveBeenCalledWith(event);
+      vi.useRealTimers();
+    });
+
+    it('events should be logged to the custom event bus when sendCustomEvents is true', async () => {
+      vi.useFakeTimers();
+      service.init();
+
+      mockConfig.next({
+        destinations: [{ name: Destinations.Console, sendCustomEvents: true }],
+      });
+      const event = { id: 'event' };
+      const customEvent = { id: 'custom' };
+      mockEvents.next(event);
+      mockCustomEvents.next(customEvent);
+      await vi.runAllTimersAsync();
+
+      expect(logSpy).toHaveBeenCalledWith(customEvent);
+      vi.useRealTimers();
+    });
+  });
 });

@@ -10,8 +10,6 @@
     "watch": "ng build --watch --configuration development",
     "postbuild": "copyfiles LICENSE.md README.md dist/oculr-ngx",
     "test": "ng test",
-    "test:ci": "ng test --configuration production",
-    "test:dev": "ng test --configuration development",
     "lint": "ng lint"
   },
   "dependencies": {
