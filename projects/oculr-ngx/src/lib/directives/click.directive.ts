@@ -23,7 +23,7 @@ export class ClickDirective {
   @Input('oculrClick') directiveEvent: DirectiveEvent | '' = '';
   interactionDetail: InteractionDetail | undefined = undefined;
 
-  @HostListener('click', ['$event'])
+  @HostListener('click')
   onClick(): void {
     const analyticEvent = this.directiveService.getAnalyticEvent(this.directiveEvent);
     this.directiveService.setId(analyticEvent, this.elementRef);
@@ -38,19 +38,19 @@ export class ClickDirective {
     }
   }
 
-  @HostListener('keydown', ['$event'])
+  @HostListener('keydown')
   onKeydown(): void {
     this.interactionDetail = InteractionDetail.keyboard;
   }
 
-  @HostListener('mousedown', ['$event'])
+  @HostListener('mousedown')
   onMousedown(): void {
     if (this.interactionDetail !== InteractionDetail.touch) {
       this.interactionDetail = InteractionDetail.mouse;
     }
   }
 
-  @HostListener('touchstart', ['$event'])
+  @HostListener('touchstart')
   onTouchstart(): void {
     this.interactionDetail = InteractionDetail.touch;
   }

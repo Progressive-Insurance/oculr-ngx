@@ -4,10 +4,9 @@
  *
  * Use of this source code is governed by an MIT license that can be found at
  * https://opensource.progressive.com/resources/license
-*/
+ */
 
 import { HttpContext, HttpErrorResponse, HttpRequest, HttpResponse } from '@angular/common/http';
-import { fakeAsync, flush } from '@angular/core/testing';
 import { BehaviorSubject, of, throwError } from 'rxjs';
 import { ApiEventContext } from '../models/api-event-context.interface';
 import { Destinations } from '../models/destinations.enum';
@@ -32,10 +31,15 @@ describe('Analytics Interceptor', () => {
     mockRequest = new HttpRequest('GET', trackedUrl, {
       context: new HttpContext().set(API_EVENT_CONTEXT, mockEventContext),
     });
-    mockHttpHandler = jasmine.createSpyObj('mockHttpHandler', ['handle']);
-    mockHttpHandler.handle.and.callFake((mockRequest: any) => of(mockRequest));
+    mockHttpHandler = {
+      handle: vi.fn().mockName('mockHttpHandler.handle'),
+    };
+    mockHttpHandler.handle.mockImplementation((mockRequest: any) => of(mockRequest));
 
-    mockEventDispatchService = jasmine.createSpyObj('mockEventDispatchService', ['trackApiStart', 'trackApiComplete']);
+    mockEventDispatchService = {
+      trackApiStart: vi.fn().mockName('mockEventDispatchService.trackApiStart'),
+      trackApiComplete: vi.fn().mockName('mockEventDispatchService.trackApiComplete'),
+    };
     mockTimeService = {
       now: () => 1,
     };
@@ -48,7 +52,8 @@ describe('Analytics Interceptor', () => {
   });
 
   describe('after construction', () => {
-    it('should dequeue any intercepts once a config has been set', fakeAsync(() => {
+    it('should dequeue any intercepts once a config has been set', async () => {
+      vi.useFakeTimers();
       analyticsInterceptor.intercept(mockRequest, mockHttpHandler).subscribe(() => {
         expect(analyticsInterceptor['queuedIntercepts'].length).toEqual(1);
       });
@@ -57,42 +62,50 @@ describe('Analytics Interceptor', () => {
         logHttpTraffic: true,
         destinations: [{ name: Destinations.HttpApi, sendCustomEvents: false, endpoint: destinationUrl }],
       });
-      flush();
 
-      configSubject.subscribe(() => {
-        expect(analyticsInterceptor['queuedIntercepts'].length).toEqual(0);
+      configSubject.subscribe(async () => {
+        await expect(analyticsInterceptor['queuedIntercepts'].length).toEqual(0);
       });
-    }));
+      vi.useRealTimers();
+    });
   });
 
   describe('intercept', () => {
     describe('when HTTP logging is off', () => {
-      it('should just forward the request on', fakeAsync(() => {
+      it('should just forward the request on', async () => {
+        vi.useFakeTimers();
         configSubject.next({
           logHttpTraffic: false,
           destinations: [{ name: Destinations.HttpApi, sendCustomEvents: false, endpoint: destinationUrl }],
         });
         analyticsInterceptor.intercept(mockRequest, mockHttpHandler).subscribe(() => {
-          expect(mockHttpHandler.handle).toHaveBeenCalledOnceWith(mockRequest);
+          expect(mockHttpHandler.handle).toHaveBeenCalledTimes(1);
+          expect(mockHttpHandler.handle).toHaveBeenCalledWith(mockRequest);
         });
-        flush();
-      }));
+        await vi.runAllTimersAsync();
+        vi.useRealTimers();
+      });
     });
 
     describe('when no destinations are defined', () => {
-      it('queues the request to be dispatched later', fakeAsync(() => {
+      it('queues the request to be dispatched later', async () => {
+        vi.useFakeTimers();
         analyticsInterceptor.intercept(mockRequest, mockHttpHandler).subscribe(() => {
           expect(analyticsInterceptor['queuedIntercepts'].length).toEqual(1);
         });
-        flush();
-      }));
+        await vi.runAllTimersAsync();
+        vi.useRealTimers();
+      });
 
-      it('passes the request on', fakeAsync(() => {
+      it('passes the request on', async () => {
+        vi.useFakeTimers();
         analyticsInterceptor.intercept(mockRequest, mockHttpHandler).subscribe(() => {
-          expect(mockHttpHandler.handle).toHaveBeenCalledOnceWith(mockRequest);
+          expect(mockHttpHandler.handle).toHaveBeenCalledTimes(1);
+          expect(mockHttpHandler.handle).toHaveBeenCalledWith(mockRequest);
         });
-        flush();
-      }));
+        await vi.runAllTimersAsync();
+        vi.useRealTimers();
+      });
     });
 
     describe('when a destination is defined', () => {
@@ -110,54 +123,64 @@ describe('Analytics Interceptor', () => {
           });
         });
 
-        it('passes the request on', fakeAsync(() => {
+        it('passes the request on', async () => {
+          vi.useFakeTimers();
           analyticsInterceptor.intercept(mockRequest, mockHttpHandler).subscribe(() => {
             expect(mockHttpHandler.handle).toHaveBeenCalledWith(mockRequest);
           });
-          flush();
-        }));
+          await vi.runAllTimersAsync();
+          vi.useRealTimers();
+        });
 
-        it('does not track the call', fakeAsync(() => {
+        it('does not track the call', async () => {
+          vi.useFakeTimers();
           analyticsInterceptor.intercept(mockRequest, mockHttpHandler).subscribe(() => {
             expect(mockEventDispatchService.trackApiStart).toHaveBeenCalledTimes(0);
           });
-          flush();
-        }));
+          await vi.runAllTimersAsync();
+          vi.useRealTimers();
+        });
       });
 
       describe('when the request url is not excluded', () => {
         describe('when a start model is passed', () => {
-          it('calls trackApiStart with that model', fakeAsync(() => {
+          it('calls trackApiStart with that model', async () => {
+            vi.useFakeTimers();
             analyticsInterceptor.intercept(mockRequest, mockHttpHandler).subscribe(() => {
               expect(mockEventDispatchService.trackApiStart).toHaveBeenCalledWith(mockEventContext.start, mockRequest);
             });
-            flush();
-          }));
+            await vi.runAllTimersAsync();
+            vi.useRealTimers();
+          });
         });
 
         describe('when a start model is not passed', () => {
-          it('calls trackApiStart with an empty model', fakeAsync(() => {
+          it('calls trackApiStart with an empty model', async () => {
+            vi.useFakeTimers();
             mockRequest = new HttpRequest('GET', trackedUrl);
             analyticsInterceptor.intercept(mockRequest, mockHttpHandler).subscribe(() => {
               expect(mockEventDispatchService.trackApiStart).toHaveBeenCalledWith({}, mockRequest);
             });
-            flush();
-          }));
+            await vi.runAllTimersAsync();
+            vi.useRealTimers();
+          });
         });
 
-        it('passes the request on', fakeAsync(() => {
+        it('passes the request on', async () => {
+          vi.useFakeTimers();
           analyticsInterceptor.intercept(mockRequest, mockHttpHandler).subscribe(() => {
             expect(mockHttpHandler.handle).toHaveBeenCalledWith(mockRequest);
           });
-          flush();
-        }));
+          await vi.runAllTimersAsync();
+          vi.useRealTimers();
+        });
 
         describe('when the api completes successfully', () => {
           let mockResponse: any;
 
           beforeEach(() => {
             mockResponse = new HttpResponse({ status: 200 });
-            mockHttpHandler.handle.and.callFake(() => {
+            mockHttpHandler.handle.mockImplementation(() => {
               return of(mockResponse);
             });
           });
@@ -169,7 +192,7 @@ describe('Analytics Interceptor', () => {
                 mockEventContext.success,
                 mockResponse,
                 mockRequest,
-                0
+                0,
               );
             });
           });
@@ -188,7 +211,7 @@ describe('Analytics Interceptor', () => {
 
           beforeEach(() => {
             mockResponse = new HttpErrorResponse({ status: 500 });
-            mockHttpHandler.handle.and.callFake(() => {
+            mockHttpHandler.handle.mockImplementation(() => {
               return throwError(mockResponse);
             });
           });
@@ -202,7 +225,7 @@ describe('Analytics Interceptor', () => {
                 mockEventContext.failure,
                 mockResponse,
                 mockRequest,
-                0
+                0,
               );
             });
           });

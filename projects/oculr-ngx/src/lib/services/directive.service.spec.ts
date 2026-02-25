@@ -4,7 +4,7 @@
  *
  * Use of this source code is governed by an MIT license that can be found at
  * https://opensource.progressive.com/resources/license
-*/
+ */
 
 import { ElementRef } from '@angular/core';
 import { AnalyticEvent } from '../models/analytic-event.interface';
@@ -333,24 +333,28 @@ describe('DirectiveService', () => {
     it('should return false and warn the user when the event id property is not set', () => {
       const directiveName = 'oculr-change';
       const docUrl = 'https://espn.com';
-      spyOn(console, 'warn');
+      vi.spyOn(console, 'warn');
 
       const result = service.shouldDispatch(event, directiveName, docUrl);
 
-      expect(result).toBeFalse();
+      expect(result).toBe(false);
       expect(console.warn).toHaveBeenCalled();
     });
 
     it('should return true when the event id property is set', () => {
       const directiveName = 'oculr-change';
       const docUrl = 'https://espn.com';
-      spyOn(console, 'warn');
+      vi.spyOn(console, 'warn');
       event.id = 'id';
 
       const result = service.shouldDispatch(event, directiveName, docUrl);
 
-      expect(result).toBeTrue();
+      expect(result).toBe(true);
       expect(console.warn).not.toHaveBeenCalled();
+    });
+
+    afterEach(() => {
+      vi.restoreAllMocks();
     });
   });
 });

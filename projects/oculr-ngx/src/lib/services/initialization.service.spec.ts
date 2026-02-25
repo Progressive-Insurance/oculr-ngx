@@ -4,23 +4,29 @@
  *
  * Use of this source code is governed by an MIT license that can be found at
  * https://opensource.progressive.com/resources/license
-*/
+ */
 
-import { fakeAsync, tick } from '@angular/core/testing';
 import { InitializationService } from './initialization.service';
 
 describe('InitializationService', () => {
   let service: InitializationService;
-  const mockConsole = jasmine.createSpyObj('console', ['init']);
-  const mockHttp = jasmine.createSpyObj('http', ['init']);
+  const mockConsole = {
+    init: vi.fn().mockName('console.init'),
+  };
 
-  beforeEach(() => (service = new InitializationService(mockConsole, mockHttp)));
+  const mockHttp = {
+    init: vi.fn().mockName('http.init'),
+  };
 
-  it('should initialize all destination services', fakeAsync(() => {
+  beforeEach(() => (service = new InitializationService(mockConsole as any, mockHttp as any)));
+
+  it('should initialize all destination services', async () => {
+    vi.useFakeTimers();
     service.init().then(() => {
       expect(mockConsole.init).toHaveBeenCalledTimes(1);
       expect(mockHttp.init).toHaveBeenCalledTimes(1);
     });
-    tick();
-  }));
+    await vi.runAllTimersAsync();
+    vi.useRealTimers();
+  });
 });

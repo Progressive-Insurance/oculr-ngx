@@ -25,7 +25,7 @@ export class ChangeDirective implements OnInit {
   interactionDetail: InteractionDetail | undefined = undefined;
   supportedInputTypes = ['checkbox', 'date', 'number', 'radio', 'search', 'text'];
 
-  @HostListener('change', ['$event'])
+  @HostListener('change')
   onChange(): void {
     if (this.successfulInit) {
       const analyticEvent = this.directiveService.getAnalyticEvent(this.directiveEvent);
@@ -44,19 +44,19 @@ export class ChangeDirective implements OnInit {
     }
   }
 
-  @HostListener('keydown', ['$event'])
+  @HostListener('keydown')
   onKeydown(): void {
     this.interactionDetail = InteractionDetail.keyboard;
   }
 
-  @HostListener('mousedown', ['$event'])
+  @HostListener('mousedown')
   onMousedown(): void {
     if (this.interactionDetail !== InteractionDetail.touch) {
       this.interactionDetail = InteractionDetail.mouse;
     }
   }
 
-  @HostListener('touchstart', ['$event'])
+  @HostListener('touchstart')
   onTouchstart(): void {
     this.interactionDetail = InteractionDetail.touch;
   }

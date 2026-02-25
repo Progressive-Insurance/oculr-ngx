@@ -4,12 +4,13 @@
  *
  * Use of this source code is governed by an MIT license that can be found at
  * https://opensource.progressive.com/resources/license
-*/
+ */
 
 import { Component } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { UntypedFormControl, UntypedFormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { ReactiveFormsModule, UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms';
 import { DirectiveEvent } from '../models/directive-event.interface';
+import { OculrAngularModule } from '../oculr-ngx.module';
 import { DirectiveService } from '../services/directive.service';
 import { DispatchService } from '../services/dispatch.service';
 import { TrackValidationDirective } from './track-validation.directive';
@@ -28,12 +29,12 @@ describe('TrackValidationDirective', () => {
 
   beforeEach(() => {
     mockDispatchService = {
-      trackValidationError: jasmine.createSpy('trackValidationError'),
+      trackValidationError: vi.fn(),
     };
 
     TestBed.configureTestingModule({
-      imports: [ReactiveFormsModule],
-      declarations: [TestComponent, TrackValidationDirective],
+      imports: [ReactiveFormsModule, TestComponent],
+      declarations: [TrackValidationDirective],
       providers: [{ provide: DispatchService, useValue: mockDispatchService }, DirectiveService],
     });
     fixture = TestBed.createComponent(TestComponent);
@@ -43,7 +44,9 @@ describe('TrackValidationDirective', () => {
   it('allows a pre-built DirectiveEvent and dispatches a validation error event', () => {
     touchControl('first-name', fixture);
 
-    expect(mockDispatchService.trackValidationError).toHaveBeenCalledOnceWith({
+    expect(mockDispatchService.trackValidationError).toHaveBeenCalledTimes(1);
+
+    expect(mockDispatchService.trackValidationError).toHaveBeenCalledWith({
       id: 'validation-error',
       element: 'firstName',
       validationErrors: { required: true },
@@ -53,7 +56,9 @@ describe('TrackValidationDirective', () => {
   it('allows an inline object and dispatches a validation error event', () => {
     touchControl('last-name', fixture);
 
-    expect(mockDispatchService.trackValidationError).toHaveBeenCalledOnceWith({
+    expect(mockDispatchService.trackValidationError).toHaveBeenCalledTimes(1);
+
+    expect(mockDispatchService.trackValidationError).toHaveBeenCalledWith({
       id: 'last-name',
       element: 'lastName',
       validationErrors: { required: true },
@@ -63,7 +68,9 @@ describe('TrackValidationDirective', () => {
   it('allows for no input to be specified', () => {
     touchControl('address', fixture);
 
-    expect(mockDispatchService.trackValidationError).toHaveBeenCalledOnceWith({
+    expect(mockDispatchService.trackValidationError).toHaveBeenCalledTimes(1);
+
+    expect(mockDispatchService.trackValidationError).toHaveBeenCalledWith({
       element: 'address',
       validationErrors: { required: true },
     });
@@ -85,7 +92,7 @@ describe('TrackValidationDirective', () => {
 });
 
 @Component({
-    template: `
+  template: `
     <form [formGroup]="testForm">
       <input id="first-name" type="text" formControlName="firstName" [oculrTrackValidation]="validationEventInput" />
       <input id="last-name" type="text" formControlName="lastName" [oculrTrackValidation]="{ id: 'last-name' }" />
@@ -93,7 +100,8 @@ describe('TrackValidationDirective', () => {
       <input id="nickname" type="text" formControlName="nickname" oculrTrackValidation />
     </form>
   `,
-    standalone: false
+  standalone: true,
+  imports: [OculrAngularModule, ReactiveFormsModule],
 })
 class TestComponent {
   testForm = new UntypedFormGroup({
