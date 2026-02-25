@@ -1,3 +1,4 @@
+import type { Mock } from "vitest";
 /*
  * @license
  * Copyright (c) 2025 Progressive Casualty Insurance Company. All Rights Reserved.
@@ -12,86 +13,86 @@ import { Destinations } from '../../models/destinations.enum';
 import { ConsoleService } from './console.service';
 
 describe('ConsoleService', () => {
-  let mockZone: any;
-  let mockEventBus: any;
-  let mockConfiguration: any;
+    let mockZone: any;
+    let mockEventBus: any;
+    let mockConfiguration: any;
 
-  let mockEvents: BehaviorSubject<any>;
-  let mockCustomEvents: BehaviorSubject<any>;
-  let mockConfig: BehaviorSubject<any>;
+    let mockEvents: BehaviorSubject<any>;
+    let mockCustomEvents: BehaviorSubject<any>;
+    let mockConfig: BehaviorSubject<any>;
 
-  let service: ConsoleService;
-
-  beforeEach(() => {
-    mockEvents = new BehaviorSubject<any>(undefined);
-    mockCustomEvents = new BehaviorSubject<any>(undefined);
-    mockConfig = new BehaviorSubject<any>(undefined);
-
-    mockZone = { runOutsideAngular: (func: () => void) => func.apply(this) };
-    mockEventBus = { customEvents$: mockCustomEvents, events$: mockEvents };
-    mockConfiguration = { appConfig$: mockConfig };
-
-    service = new ConsoleService(mockConfiguration, mockEventBus, mockZone);
-  });
-
-  describe('init', () => {
-    let logSpy: jasmine.Spy;
+    let service: ConsoleService;
 
     beforeEach(() => {
-      logSpy = spyOn(console, 'log');
+        mockEvents = new BehaviorSubject<any>(undefined);
+        mockCustomEvents = new BehaviorSubject<any>(undefined);
+        mockConfig = new BehaviorSubject<any>(undefined);
+
+        mockZone = { runOutsideAngular: (func: () => void) => func.apply(this) };
+        mockEventBus = { customEvents$: mockCustomEvents, events$: mockEvents };
+        mockConfiguration = { appConfig$: mockConfig };
+
+        service = new ConsoleService(mockConfiguration, mockEventBus, mockZone);
     });
 
-    it('events should not be logged before a config is set', fakeAsync(() => {
-      service.init();
+    describe('init', () => {
+        let logSpy: Mock;
 
-      const event = { id: 'id' };
-      mockEvents.next(event);
-      mockCustomEvents.next(event);
-      flush();
+        beforeEach(() => {
+            logSpy = vi.spyOn(console, 'log');
+        });
 
-      expect(logSpy).not.toHaveBeenCalled();
-    }));
+        it('events should not be logged before a config is set', fakeAsync(() => {
+            service.init();
 
-    it('events should not be logged when there is no Console destination', fakeAsync(() => {
-      service.init();
+            const event = { id: 'id' };
+            mockEvents.next(event);
+            mockCustomEvents.next(event);
+            flush();
 
-      mockConfig.next({ destinations: [{ name: Destinations.HttpApi, sendCustomEvents: false }] });
-      const event = { id: 'id' };
-      mockEvents.next(event);
-      mockCustomEvents.next(event);
-      flush();
+            expect(logSpy).not.toHaveBeenCalled();
+        }));
 
-      expect(logSpy).not.toHaveBeenCalled();
-    }));
+        it('events should not be logged when there is no Console destination', fakeAsync(() => {
+            service.init();
 
-    it('events should be logged to the standard event bus when sendCustomEvents is false', fakeAsync(() => {
-      service.init();
+            mockConfig.next({ destinations: [{ name: Destinations.HttpApi, sendCustomEvents: false }] });
+            const event = { id: 'id' };
+            mockEvents.next(event);
+            mockCustomEvents.next(event);
+            flush();
 
-      mockConfig.next({
-        destinations: [{ name: Destinations.Console, sendCustomEvents: false }],
-      });
-      const event = { id: 'event' };
-      const customEvent = { id: 'custom' };
-      mockEvents.next(event);
-      mockCustomEvents.next(customEvent);
-      flush();
+            expect(logSpy).not.toHaveBeenCalled();
+        }));
 
-      expect(logSpy).toHaveBeenCalledWith(event);
-    }));
+        it('events should be logged to the standard event bus when sendCustomEvents is false', fakeAsync(() => {
+            service.init();
 
-    it('events should be logged to the custom event bus when sendCustomEvents is true', fakeAsync(() => {
-      service.init();
+            mockConfig.next({
+                destinations: [{ name: Destinations.Console, sendCustomEvents: false }],
+            });
+            const event = { id: 'event' };
+            const customEvent = { id: 'custom' };
+            mockEvents.next(event);
+            mockCustomEvents.next(customEvent);
+            flush();
 
-      mockConfig.next({
-        destinations: [{ name: Destinations.Console, sendCustomEvents: true }],
-      });
-      const event = { id: 'event' };
-      const customEvent = { id: 'custom' };
-      mockEvents.next(event);
-      mockCustomEvents.next(customEvent);
-      flush();
+            expect(logSpy).toHaveBeenCalledWith(event);
+        }));
 
-      expect(logSpy).toHaveBeenCalledWith(customEvent);
-    }));
-  });
+        it('events should be logged to the custom event bus when sendCustomEvents is true', fakeAsync(() => {
+            service.init();
+
+            mockConfig.next({
+                destinations: [{ name: Destinations.Console, sendCustomEvents: true }],
+            });
+            const event = { id: 'event' };
+            const customEvent = { id: 'custom' };
+            mockEvents.next(event);
+            mockCustomEvents.next(customEvent);
+            flush();
+
+            expect(logSpy).toHaveBeenCalledWith(customEvent);
+        }));
+    });
 });

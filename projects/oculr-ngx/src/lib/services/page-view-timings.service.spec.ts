@@ -1,11 +1,11 @@
-/* 
+/*
  * @license
  * Copyright (c) 2025 Progressive Casualty Insurance Company. All Rights Reserved.
  *
  * Use of this source code is governed by an MIT license that can be found at
  * https://opensource.progressive.com/resources/license
-*/ 
- 
+*/
+
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { ApplicationRef, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
@@ -25,74 +25,60 @@ let mockAppRef: ApplicationRef;
 let mockRouterEventsSubject$: ReplaySubject<NavigationStart | NavigationEnd>;
 
 describe('PageViewTimingsService', () => {
-  beforeEach(async () => {
-    mockContext = { test: 'test ' };
-    mockIsStableSubject$ = new BehaviorSubject(false);
-    mockAppRef = {
-      isStable: mockIsStableSubject$.asObservable(),
-    } as unknown as ApplicationRef;
-    mockRouterEventsSubject$ = new ReplaySubject<
-      NavigationStart | NavigationEnd
-    >(1);
-    mockRouter = {
-      events: mockRouterEventsSubject$.asObservable(),
-    } as unknown as Router;
-    mockDispatchService = {
-      trackPageView: jasmine.createSpy(
-        'mockDispatchService.trackPageView',
-      ),
-    } as unknown as DispatchService;
-    service = new PageViewTimingsService(
-      mockAppRef,
-      mockRouter,
-      mockDispatchService,
-    );
-    await TestBed.configureTestingModule({
-      providers: [{ provide: Router, useValue: mockRouter }],
-      schemas: [CUSTOM_ELEMENTS_SCHEMA],
-    }).compileComponents();
-  });
-
-  describe('when application navigate event triggers', () => {
-    describe('if page view is initialized', () => {
-      beforeEach(() => {
-        spyOn(Date, 'now').and.returnValue(1500);
-      });
-
-      it('should receive NavigationStart event', (done) => {
-        // Set up a spy to verify that the event was received
-        const navigationStartSpy = jasmine.createSpy('navigationStartSpy');
-
-        // Subscribe to NavigationStart events
-        mockRouter.events
-          .pipe(filter((event: Event) => event instanceof NavigationStart))
-          .subscribe((event) => {
-            navigationStartSpy(event);
-            expect(navigationStartSpy).toHaveBeenCalledWith(jasmine.any(NavigationStart));
-            done(); // Signal test completion
-          });
-
-        // Emit the NavigationStart event
-        mockRouterEventsSubject$.next(new NavigationStart(1, '/login'));
-      });
-
-      it('should call receive NavigateEnd event', () => {
-        mockRouterEventsSubject$.next(new NavigationEnd(2, '/login', ''));
-
-        const routeEnd$ = mockRouter.events.pipe(
-          filter((event: Event) => event instanceof NavigationEnd),
-        );
-
-        const appStable$ = mockAppRef.isStable.pipe(
-          debounceTime(200),
-          filter((stable: boolean) => stable),
-        );
-
-        routeEnd$.pipe(switchMap(() => appStable$)).subscribe(() => {
-          expect(mockDispatchService.trackPageView).toHaveBeenCalledWith({
-          });
-        });
-      });
+    beforeEach(async () => {
+        mockContext = { test: 'test ' };
+        mockIsStableSubject$ = new BehaviorSubject(false);
+        mockAppRef = {
+            isStable: mockIsStableSubject$.asObservable(),
+        } as unknown as ApplicationRef;
+        mockRouterEventsSubject$ = new ReplaySubject<NavigationStart | NavigationEnd>(1);
+        mockRouter = {
+            events: mockRouterEventsSubject$.asObservable(),
+        } as unknown as Router;
+        mockDispatchService = {
+            trackPageView: vi.fn(),
+        } as unknown as DispatchService;
+        service = new PageViewTimingsService(mockAppRef, mockRouter, mockDispatchService);
+        await TestBed.configureTestingModule({
+            providers: [{ provide: Router, useValue: mockRouter }],
+            schemas: [CUSTOM_ELEMENTS_SCHEMA],
+        }).compileComponents();
     });
-  });
+
+    describe('when application navigate event triggers', () => {
+        describe('if page view is initialized', () => {
+            beforeEach(() => {
+                vi.spyOn(Date, 'now').mockReturnValue(1500);
+            });
+
+            it('should receive NavigationStart event', async () => {
+                // Set up a spy to verify that the event was received
+                const navigationStartSpy = vi.fn();
+
+                // Subscribe to NavigationStart events
+                mockRouter.events
+                    .pipe(filter((event: Event) => event instanceof NavigationStart))
+                    .subscribe((event) => {
+                    navigationStartSpy(event);
+                    expect(navigationStartSpy).toHaveBeenCalledWith(expect.any(NavigationStart));
+                    ;
+                });
+
+                // Emit the NavigationStart event
+                mockRouterEventsSubject$.next(new NavigationStart(1, '/login'));
+            });
+
+            it('should call receive NavigateEnd event', () => {
+                mockRouterEventsSubject$.next(new NavigationEnd(2, '/login', ''));
+
+                const routeEnd$ = mockRouter.events.pipe(filter((event: Event) => event instanceof NavigationEnd));
+
+                const appStable$ = mockAppRef.isStable.pipe(debounceTime(200), filter((stable: boolean) => stable));
+
+                routeEnd$.pipe(switchMap(() => appStable$)).subscribe(() => {
+                    expect(mockDispatchService.trackPageView).toHaveBeenCalledWith({});
+                });
+            });
+        });
+    });
 });

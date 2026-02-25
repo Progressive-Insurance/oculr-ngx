@@ -10,17 +10,22 @@ import { fakeAsync, tick } from '@angular/core/testing';
 import { InitializationService } from './initialization.service';
 
 describe('InitializationService', () => {
-  let service: InitializationService;
-  const mockConsole = jasmine.createSpyObj('console', ['init']);
-  const mockHttp = jasmine.createSpyObj('http', ['init']);
+    let service: InitializationService;
+    const mockConsole = {
+        init: vi.fn().mockName("console.init"),
+    };
+    
+    const mockHttp = {
+        init: vi.fn().mockName("http.init")
+    };
 
-  beforeEach(() => (service = new InitializationService(mockConsole, mockHttp)));
+    beforeEach(() => (service = new InitializationService(mockConsole as any, mockHttp as any)));
 
-  it('should initialize all destination services', fakeAsync(() => {
-    service.init().then(() => {
-      expect(mockConsole.init).toHaveBeenCalledTimes(1);
-      expect(mockHttp.init).toHaveBeenCalledTimes(1);
-    });
-    tick();
-  }));
+    it('should initialize all destination services', fakeAsync(() => {
+        service.init().then(() => {
+            expect(mockConsole.init).toHaveBeenCalledTimes(1);
+            expect(mockHttp.init).toHaveBeenCalledTimes(1);
+        });
+        tick();
+    }));
 });

@@ -13,75 +13,82 @@ import { DirectiveEvent } from '../models/directive-event.interface';
 import { DirectiveService } from '../services/directive.service';
 import { DispatchService } from '../services/dispatch.service';
 import { TrackValidationDirective } from './track-validation.directive';
+import { OculrAngularModule } from 'dist/oculr-ngx/types/oculr-ngx';
 
 function touchControl(id: string, fixture: ComponentFixture<TestComponent>): void {
-  const input = fixture.nativeElement.querySelector(`#${id}`);
-  input.dispatchEvent(new Event('focus'));
-  input.dispatchEvent(new Event('blur'));
-  input.dispatchEvent(new Event('focusout'));
-  fixture.detectChanges();
+    const input = fixture.nativeElement.querySelector(`#${id}`);
+    input.dispatchEvent(new Event('focus'));
+    input.dispatchEvent(new Event('blur'));
+    input.dispatchEvent(new Event('focusout'));
+    fixture.detectChanges();
 }
 
 describe('TrackValidationDirective', () => {
-  let fixture: ComponentFixture<TestComponent>;
-  let mockDispatchService: any;
+    let fixture: ComponentFixture<TestComponent>;
+    let mockDispatchService: any;
 
-  beforeEach(() => {
-    mockDispatchService = {
-      trackValidationError: jasmine.createSpy('trackValidationError'),
-    };
+    beforeEach(() => {
+        mockDispatchService = {
+            trackValidationError: vi.fn(),
+        };
 
-    TestBed.configureTestingModule({
-      imports: [ReactiveFormsModule],
-      declarations: [TestComponent, TrackValidationDirective],
-      providers: [{ provide: DispatchService, useValue: mockDispatchService }, DirectiveService],
+        TestBed.configureTestingModule({
+            imports: [ReactiveFormsModule],
+            declarations: [TestComponent, TrackValidationDirective],
+            providers: [{ provide: DispatchService, useValue: mockDispatchService }, DirectiveService],
+        });
+        fixture = TestBed.createComponent(TestComponent);
+        fixture.detectChanges();
     });
-    fixture = TestBed.createComponent(TestComponent);
-    fixture.detectChanges();
-  });
 
-  it('allows a pre-built DirectiveEvent and dispatches a validation error event', () => {
-    touchControl('first-name', fixture);
+    it('allows a pre-built DirectiveEvent and dispatches a validation error event', () => {
+        touchControl('first-name', fixture);
 
-    expect(mockDispatchService.trackValidationError).toHaveBeenCalledOnceWith({
-      id: 'validation-error',
-      element: 'firstName',
-      validationErrors: { required: true },
+        expect(mockDispatchService.trackValidationError).toHaveBeenCalledTimes(1);
+
+        expect(mockDispatchService.trackValidationError).toHaveBeenCalledWith({
+            id: 'validation-error',
+            element: 'firstName',
+            validationErrors: { required: true },
+        });
     });
-  });
 
-  it('allows an inline object and dispatches a validation error event', () => {
-    touchControl('last-name', fixture);
+    it('allows an inline object and dispatches a validation error event', () => {
+        touchControl('last-name', fixture);
 
-    expect(mockDispatchService.trackValidationError).toHaveBeenCalledOnceWith({
-      id: 'last-name',
-      element: 'lastName',
-      validationErrors: { required: true },
+        expect(mockDispatchService.trackValidationError).toHaveBeenCalledTimes(1);
+
+        expect(mockDispatchService.trackValidationError).toHaveBeenCalledWith({
+            id: 'last-name',
+            element: 'lastName',
+            validationErrors: { required: true },
+        });
     });
-  });
 
-  it('allows for no input to be specified', () => {
-    touchControl('address', fixture);
+    it('allows for no input to be specified', () => {
+        touchControl('address', fixture);
 
-    expect(mockDispatchService.trackValidationError).toHaveBeenCalledOnceWith({
-      element: 'address',
-      validationErrors: { required: true },
+        expect(mockDispatchService.trackValidationError).toHaveBeenCalledTimes(1);
+
+        expect(mockDispatchService.trackValidationError).toHaveBeenCalledWith({
+            element: 'address',
+            validationErrors: { required: true },
+        });
     });
-  });
 
-  it('will not fire if a control has not been touched yet', () => {
-    const input = fixture.nativeElement.querySelector(`#address`);
-    input.dispatchEvent(new Event('focus'));
-    fixture.detectChanges();
+    it('will not fire if a control has not been touched yet', () => {
+        const input = fixture.nativeElement.querySelector(`#address`);
+        input.dispatchEvent(new Event('focus'));
+        fixture.detectChanges();
 
-    expect(mockDispatchService.trackValidationError).not.toHaveBeenCalled();
-  });
+        expect(mockDispatchService.trackValidationError).not.toHaveBeenCalled();
+    });
 
-  it('will not fire if there are no validation errors on the control', () => {
-    touchControl('nickname', fixture);
+    it('will not fire if there are no validation errors on the control', () => {
+        touchControl('nickname', fixture);
 
-    expect(mockDispatchService.trackValidationError).not.toHaveBeenCalled();
-  });
+        expect(mockDispatchService.trackValidationError).not.toHaveBeenCalled();
+    });
 });
 
 @Component({
@@ -93,14 +100,15 @@ describe('TrackValidationDirective', () => {
       <input id="nickname" type="text" formControlName="nickname" oculrTrackValidation />
     </form>
   `,
-    standalone: false
+    standalone: true,
+    imports: [OculrAngularModule, ReactiveFormsModule]
 })
 class TestComponent {
-  testForm = new UntypedFormGroup({
-    firstName: new UntypedFormControl('', Validators.required),
-    lastName: new UntypedFormControl('', Validators.required),
-    address: new UntypedFormControl('', Validators.required),
-    nickname: new UntypedFormControl(''),
-  });
-  validationEventInput: DirectiveEvent = { id: 'validation-error' };
+    testForm = new UntypedFormGroup({
+        firstName: new UntypedFormControl('', Validators.required),
+        lastName: new UntypedFormControl('', Validators.required),
+        address: new UntypedFormControl('', Validators.required),
+        nickname: new UntypedFormControl(''),
+    });
+    validationEventInput: DirectiveEvent = { id: 'validation-error' };
 }
