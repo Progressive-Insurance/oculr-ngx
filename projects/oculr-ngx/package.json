@@ -1,7 +1,7 @@
 {
   "name": "oculr-ngx",
-  "description": "An analytics library that makes collecting data in an Angular app simple.",
-  "version": "8.0.0",
+  "description": "Deprecated: oculr-ngx will be archived on October 1, 2026. Angular analytics library.",
+  "version": "8.0.1",
   "author": "Progressive Insurance",
   "license": "MIT",
   "keywords": [

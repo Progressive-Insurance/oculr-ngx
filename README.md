@@ -1,5 +1,7 @@
 # oculr-ngx
 
+> **Warning:** oculr-ngx is scheduled to be archived on October 1, 2026. No new features, dependency updates, or support are planned after that date. Existing and prospective consumers should review the [archival notice](docs/archival-notice.md) before adopting or upgrading this package.
+
 An analytics library that makes collecting data in an Angular app simple.
 
 ![build workflow](https://github.com/progressive-insurance/oculr-ngx/actions/workflows/build.yml/badge.svg) ![publish workflow](https://github.com/progressive-insurance/oculr-ngx/actions/workflows/publish.yml/badge.svg)

@@ -8,7 +8,7 @@
     "start": "ng serve",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
-    "postbuild": "copyfiles LICENSE.md README.md dist/oculr-ngx",
+    "postbuild": "copyfiles LICENSE.md README.md docs/archival-notice.md dist/oculr-ngx",
     "test": "ng test",
     "lint": "ng lint"
   },
