@@ -1,5 +1,7 @@
 # Contributing to Oculr
 
+> **Warning:** oculr-ngx is scheduled to be archived on October 1, 2026. Maintainers anticipate to review only critical security fixes, critical bug fixes, and archive-related documentation updates before that date. New features, large refactors, and routine dependency updates are unlikely to be completed. See the [archival notice](./docs/archival-notice.md) for details.
+
 We warmly welcome any community contributions to this repository. As a contributor here are some helpful guidelines.
 
 ## Code of Conduct

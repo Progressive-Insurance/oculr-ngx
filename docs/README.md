@@ -1,5 +1,7 @@
 [API](./README.md)
 
+> **Warning:** oculr-ngx is scheduled to be archived on October 1, 2026. No new features, dependency updates, or support are planned after that date. Existing and prospective consumers should review the [archival notice](./archival-notice.md) before adopting or upgrading this package.
+
 # API list
 
 ## Initialization and configuration
