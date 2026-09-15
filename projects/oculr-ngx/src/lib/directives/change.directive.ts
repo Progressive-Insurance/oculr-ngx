@@ -23,7 +23,7 @@ export class ChangeDirective implements OnInit {
   @Input() sensitiveData = false;
   successfulInit = true;
   interactionDetail: InteractionDetail | undefined = undefined;
-  supportedInputTypes = ['checkbox', 'date', 'number', 'radio', 'search', 'text'];
+  supportedInputTypes = ['checkbox', 'date', 'email', 'month', 'number', 'radio', 'search', 'tel', 'text', 'time', 'url', 'week'];
 
   @HostListener('change')
   onChange(): void {
@@ -89,7 +89,11 @@ export class ChangeDirective implements OnInit {
       case 'select':
         element = this.elementRef.nativeElement as HTMLSelectElement;
         analyticEvent.value = element.value;
-        analyticEvent.displayValue = element.options[element.selectedIndex].text;
+        // selectedIndex is -1 when nothing is selected (and is always -1 for
+        // <select multiple>), where options[-1] is undefined and .text would
+        // throw. Fall back to an empty display value in that case.
+        analyticEvent.displayValue =
+          element.selectedIndex >= 0 ? element.options[element.selectedIndex].text : '';
         break;
       case 'textarea':
         element = this.elementRef.nativeElement as HTMLTextAreaElement;
@@ -108,9 +112,15 @@ export class ChangeDirective implements OnInit {
         analyticEvent.displayValue = this.directiveService.getLabel(this.elementRef);
         break;
       case 'date':
+      case 'email':
+      case 'month':
       case 'number':
       case 'search':
+      case 'tel':
       case 'text':
+      case 'time':
+      case 'url':
+      case 'week':
         analyticEvent.value = element.value;
         break;
       case 'radio':

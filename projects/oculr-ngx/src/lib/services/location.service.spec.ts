@@ -57,6 +57,35 @@ describe('LocationService', () => {
             const result = locationService.getLocation();
             expect(result).toEqual(expected);
         });
+
+        it('substitutes actual param values for :param segments in the route', () => {
+            // Regression: the route was built from routeConfig.path, so a
+            // parameterized route like /user/:id was reported with the literal
+            // template instead of the actual values from the paramMap.
+            const snapshot: any = {
+                routeConfig: { path: 'user/:id' },
+                paramMap: convertToParamMap({ id: '123' }),
+                queryParamMap: convertToParamMap({}),
+                firstChild: null,
+            };
+            const result = locationService.getLocation(snapshot);
+            expect(result.path).toEqual('/user/123');
+            expect(result.virtualPageName).toEqual('/user/123');
+            expect(result.url).toEqual('https://example.org/user/123');
+        });
+    });
+
+    describe('constructor hostName derivation', () => {
+        it('ignores a hash fragment when deriving the host name', () => {
+            // Regression: the host name was derived by subtracting the angular
+            // route length from the href, which is corrupted by a hash fragment.
+            const service = new LocationService(
+                mockLocation,
+                { location: { href: 'https://example.org/home#tab' } } as any,
+                mockRouter,
+            );
+            expect(service['hostName']).toEqual('https://example.org');
+        });
     });
 
     describe('getCurrentRoute', () => {

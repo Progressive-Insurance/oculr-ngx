@@ -14,9 +14,7 @@ import { createAnalyticEvent } from '../models/create-analytic-event';
 import { AnalyticEventType } from '../models/analytic-event-type.enum';
 import { AnalyticEvent } from '../models/analytic-event.interface';
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable()
 export class PageViewTimingsService {
   constructor(
     appRef: ApplicationRef,
