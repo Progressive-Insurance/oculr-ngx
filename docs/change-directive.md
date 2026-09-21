@@ -150,6 +150,8 @@ The following table describes what is not captured when `sensitivedata` is set t
 | `select`                | The text content of any `option` element. </br> The `value` attribute of any `option` element.           |
 | `textarea`              | The `value` attribute of the `textarea` element.                                                         |
 
+Because the linked label of a checkbox or radio input commonly identifies the selected answer, the directive does not capture that label text when `sensitiveData` is set to `true`. To include a safe question label in the event, explicitly set the `label` property on the `DirectiveEvent` object. Any explicitly supplied metadata remains the application's responsibility to keep safe.
+
 ### Control differences
 
 The `oculrChange` directive captures similar data for each control type. The exception for this is linked label elements. For select elements the label is the question being asked to the user, while for radio and checkbox inputs the label is often the answer to the question. The following examples show the differnces.

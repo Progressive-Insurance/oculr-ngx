@@ -17,7 +17,7 @@ import { ConfigurationService } from '../services/configuration.service';
 import { DispatchService } from '../services/dispatch.service';
 import { TimeService } from '../services/time.service';
 
-export const API_EVENT_CONTEXT = new HttpContextToken(() => {
+export const API_EVENT_CONTEXT = new HttpContextToken<ApiEventContext>(() => {
   return { start: {}, success: {}, failure: {} };
 });
 
@@ -31,6 +31,9 @@ interface QueuedIntercept {
 @Injectable()
 export class AnalyticsInterceptor implements HttpInterceptor {
   private queuedIntercepts: QueuedIntercept[] = [];
+  private isConfigured = false;
+  private resolvedConfig?: AppConfiguration;
+  private excludedUrls: string[] = [];
 
   constructor(
     private dispatchService: DispatchService,
@@ -42,8 +45,11 @@ export class AnalyticsInterceptor implements HttpInterceptor {
         filter((config: AppConfiguration) => !!config.destinations),
         take(1),
         tap((config: AppConfiguration) => {
-          const excludedUrls = config.destinations?.map((dest) => dest.endpoint || '') || [];
-          this.dequeueIntercepts(config, excludedUrls);
+          this.resolvedConfig = config;
+          this.excludedUrls = config.destinations?.map((dest) => dest.endpoint || '') || [];
+          // Record readiness before draining: dispatch can synchronously produce more events.
+          this.isConfigured = true;
+          this.dequeueIntercepts();
         })
       )
       .subscribe();
@@ -98,7 +104,7 @@ export class AnalyticsInterceptor implements HttpInterceptor {
     const requestStartTime = this.timeService.now();
     const { start, success, failure } = request.context.get<ApiEventContext>(API_EVENT_CONTEXT);
 
-    this.queuedIntercepts.push({ context: start, request });
+    this.deliverIntercept({ context: start, request });
 
     return next.handle(request).pipe(
       tap(
@@ -107,7 +113,7 @@ export class AnalyticsInterceptor implements HttpInterceptor {
             const requestEndTime = this.timeService.now();
             const duration = Math.round(requestEndTime - requestStartTime);
 
-            this.queuedIntercepts.push({
+            this.deliverIntercept({
               context: success,
               request,
               response: event,
@@ -120,7 +126,7 @@ export class AnalyticsInterceptor implements HttpInterceptor {
             const requestEndTime = this.timeService.now();
             const duration = Math.round(requestEndTime - requestStartTime);
 
-            this.queuedIntercepts.push({
+            this.deliverIntercept({
               context: failure,
               request,
               response: error,
@@ -132,26 +138,34 @@ export class AnalyticsInterceptor implements HttpInterceptor {
     );
   }
 
-  private dequeueIntercepts(config: AppConfiguration, excludedUrls: string[]): void {
-    if (!config.logHttpTraffic) {
-      this.queuedIntercepts = [];
+  private deliverIntercept(intercept: QueuedIntercept): void {
+    if (!this.isConfigured) {
+      this.queuedIntercepts.push(intercept);
       return;
     }
 
+    if (!this.resolvedConfig?.logHttpTraffic || !this.isUrlIncluded(intercept.request, this.excludedUrls)) {
+      return;
+    }
+
+    if (intercept.response) {
+      this.dispatchService.trackApiComplete(
+        intercept.context,
+        intercept.response,
+        intercept.request,
+        intercept.duration || 0
+      );
+    } else {
+      this.dispatchService.trackApiStart(intercept.context, intercept.request);
+    }
+  }
+
+  private dequeueIntercepts(): void {
     while (this.queuedIntercepts.length > 0) {
       const intercept = this.queuedIntercepts.shift();
 
-      if (intercept && this.isUrlIncluded(intercept?.request, excludedUrls)) {
-        if (intercept.response) {
-          this.dispatchService.trackApiComplete(
-            intercept.context,
-            intercept.response,
-            intercept.request,
-            intercept.duration || 0
-          );
-        } else {
-          this.dispatchService.trackApiStart(intercept.context, intercept.request);
-        }
+      if (intercept) {
+        this.deliverIntercept(intercept);
       }
     }
   }

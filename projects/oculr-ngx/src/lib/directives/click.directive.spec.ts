@@ -134,6 +134,119 @@ describe('ClickDirective', () => {
     expect(warnSpy).toHaveBeenCalled();
     vi.useRealTimers();
   });
+
+  describe('interaction attribution sequences', () => {
+    it('attributes a touch gesture followed by a separate mouse gesture correctly on the same element', async () => {
+      vi.useFakeTimers();
+      const button = fixture.nativeElement.querySelector('#testId');
+      button.dispatchEvent(new Event('touchstart'));
+      button.dispatchEvent(new Event('mousedown'));
+      button.click();
+      await vi.runAllTimersAsync();
+      button.dispatchEvent(new Event('mousedown'));
+      button.click();
+      await vi.runAllTimersAsync();
+      expect(mockDispatchService.trackClick).toHaveBeenCalledTimes(2);
+      expect(mockDispatchService.trackClick).toHaveBeenNthCalledWith(
+        1,
+        expect.objectContaining({ id: 'testId', interactionDetail: InteractionDetail.touch })
+      );
+      expect(mockDispatchService.trackClick).toHaveBeenNthCalledWith(
+        2,
+        expect.objectContaining({ id: 'testId', interactionDetail: InteractionDetail.mouse })
+      );
+      vi.useRealTimers();
+    });
+
+    it('retains correct attribution across keyboard-to-mouse and mouse-to-keyboard sequences', async () => {
+      vi.useFakeTimers();
+      const button = fixture.nativeElement.querySelector('#testId');
+      button.dispatchEvent(new Event('keydown'));
+      button.click();
+      await vi.runAllTimersAsync();
+      button.dispatchEvent(new Event('mousedown'));
+      button.click();
+      await vi.runAllTimersAsync();
+      button.dispatchEvent(new Event('keydown'));
+      button.click();
+      await vi.runAllTimersAsync();
+      expect(mockDispatchService.trackClick).toHaveBeenCalledTimes(3);
+      expect(mockDispatchService.trackClick).toHaveBeenNthCalledWith(
+        1,
+        expect.objectContaining({ interactionDetail: InteractionDetail.keyboard })
+      );
+      expect(mockDispatchService.trackClick).toHaveBeenNthCalledWith(
+        2,
+        expect.objectContaining({ interactionDetail: InteractionDetail.mouse })
+      );
+      expect(mockDispatchService.trackClick).toHaveBeenNthCalledWith(
+        3,
+        expect.objectContaining({ interactionDetail: InteractionDetail.keyboard })
+      );
+      vi.useRealTimers();
+    });
+
+    it('retains touch attribution across repeated touch gestures', async () => {
+      vi.useFakeTimers();
+      const button = fixture.nativeElement.querySelector('#testId');
+      for (let i = 0; i < 2; i++) {
+        button.dispatchEvent(new Event('touchstart'));
+        button.dispatchEvent(new Event('mousedown'));
+        button.click();
+        await vi.runAllTimersAsync();
+      }
+      expect(mockDispatchService.trackClick).toHaveBeenCalledTimes(2);
+      expect(mockDispatchService.trackClick).toHaveBeenNthCalledWith(
+        1,
+        expect.objectContaining({ interactionDetail: InteractionDetail.touch })
+      );
+      expect(mockDispatchService.trackClick).toHaveBeenNthCalledWith(
+        2,
+        expect.objectContaining({ interactionDetail: InteractionDetail.touch })
+      );
+      vi.useRealTimers();
+    });
+
+    it('does not inherit a completed gesture detail for a terminal event with no initiating event', async () => {
+      vi.useFakeTimers();
+      const button = fixture.nativeElement.querySelector('#testId');
+      button.dispatchEvent(new Event('touchstart'));
+      button.dispatchEvent(new Event('mousedown'));
+      button.click();
+      await vi.runAllTimersAsync();
+      button.click();
+      await vi.runAllTimersAsync();
+      expect(mockDispatchService.trackClick).toHaveBeenCalledTimes(2);
+      expect(mockDispatchService.trackClick).toHaveBeenNthCalledWith(
+        1,
+        expect.objectContaining({ interactionDetail: InteractionDetail.touch })
+      );
+      expect(mockDispatchService.trackClick.mock.calls[1][0].interactionDetail).toBeUndefined();
+      vi.useRealTimers();
+    });
+
+    it('resets attribution after a rejected event so the next gesture is classified independently', async () => {
+      vi.useFakeTimers();
+      const warnSpy = vi.spyOn(console, 'warn');
+      const button = fixture.nativeElement.querySelector('.someClass');
+      button.dispatchEvent(new Event('touchstart'));
+      button.dispatchEvent(new Event('mousedown'));
+      button.click();
+      await vi.runAllTimersAsync();
+      expect(mockDispatchService.trackClick).toHaveBeenCalledTimes(0);
+      expect(warnSpy).toHaveBeenCalled();
+      button.setAttribute('id', 'lateId');
+      button.dispatchEvent(new Event('mousedown'));
+      button.click();
+      await vi.runAllTimersAsync();
+      expect(mockDispatchService.trackClick).toHaveBeenCalledTimes(1);
+      expect(mockDispatchService.trackClick).toHaveBeenCalledWith(
+        expect.objectContaining({ id: 'lateId', interactionDetail: InteractionDetail.mouse })
+      );
+      warnSpy.mockRestore();
+      vi.useRealTimers();
+    });
+  });
 });
 
 @Component({

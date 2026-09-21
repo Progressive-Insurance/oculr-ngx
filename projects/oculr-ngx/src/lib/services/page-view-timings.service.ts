@@ -6,9 +6,18 @@
  * https://opensource.progressive.com/resources/license
 */ 
  
-import { ApplicationRef, Injectable } from '@angular/core';
-import { Event, NavigationEnd, NavigationStart, Router } from '@angular/router';
+import { ApplicationRef, Injectable, OnDestroy } from '@angular/core';
+import {
+  Event,
+  NavigationCancel,
+  NavigationEnd,
+  NavigationError,
+  NavigationSkipped,
+  NavigationStart,
+  Router,
+} from '@angular/router';
 import { debounceTime, filter, take } from 'rxjs';
+import { Subscription } from 'rxjs';
 import { DispatchService } from './dispatch.service';
 import { createAnalyticEvent } from '../models/create-analytic-event';
 import { AnalyticEventType } from '../models/analytic-event-type.enum';
@@ -17,38 +26,99 @@ import { AnalyticEvent } from '../models/analytic-event.interface';
 @Injectable({
   providedIn: 'root'
 })
-export class PageViewTimingsService {
+export class PageViewTimingsService implements OnDestroy {
+  // The navigation currently being measured, correlated by its router id.
+  private pendingNavigationId: number | null = null;
+  private pendingStartTime: number | null = null;
+  // Explicitly managed stability wait so a superseded measurement can be
+  // cancelled on a new NavigationStart (not only on the next NavigationEnd).
+  private stabilitySubscription: Subscription | null = null;
+  private routerSubscription: Subscription;
+
   constructor(
-    appRef: ApplicationRef,
+    private appRef: ApplicationRef,
     private router: Router,
     private dispatchService: DispatchService,
   ) {
-    // if multiple navigation event instances can run at once may need to keep map with route as key and time as value
-    // should not be possible per https://github.com/angular/angular/commit/b7baf632c0161692f15d13f718329ab54a0f938a
-    let startTime: number = 0;
-    const routeEnd$ = this.router.events.pipe(
-      filter((event: Event) => event instanceof NavigationEnd),
-    );
-    const appStable$ = appRef.isStable.pipe(
-      debounceTime(200),
-      filter((stable: boolean) => stable),
-    );
-    this.router.events
-      .pipe(filter((event: Event) => event instanceof NavigationStart))
-      .subscribe(() => {
-        startTime = Date.now();
-      });
+    this.routerSubscription = this.router.events.subscribe((event: Event) => {
+      if (event instanceof NavigationStart) {
+        this.onNavigationStart(event);
+      } else if (event instanceof NavigationEnd) {
+        this.onNavigationEnd(event);
+      } else if (
+        event instanceof NavigationCancel ||
+        event instanceof NavigationError ||
+        event instanceof NavigationSkipped
+      ) {
+        this.onNavigationFailed(event.id);
+      }
+    });
+  }
 
-    routeEnd$
+  ngOnDestroy(): void {
+    this.routerSubscription.unsubscribe();
+    this.cancelStabilityWait();
+    this.pendingNavigationId = null;
+    this.pendingStartTime = null;
+  }
+
+  // A newer navigation supersedes any pending measurement: cancel the active
+  // stability wait and start a fresh measurement for the new navigation.
+  private onNavigationStart(event: NavigationStart): void {
+    this.cancelStabilityWait();
+    this.pendingNavigationId = event.id;
+    this.pendingStartTime = Date.now();
+  }
+
+  // Only measure a navigation whose start we observed (matched by id). An
+  // unmatched end has no captured start time and emits nothing.
+  private onNavigationEnd(event: NavigationEnd): void {
+    if (event.id !== this.pendingNavigationId || this.pendingStartTime === null) {
+      return;
+    }
+    this.beginStabilityWait();
+  }
+
+  // Terminal failure for the pending navigation: drop the measurement.
+  private onNavigationFailed(navigationId: number): void {
+    if (navigationId === this.pendingNavigationId) {
+      this.cancelStabilityWait();
+      this.pendingNavigationId = null;
+      this.pendingStartTime = null;
+    }
+  }
+
+  // Wait until the application has been stable for the debounce interval, then
+  // dispatch the measured duration. The wait is cancellable and one-shot.
+  private beginStabilityWait(): void {
+    this.cancelStabilityWait();
+    const startTime = this.pendingStartTime;
+    this.stabilitySubscription = this.appRef.isStable
+      .pipe(
+        debounceTime(200),
+        filter((stable: boolean) => stable),
+        take(1),
+      )
       .subscribe(() => {
-        appStable$.pipe(take(1)).subscribe(() => {
+        this.stabilitySubscription = null;
+        this.pendingNavigationId = null;
+        this.pendingStartTime = null;
+        if (startTime !== null) {
           this.dispatchAnalyticsForPageViewTimings(
             'Page View Timings',
             Date.now() - startTime,
           );
-        });
+        }
       });
   }
+
+  private cancelStabilityWait(): void {
+    if (this.stabilitySubscription) {
+      this.stabilitySubscription.unsubscribe();
+      this.stabilitySubscription = null;
+    }
+  }
+
   private dispatchAnalyticsForPageViewTimings(
     label: string,
     duration: number,

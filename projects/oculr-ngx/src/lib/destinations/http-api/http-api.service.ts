@@ -9,12 +9,24 @@
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Injectable, NgZone } from '@angular/core';
 import { asapScheduler, EMPTY, Observable, throwError, timer } from 'rxjs';
-import { catchError, filter, ignoreElements, map, mergeMap, retryWhen, switchMap, tap } from 'rxjs/operators';
+import {
+  catchError,
+  distinctUntilChanged,
+  filter,
+  ignoreElements,
+  map,
+  mergeMap,
+  retryWhen,
+  switchMap,
+  tap,
+} from 'rxjs/operators';
 import { AppConfiguration } from '../../models/app-configuration.interface';
 import { DestinationConfig } from '../../models/destination-config.interface';
 import { Destinations } from '../../models/destinations.enum';
 import { AnalyticsEventBusService } from '../../services/analytics-event-bus.service';
 import { ConfigurationService } from '../../services/configuration.service';
+
+type SubscriptionMode = 'disabled' | 'standard' | 'custom';
 
 @Injectable()
 export class HttpApiService {
@@ -31,10 +43,17 @@ export class HttpApiService {
     this.configuration.appConfig$
       .pipe(
         filter((config: AppConfiguration) => !!config),
-        map((config: AppConfiguration) => config.destinations?.find((dest) => dest.name === Destinations.HttpApi)),
-        filter((config?: DestinationConfig) => this.loadAndValidateConfig(config)),
-        switchMap(() => {
-          const eventPipe = this.config?.sendCustomEvents ? this.eventBus.customEvents$ : this.eventBus.events$;
+        tap((config: AppConfiguration) => {
+          const destination = config.destinations?.find((dest) => dest.name === Destinations.HttpApi);
+          this.loadAndValidateConfig(destination);
+        }),
+        map((config: AppConfiguration) => this.deriveMode(config)),
+        distinctUntilChanged(),
+        switchMap((mode: SubscriptionMode) => {
+          if (mode === 'disabled') {
+            return EMPTY;
+          }
+          const eventPipe = mode === 'custom' ? this.eventBus.customEvents$ : this.eventBus.events$;
           return eventPipe.pipe(
             filter((event: unknown) => !!event),
             tap((event: unknown) => this.zone.runOutsideAngular(() => this.log(event))),
@@ -45,8 +64,21 @@ export class HttpApiService {
       .subscribe();
   }
 
+  private deriveMode(config: AppConfiguration): SubscriptionMode {
+    const destination = config.destinations?.find((dest) => dest.name === Destinations.HttpApi);
+    // this.config is set by loadAndValidateConfig (run in the tap above) only when the
+    // destination config is valid, so an invalid config yields the disabled mode.
+    if (!destination || !this.config) {
+      return 'disabled';
+    }
+    return destination.sendCustomEvents ? 'custom' : 'standard';
+  }
+
   log(event: unknown): void {
-    const { method, endpoint, headers } = this.config as DestinationConfig;
+    if (!this.config) {
+      return;
+    }
+    const { method, endpoint, headers } = this.config;
 
     if (method && endpoint) {
       this.http
@@ -87,15 +119,18 @@ export class HttpApiService {
     if (config) {
       if (!config.endpoint) {
         console.warn('An endpoint is required to send events to this destination');
+        this.config = undefined;
         return false;
       }
       if (!config.method) {
         console.warn('An HTTP method is required to send events to this destination');
+        this.config = undefined;
         return false;
       }
       this.config = config;
       return true;
     }
+    this.config = undefined;
     return false;
   }
 }

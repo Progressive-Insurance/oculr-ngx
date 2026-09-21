@@ -1,0 +1,200 @@
+{
+  "schema_version": 1,
+  "baseline_commit": "c82a646455583e96cebf497276d8706d139e3eeb",
+  "audit_date": "2026-09-17",
+  "execution_mode": "sequential_cumulative",
+  "status": "plan_only_no_fixes_applied",
+  "prerequisite_semantics": "Accepted earlier work to retain, including overlapping regression coverage; not all are strict code dependencies.",
+  "instructions_file": "README.md",
+  "tasks": [
+    {
+      "id": "01",
+      "file": "tasks/01-restore-lint-gate.md",
+      "title": "Restore the lint gate",
+      "difficulty": "small",
+      "kind": "verification_gap",
+      "prerequisites": []
+    },
+    {
+      "id": "02",
+      "file": "tasks/02-sensitive-control-labels.md",
+      "title": "Suppress sensitive answer labels",
+      "difficulty": "small",
+      "kind": "runtime_bug",
+      "prerequisites": [
+        "01"
+      ]
+    },
+    {
+      "id": "03",
+      "file": "tasks/03-empty-select.md",
+      "title": "Handle an empty select",
+      "difficulty": "small",
+      "kind": "runtime_bug",
+      "prerequisites": [
+        "01"
+      ]
+    },
+    {
+      "id": "04",
+      "file": "tasks/04-normalized-input-types.md",
+      "title": "Normalize input types and isolate host tests",
+      "difficulty": "medium",
+      "kind": "runtime_and_test_bug",
+      "prerequisites": [
+        "01",
+        "02",
+        "03"
+      ]
+    },
+    {
+      "id": "05",
+      "file": "tasks/05-unfocused-duration.md",
+      "title": "Correct unfocused durations",
+      "difficulty": "small",
+      "kind": "runtime_bug",
+      "prerequisites": [
+        "01"
+      ]
+    },
+    {
+      "id": "06",
+      "file": "tasks/06-repeated-query-parameters.md",
+      "title": "Preserve repeated query values",
+      "difficulty": "small",
+      "kind": "runtime_bug",
+      "prerequisites": [
+        "01"
+      ]
+    },
+    {
+      "id": "07",
+      "file": "tasks/07-current-performance-configuration.md",
+      "title": "Read current performance configuration",
+      "difficulty": "medium",
+      "kind": "runtime_bug",
+      "prerequisites": [
+        "01",
+        "05"
+      ]
+    },
+    {
+      "id": "08",
+      "file": "tasks/08-interaction-attribution.md",
+      "title": "Reset completed gesture attribution",
+      "difficulty": "medium",
+      "kind": "runtime_bug",
+      "prerequisites": [
+        "01",
+        "04"
+      ]
+    },
+    {
+      "id": "09",
+      "file": "tasks/09-startup-http-completions.md",
+      "title": "Preserve startup HTTP completions",
+      "difficulty": "large",
+      "kind": "runtime_bug",
+      "prerequisites": [
+        "01"
+      ]
+    },
+    {
+      "id": "10",
+      "file": "tasks/10-disable-destinations.md",
+      "title": "Stop disabled destination delivery",
+      "difficulty": "medium_to_large",
+      "kind": "runtime_bug",
+      "prerequisites": [
+        "01"
+      ]
+    },
+    {
+      "id": "11",
+      "file": "tasks/11-destination-replay.md",
+      "title": "Avoid duplicate delivery on configuration updates",
+      "difficulty": "large",
+      "kind": "runtime_bug",
+      "prerequisites": [
+        "01",
+        "10"
+      ]
+    },
+    {
+      "id": "12",
+      "file": "tasks/12-focus-listener-lifecycle.md",
+      "title": "Manage performance focus listeners",
+      "difficulty": "medium",
+      "kind": "runtime_bug",
+      "prerequisites": [
+        "01",
+        "05",
+        "07"
+      ]
+    },
+    {
+      "id": "13",
+      "file": "tasks/13-navigation-timing-lifecycle.md",
+      "title": "Correlate and cancel navigation measurements",
+      "difficulty": "large",
+      "kind": "runtime_and_test_bug",
+      "prerequisites": [
+        "01"
+      ]
+    },
+    {
+      "id": "14",
+      "file": "tasks/14-declare-package-peers.md",
+      "title": "Declare distributed package peers",
+      "difficulty": "small_to_medium",
+      "kind": "package_bug",
+      "prerequisites": [
+        "01"
+      ]
+    },
+    {
+      "id": "15",
+      "file": "tasks/15-retry-regression-tests.md",
+      "title": "Replace skipped retry coverage",
+      "difficulty": "medium",
+      "kind": "verification_gap",
+      "prerequisites": [
+        "01",
+        "10",
+        "11"
+      ]
+    },
+    {
+      "id": "16",
+      "file": "tasks/16-location-base-url.md",
+      "title": "Derive location prefixes safely",
+      "difficulty": "large",
+      "kind": "runtime_bug",
+      "prerequisites": [
+        "01",
+        "06"
+      ]
+    },
+    {
+      "id": "17",
+      "file": "tasks/17-api-context-type.md",
+      "title": "Correct public HTTP context token type",
+      "difficulty": "small",
+      "kind": "type_api_bug",
+      "prerequisites": [
+        "01",
+        "09"
+      ]
+    },
+    {
+      "id": "18",
+      "file": "tasks/18-async-validation-events.md",
+      "title": "Observe validation settling after blur",
+      "difficulty": "large",
+      "kind": "runtime_bug",
+      "prerequisites": [
+        "01"
+      ]
+    }
+  ]
+}

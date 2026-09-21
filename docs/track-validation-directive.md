@@ -49,6 +49,30 @@ export class FormComponent implements OnInit {
 }
 ```
 
+## Asynchronous validation
+
+The directive reports validation errors regardless of whether they are produced by
+synchronous or asynchronous validators. When the control loses focus while an
+asynchronous validation is still pending, the directive keeps a short-lived observation on
+the control's status until that validation settles:
+
+- If the settled result is invalid, exactly one event is dispatched with the final
+  validation errors and any `DirectiveEvent` overrides.
+- If the validation settles as valid, or the control is disabled, no event is dispatched
+  and the observation ends.
+- Repeated blurs while the same validation stays pending do not multiply the number of
+  events for the single settling result.
+- The observation also ends when the directive is destroyed; a validator that completes
+  afterwards emits nothing.
+
+### Blur semantics for a pending validation
+
+If the user returns focus to the control, or changes its value, before the pending
+validation settles, the outstanding report for the earlier blur is **canceled**. This is a
+deliberate, conservative choice: because the editing session is active again, the earlier
+blur is not reported. The next blur starts a fresh observation that tracks its own
+validation result.
+
 ## Feedback
 
 Is something not working or unclear? Please create an [issue](https://github.com/progressive-insurance/oculr-ngx/issues/new/choose) or [PR](https://github.com/progressive-insurance/oculr-ngx/blob/main/CONTRIBUTING.md).

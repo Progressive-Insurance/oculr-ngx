@@ -18,9 +18,7 @@ export class LocationService {
   private hostName: string;
 
   constructor(private routerLocation: Location, private window: Window, private router: Router) {
-    this.hostName = Location.stripTrailingSlash(
-      this.window.location.href.substring(0, this.window.location.href.length - this.routerLocation.path(true).length)
-    );
+    this.hostName = this.getHostName();
   }
 
   getLocation(rootSnapshot: ActivatedRouteSnapshot = this.router.routerState.root.snapshot): EventLocation {
@@ -35,6 +33,20 @@ export class LocationService {
       queryString,
       virtualPageName,
     };
+  }
+
+  /**
+   * Derives the prefix of the external URL up to the Angular route (protocol, hostname, and the
+   * deployment slot) by resolving the location strategy's external root against the browser URL.
+   * The normalized route text is not a literal suffix of the raw href (Angular strips the base
+   * path and terminal index document, and hash routes live after a delimiter), so the prefix is
+   * computed through the strategy's URL preparation instead; only the root's own trailing route
+   * boundary is removed, keeping any slash that belongs to the document path.
+   */
+  private getHostName(): string {
+    const externalRoot = this.routerLocation.prepareExternalUrl('/');
+    const resolved = new URL(externalRoot, this.window.location.href).href;
+    return resolved.endsWith('/') ? resolved.slice(0, -1) : resolved;
   }
 
   private getCurrentRoute(rootSnapshot: ActivatedRouteSnapshot): ParameterizedRoute {
@@ -74,7 +86,9 @@ export class LocationService {
       return '';
     }
     queryParamMap.keys.forEach(function (key) {
-      httpParams = httpParams.append(key, queryParamMap.get(key) || '');
+      (queryParamMap.getAll(key) || []).forEach(function (value) {
+        httpParams = httpParams.append(key, value);
+      });
     });
 
     return httpParams.toString() ? '?' + httpParams.toString() : '';

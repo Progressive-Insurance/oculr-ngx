@@ -10,7 +10,8 @@
     "watch": "ng build --watch --configuration development",
     "postbuild": "copyfiles LICENSE.md README.md docs/archival-notice.md dist/oculr-ngx",
     "test": "ng test",
-    "lint": "ng lint"
+    "lint": "ng lint",
+    "typecheck:consumer": "tsc -p typecheck/tsconfig.json"
   },
   "dependencies": {
     "@angular/animations": "^21.1.5",
