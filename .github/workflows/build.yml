@@ -27,9 +27,10 @@ jobs:
           node-version: ${{ matrix.node-version }}
           cache: 'npm'
 
-      - name: Build and test
+      - name: Lint, build and test
         run: |
           npm ci
           npm run clean
+          npm run lint
           npm run build
-          npm run test
+          npm run test -- --watch=false

@@ -38,13 +38,33 @@ describe('DirectiveService', () => {
       expect(result).toEqual('radio');
     });
 
-    it('should return an empty string when no type attribute is set', () => {
+    it('should return the effective native type when no type attribute is set', () => {
       const nativeElement: HTMLInputElement = document.createElement('input');
       const element: ElementRef<HTMLInputElement> = new ElementRef<HTMLInputElement>(nativeElement);
 
       const result = service.getInputType(element);
 
-      expect(result).toEqual('');
+      expect(result).toEqual('text');
+    });
+
+    it('should return the normalized type for an uppercase type attribute', () => {
+      const nativeElement: HTMLInputElement = document.createElement('input');
+      nativeElement.setAttribute('type', 'RADIO');
+      const element: ElementRef<HTMLInputElement> = new ElementRef<HTMLInputElement>(nativeElement);
+
+      const result = service.getInputType(element);
+
+      expect(result).toEqual('radio');
+    });
+
+    it('should return the effective native type for a browser-invalid type attribute', () => {
+      const nativeElement: HTMLInputElement = document.createElement('input');
+      nativeElement.setAttribute('type', 'bogus');
+      const element: ElementRef<HTMLInputElement> = new ElementRef<HTMLInputElement>(nativeElement);
+
+      const result = service.getInputType(element);
+
+      expect(result).toEqual('text');
     });
   });
 

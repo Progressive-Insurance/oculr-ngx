@@ -27,20 +27,26 @@ export class ChangeDirective implements OnInit {
 
   @HostListener('change')
   onChange(): void {
-    if (this.successfulInit) {
-      const analyticEvent = this.directiveService.getAnalyticEvent(this.directiveEvent);
-      this.directiveService.setId(analyticEvent, this.elementRef);
-      if (this.shouldDispatch(analyticEvent)) {
-        this.setInteractionType(analyticEvent);
-        this.setInteractionDetail(analyticEvent);
-        this.directiveService.setElement(analyticEvent, this.elementRef);
-        this.directiveService.setInputType(analyticEvent, this.elementRef);
-        this.directiveService.setLabel(analyticEvent, this.elementRef);
-        if (!this.sensitiveData) {
-          this.setValue(analyticEvent);
+    try {
+      if (this.successfulInit) {
+        const analyticEvent = this.directiveService.getAnalyticEvent(this.directiveEvent);
+        this.directiveService.setId(analyticEvent, this.elementRef);
+        if (this.shouldDispatch(analyticEvent)) {
+          this.setInteractionType(analyticEvent);
+          this.setInteractionDetail(analyticEvent);
+          this.directiveService.setElement(analyticEvent, this.elementRef);
+          this.directiveService.setInputType(analyticEvent, this.elementRef);
+          if (!this.isSensitiveAnswerControl()) {
+            this.directiveService.setLabel(analyticEvent, this.elementRef);
+          }
+          if (!this.sensitiveData) {
+            this.setValue(analyticEvent);
+          }
+          this.handleEvent(analyticEvent);
         }
-        this.handleEvent(analyticEvent);
       }
+    } finally {
+      this.resetInteractionDetail();
     }
   }
 
@@ -71,12 +77,26 @@ export class ChangeDirective implements OnInit {
     this.checkHost();
   }
 
+  private isSensitiveAnswerControl(): boolean {
+    return (
+      this.sensitiveData &&
+      this.directiveService.getElementName(this.elementRef) === 'input' &&
+      ['checkbox', 'radio'].includes(
+        this.directiveService.getInputType(this.elementRef as ElementRef<HTMLInputElement>)
+      )
+    );
+  }
+
   private setInteractionType(analyticEvent: AnalyticEvent): void {
     analyticEvent.interactionType = InteractionType.change;
   }
 
   private setInteractionDetail(analyticEvent: AnalyticEvent): void {
     analyticEvent.interactionDetail = this.interactionDetail;
+  }
+
+  private resetInteractionDetail(): void {
+    this.interactionDetail = undefined;
   }
 
   private setValue(analyticEvent: AnalyticEvent): void {
@@ -87,12 +107,17 @@ export class ChangeDirective implements OnInit {
         this.setInputValue(analyticEvent);
         break;
       case 'select':
-        element = this.elementRef.nativeElement as HTMLSelectElement;
-        analyticEvent.value = element.value;
-        analyticEvent.displayValue = element.options[element.selectedIndex].text;
+        if (this.elementRef.nativeElement instanceof HTMLSelectElement) {
+          element = this.elementRef.nativeElement;
+          analyticEvent.value = element.value;
+          const selectedOption = element.options[element.selectedIndex];
+          if (selectedOption) {
+            analyticEvent.displayValue = selectedOption.text;
+          }
+        }
         break;
       case 'textarea':
-        element = this.elementRef.nativeElement as HTMLTextAreaElement;
+        element = this.elementRef.nativeElement;
         analyticEvent.value = element.value;
         break;
       default:
@@ -128,13 +153,12 @@ export class ChangeDirective implements OnInit {
 
   private checkHost(): void {
     const elementName = this.directiveService.getElementName(this.elementRef);
-    if (
-      elementName !== 'select' &&
-      elementName !== 'textarea' &&
-      !this.supportedInputTypes.includes(
+    const isSupportedInput =
+      elementName === 'input' &&
+      this.supportedInputTypes.includes(
         this.directiveService.getInputType(this.elementRef as ElementRef<HTMLInputElement>)
-      )
-    ) {
+      );
+    if (elementName !== 'select' && elementName !== 'textarea' && !isSupportedInput) {
       this.successfulInit = false;
       console.warn(`
 The oculrChange directive only works with select, textarea, or input elements of the following types.

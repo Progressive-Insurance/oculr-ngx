@@ -7,12 +7,14 @@
 */
 
 import { Injectable, NgZone } from '@angular/core';
-import { filter, ignoreElements, map, switchMap, tap } from 'rxjs/operators';
+import { EMPTY } from 'rxjs';
+import { distinctUntilChanged, filter, ignoreElements, map, switchMap, tap } from 'rxjs/operators';
 import { AppConfiguration } from '../../models/app-configuration.interface';
-import { DestinationConfig } from '../../models/destination-config.interface';
 import { Destinations } from '../../models/destinations.enum';
 import { AnalyticsEventBusService } from '../../services/analytics-event-bus.service';
 import { ConfigurationService } from '../../services/configuration.service';
+
+type SubscriptionMode = 'disabled' | 'standard' | 'custom';
 
 @Injectable()
 export class ConsoleService {
@@ -26,10 +28,13 @@ export class ConsoleService {
     this.configuration.appConfig$
       .pipe(
         filter((config: AppConfiguration) => !!config),
-        map((config: AppConfiguration) => config.destinations?.find((dest) => dest.name === Destinations.Console)),
-        filter((config: DestinationConfig | undefined): config is DestinationConfig => !!config),
-        switchMap((config: DestinationConfig) => {
-          const eventPipe = config?.sendCustomEvents ? this.eventBus.customEvents$ : this.eventBus.events$;
+        map((config: AppConfiguration) => this.deriveMode(config)),
+        distinctUntilChanged(),
+        switchMap((mode: SubscriptionMode) => {
+          if (mode === 'disabled') {
+            return EMPTY;
+          }
+          const eventPipe = mode === 'custom' ? this.eventBus.customEvents$ : this.eventBus.events$;
           return eventPipe.pipe(
             filter((event: unknown) => !!event),
             tap((event: unknown) => this.zone.runOutsideAngular(() => this.log(event))),
@@ -38,6 +43,14 @@ export class ConsoleService {
         })
       )
       .subscribe();
+  }
+
+  private deriveMode(config: AppConfiguration): SubscriptionMode {
+    const destination = config.destinations?.find((dest) => dest.name === Destinations.Console);
+    if (!destination) {
+      return 'disabled';
+    }
+    return destination.sendCustomEvents ? 'custom' : 'standard';
   }
 
   private log(event: unknown): void {

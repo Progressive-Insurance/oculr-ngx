@@ -31,7 +31,8 @@
         ],
         "@typescript-eslint/no-explicit-any": "off",
         "@typescript-eslint/unbound-method": "off",
-        "@angular-eslint/prefer-standalone": "off"
+        "@angular-eslint/prefer-standalone": "off",
+        "@angular-eslint/prefer-inject": "off"
       }
     },
     {

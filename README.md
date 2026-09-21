@@ -39,6 +39,8 @@ Install Oculr.
 npm install oculr-ngx --save
 ```
 
+Oculr declares its framework requirements as peer dependencies: `@angular/common`, `@angular/core`, `@angular/forms`, and `@angular/router` (each `^21.0.0`) plus `rxjs` (`^7.5.6`). Your application must install compatible versions of these packages itself; they are not bundled with `oculr-ngx`.
+
 Import Oculr to your app's Angular `AppModule`.
 
 ```typescript
@@ -119,6 +121,10 @@ cd oculr-ngx
 npm install
 npm run test
 ```
+
+The project enforces a lint gate (`npm run lint`) alongside the build and test suites. Constructor parameter injection remains the project convention, so the `@angular-eslint/prefer-inject` rule is disabled in `.eslintrc.json`.
+
+After `npm run build`, `npm run typecheck:consumer` type-checks the documented fixture in `typecheck/` against the generated public declarations of the built package, verifying the published `API_EVENT_CONTEXT` type contract.
 
 We recommend the following extensions to make the contribution process as seamless as possible.
 

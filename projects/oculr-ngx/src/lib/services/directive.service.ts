@@ -17,7 +17,7 @@ export class DirectiveService {
   }
 
   getInputType(elementRef: ElementRef<HTMLInputElement>): string {
-    return elementRef.nativeElement.getAttribute('type') || '';
+    return elementRef.nativeElement.type;
   }
 
   getLabel(elementRef: ElementRef<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>): string {

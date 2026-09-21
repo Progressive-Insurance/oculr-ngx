@@ -92,6 +92,19 @@ describe('FocusDirective', () => {
     vi.useRealTimers();
   });
 
+  it('reports the normalized type for an input with an uppercase type attribute', async () => {
+    vi.useFakeTimers();
+    expectedEvent.id = 'upperFocus';
+    expectedEvent.inputType = 'text';
+    expectedEvent.label = 'Uppercase type:';
+    const input = fixture.nativeElement.querySelector('#upperFocus');
+    input.dispatchEvent(new Event('focus'));
+    await vi.runAllTimersAsync();
+    expect(mockDispatchService.trackFocus).toHaveBeenCalledTimes(1);
+    expect(mockDispatchService.trackFocus).toHaveBeenCalledWith(expectedEvent);
+    vi.useRealTimers();
+  });
+
   it('elements that are not inputs do not include input type', async () => {
     vi.useFakeTimers();
     expectedEvent.id = 'continue';
@@ -125,6 +138,9 @@ describe('FocusDirective', () => {
 
     <label for="phone">Enter your phone number:</label>
     <input [oculrFocus]="{ id: 'personalPhone' }" type="tel" id="phone" />
+
+    <label for="upperFocus">Uppercase type:</label>
+    <input oculrFocus type="TEXT" id="upperFocus" />
 
     <input oculrFocus type="email" class="email" />
 

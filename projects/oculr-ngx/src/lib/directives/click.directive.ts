@@ -25,16 +25,20 @@ export class ClickDirective {
 
   @HostListener('click')
   onClick(): void {
-    const analyticEvent = this.directiveService.getAnalyticEvent(this.directiveEvent);
-    this.directiveService.setId(analyticEvent, this.elementRef);
-    if (this.shouldDispatch(analyticEvent)) {
-      this.setInteractionType(analyticEvent);
-      this.setInteractionDetail(analyticEvent);
-      this.directiveService.setElement(analyticEvent, this.elementRef);
-      this.directiveService.setLabel(analyticEvent, this.elementRef);
-      this.setActivatedRoute(analyticEvent);
-      this.setHostUrl(analyticEvent);
-      this.handleEvent(analyticEvent);
+    try {
+      const analyticEvent = this.directiveService.getAnalyticEvent(this.directiveEvent);
+      this.directiveService.setId(analyticEvent, this.elementRef);
+      if (this.shouldDispatch(analyticEvent)) {
+        this.setInteractionType(analyticEvent);
+        this.setInteractionDetail(analyticEvent);
+        this.directiveService.setElement(analyticEvent, this.elementRef);
+        this.directiveService.setLabel(analyticEvent, this.elementRef);
+        this.setActivatedRoute(analyticEvent);
+        this.setHostUrl(analyticEvent);
+        this.handleEvent(analyticEvent);
+      }
+    } finally {
+      this.resetInteractionDetail();
     }
   }
 
@@ -68,6 +72,10 @@ export class ClickDirective {
 
   private setInteractionDetail(analyticEvent: AnalyticEvent): void {
     analyticEvent.interactionDetail = this.interactionDetail;
+  }
+
+  private resetInteractionDetail(): void {
+    this.interactionDetail = undefined;
   }
 
   private setActivatedRoute(analyticEvent: AnalyticEvent): void {
