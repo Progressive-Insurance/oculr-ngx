@@ -331,6 +331,22 @@ describe('ChangeDirective', () => {
       await expect(mockDispatchService.trackChange).toHaveBeenCalledWith(expectedEvent);
       vi.useRealTimers();
     });
+
+    it('dispatches a change event for a multi-select with no selection without throwing', async () => {
+      // Regression: a <select multiple> (or an unselected select) has
+      // selectedIndex === -1, so options[selectedIndex].text previously threw a
+      // TypeError. It now falls back to an empty display value.
+      vi.useFakeTimers();
+      const select = fixture.nativeElement.querySelector('#multiSelect') as HTMLSelectElement;
+      select.dispatchEvent(new Event('mousedown'));
+      select.dispatchEvent(new Event('change'));
+      await vi.runAllTimersAsync();
+      await expect(mockDispatchService.trackChange).toHaveBeenCalledTimes(1);
+      const dispatched = mockDispatchService.trackChange.mock.calls[0][0] as AnalyticEvent;
+      expect(dispatched.id).toEqual('multiSelect');
+      expect(dispatched.displayValue).toEqual('');
+      vi.useRealTimers();
+    });
   });
 
   describe('textarea', () => {
@@ -442,6 +458,11 @@ describe('ChangeDirective', () => {
       <option value="pizza">Pizza</option>
       <option value="tacos">Tacos</option>
       <option value="ramen">Ramen</option>
+    </select>
+
+    <select oculrChange id="multiSelect" multiple>
+      <option value="a">A</option>
+      <option value="b">B</option>
     </select>
 
     <!-- textarea -->

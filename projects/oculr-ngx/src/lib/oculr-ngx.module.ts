@@ -7,7 +7,7 @@
 */
 
 import { CommonModule } from '@angular/common';
-import { HTTP_INTERCEPTORS, provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { HTTP_INTERCEPTORS } from '@angular/common/http';
 import { ModuleWithProviders, NgModule, inject, provideAppInitializer } from '@angular/core';
 import { ConsoleService } from './destinations/console/console.service';
 import { HttpApiService } from './destinations/http-api/http-api.service';
@@ -24,6 +24,8 @@ import { DispatchService } from './services/dispatch.service';
 import { EventDispatchService } from './services/event-dispatch.service';
 import { InitializationService } from './services/initialization.service';
 import { LocationService } from './services/location.service';
+import { PageLoadPerformanceService } from './services/page-load-performance.service';
+import { PageViewTimingsService } from './services/page-view-timings.service';
 import { TimeService } from './services/time.service';
 
 @NgModule({
@@ -42,7 +44,6 @@ import { TimeService } from './services/time.service';
     TrackValidationDirective
   ],
   imports: [CommonModule],
-  providers: [provideHttpClient(withInterceptorsFromDi())]
 })
 export class OculrAngularModule {
   static forRoot(): ModuleWithProviders<OculrAngularModule> {
@@ -68,6 +69,8 @@ export class OculrAngularModule {
         ConsoleService,
         HttpApiService,
         InitializationService,
+        PageLoadPerformanceService,
+        PageViewTimingsService,
         provideAppInitializer(() => {
         const initializerFn = (initializeLibrary)(inject(InitializationService));
         return initializerFn();

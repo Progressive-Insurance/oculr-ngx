@@ -8,7 +8,7 @@
 
 import { Component } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { ActivatedRoute, RouterOutlet } from '@angular/router';
+import { ActivatedRoute, RouterLink, RouterOutlet } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { AnalyticEvent } from '../models/analytic-event.interface';
 import { InteractionDetail } from '../models/interaction-detail.enum';
@@ -34,7 +34,11 @@ describe('ClickDirective', () => {
 
     TestBed.configureTestingModule({
       imports: [
-        RouterTestingModule.withRoutes([{ path: 'somewhere', component: AlternateRouteComponent }]),
+        RouterTestingModule.withRoutes([
+          { path: '', component: AlternateRouteComponent },
+          { path: 'somewhere', component: AlternateRouteComponent },
+          { path: 'bound/route', component: AlternateRouteComponent },
+        ]),
         TestComponent,
         AlternateRouteComponent,
       ],
@@ -110,6 +114,25 @@ describe('ClickDirective', () => {
     vi.useRealTimers();
   });
 
+  it('dispatches a click event with a url when the link uses a bound [routerLink] command array', async () => {
+    // Regression: the idiomatic <a [routerLink]="['/x']"> form does not expose a
+    // "routerLink" DOM attribute (it is an Angular input on the RouterLink
+    // directive), so the old getAttribute('routerLink') read left linkUrl empty.
+    vi.useFakeTimers();
+    expectedEvent.id = 'boundRouterLink';
+    expectedEvent.element = 'a';
+    expectedEvent.label = 'Bound routerLink';
+    expectedEvent.activatedRoute = mockActivatedRoute.snapshot;
+    expectedEvent.linkUrl = '/bound/route';
+    const link = fixture.nativeElement.querySelector('#boundRouterLink');
+    link.dispatchEvent(new Event('keydown'));
+    link.click();
+    await vi.runAllTimersAsync();
+    expect(mockDispatchService.trackClick).toHaveBeenCalledTimes(1);
+    expect(mockDispatchService.trackClick).toHaveBeenCalledWith(expectedEvent);
+    vi.useRealTimers();
+  });
+
   it('prioritizes bound properties over host element attributes when both are provided', async () => {
     vi.useFakeTimers();
     expectedEvent.id = 'eventId';
@@ -140,12 +163,13 @@ describe('ClickDirective', () => {
   template: `
     <button oculrClick id="testId">Simple button</button>
     <a oculrClick routerLink="/somewhere" id="linkWithRouterLink">Simple routerLink</a>
+    <a oculrClick [routerLink]="['/bound', 'route']" id="boundRouterLink">Bound routerLink</a>
     <button [oculrClick]="{ id: 'eventId', label: 'Event label' }" id="useEventId">Event object button</button>
     <button oculrClick class="someClass">Missing id button</button>
     <router-outlet></router-outlet>
   `,
   standalone: true,
-  imports: [OculrAngularModule, RouterOutlet],
+  imports: [OculrAngularModule, RouterLink, RouterOutlet],
 })
 class TestComponent {}
 

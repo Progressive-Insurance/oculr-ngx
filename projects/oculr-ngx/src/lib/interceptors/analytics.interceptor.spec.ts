@@ -52,21 +52,14 @@ describe('Analytics Interceptor', () => {
   });
 
   describe('after construction', () => {
-    it('should dequeue any intercepts once a config has been set', async () => {
-      vi.useFakeTimers();
-      analyticsInterceptor.intercept(mockRequest, mockHttpHandler).subscribe(() => {
-        expect(analyticsInterceptor['queuedIntercepts'].length).toEqual(1);
-      });
-
-      configSubject.next({
-        logHttpTraffic: true,
-        destinations: [{ name: Destinations.HttpApi, sendCustomEvents: false, endpoint: destinationUrl }],
-      });
-
-      configSubject.subscribe(async () => {
-        await expect(analyticsInterceptor['queuedIntercepts'].length).toEqual(0);
-      });
-      vi.useRealTimers();
+    it('does not track a request made before any destinations are configured', async () => {
+      // The config starts with no destinations. Previously this request was queued
+      // for later dispatch; it now forwards untouched and nothing is tracked, so
+      // the queue can never grow without bound.
+      analyticsInterceptor.intercept(mockRequest, mockHttpHandler).subscribe();
+      expect(mockHttpHandler.handle).toHaveBeenCalledTimes(1);
+      expect(mockEventDispatchService.trackApiStart).not.toHaveBeenCalled();
+      expect(mockEventDispatchService.trackApiComplete).not.toHaveBeenCalled();
     });
   });
 
@@ -88,10 +81,11 @@ describe('Analytics Interceptor', () => {
     });
 
     describe('when no destinations are defined', () => {
-      it('queues the request to be dispatched later', async () => {
+      it('does not track the call', async () => {
         vi.useFakeTimers();
         analyticsInterceptor.intercept(mockRequest, mockHttpHandler).subscribe(() => {
-          expect(analyticsInterceptor['queuedIntercepts'].length).toEqual(1);
+          expect(mockEventDispatchService.trackApiStart).not.toHaveBeenCalled();
+          expect(mockEventDispatchService.trackApiComplete).not.toHaveBeenCalled();
         });
         await vi.runAllTimersAsync();
         vi.useRealTimers();

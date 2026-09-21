@@ -7,7 +7,7 @@
 */ 
  
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { Injectable } from '@angular/core';
+import { Injectable, OnDestroy } from '@angular/core';
 import { Observable, take } from 'rxjs';
 import { ConfigurationService } from './configuration.service';
 import { AppConfiguration } from '../models/app-configuration.interface';
@@ -15,13 +15,15 @@ import { createAnalyticEvent } from '../models/create-analytic-event';
 import { AnalyticEventType } from '../models/analytic-event-type.enum';
 import { DispatchService } from './dispatch.service';
 
-@Injectable({ providedIn: 'root' })
-export class PageLoadPerformanceService {
+@Injectable()
+export class PageLoadPerformanceService implements OnDestroy {
   context$!: Observable<unknown> | Observable<unknown>[];
   focused!: number;
   blurred!: number;
   private _includeFocusUnfocusLogs: boolean = false;
   private _config!: AppConfiguration;
+  private _onBlurHandler: (() => void) | undefined;
+  private _onFocusHandler: (() => void) | undefined;
 
   constructor(
     private dispatchService: DispatchService,
@@ -65,8 +67,10 @@ export class PageLoadPerformanceService {
       } else {
         this.blurred = Date.now();
       }
-      // Log for Every Blur Event on Window. Indicates Time User was Focused on Window/App
-      this.nativeWindow.onblur = () => {
+      // Log for Every Blur Event on Window. Indicates Time User was Focused on Window/App.
+      // Use addEventListener (not window.onblur) so we do not clobber any existing
+      // focus/blur handlers the host application has registered.
+      this._onBlurHandler = () => {
         this.blurred = Date.now();
         this.dispatchService.trackPageView(
            createAnalyticEvent({
@@ -76,20 +80,37 @@ export class PageLoadPerformanceService {
           }),
         );
       };
+      this.nativeWindow.addEventListener('blur', this._onBlurHandler);
 
-      // Log for Every Focus Event on Window. Indicates Time User was Unfocused on Window/App
-      this.nativeWindow.onfocus = () => {
+      // Log for Every Focus Event on Window. Indicates Time User was Unfocused on Window/App.
+      // The unfocused duration is the time between the previous blur and this focus,
+      // i.e. focused - blurred (the previous code computed blurred - focused, which is
+      // always negative).
+      this._onFocusHandler = () => {
         this.focused = Date.now();
         this.dispatchService.trackPageView(
            createAnalyticEvent({
             label: `${this._config.applicationName} - Unfocused Time`,
-            value: `${this.blurred && this.focused ? this.blurred - this.focused : 0}`,
+            value: `${this.blurred && this.focused ? this.focused - this.blurred : 0}`,
             eventType: AnalyticEventType.PAGE_VIEW_EVENT
           }),
         );
       };
+      this.nativeWindow.addEventListener('focus', this._onFocusHandler);
     }
   }
+
+  ngOnDestroy(): void {
+    if (this._onBlurHandler) {
+      this.nativeWindow.removeEventListener('blur', this._onBlurHandler);
+      this._onBlurHandler = undefined;
+    }
+    if (this._onFocusHandler) {
+      this.nativeWindow.removeEventListener('focus', this._onFocusHandler);
+      this._onFocusHandler = undefined;
+    }
+  }
+
   get nativeWindow(): Window {
     return window as Window;
   }

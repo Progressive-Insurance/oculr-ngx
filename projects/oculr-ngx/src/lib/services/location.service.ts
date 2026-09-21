@@ -18,8 +18,14 @@ export class LocationService {
   private hostName: string;
 
   constructor(private routerLocation: Location, private window: Window, private router: Router) {
+    // Strip any hash fragment before deriving the host name so a URL such as
+    // "https://example.org/home#tab" does not corrupt the base. The previous
+    // length-subtraction assumed the angular route was an exact suffix of the
+    // full href, which is not the case once a fragment is present.
+    const hrefWithoutHash = this.window.location.href.split('#')[0];
+    const angularRoute = this.routerLocation.path(true);
     this.hostName = Location.stripTrailingSlash(
-      this.window.location.href.substring(0, this.window.location.href.length - this.routerLocation.path(true).length)
+      hrefWithoutHash.substring(0, hrefWithoutHash.length - angularRoute.length)
     );
   }
 
@@ -54,9 +60,24 @@ export class LocationService {
     if (snapshot == null) {
       return '';
     } else {
-      const route = snapshot.routeConfig && snapshot.routeConfig.path ? '/' + snapshot.routeConfig.path : '';
+      const rawPath = snapshot.routeConfig && snapshot.routeConfig.path ? snapshot.routeConfig.path : '';
+      const route = rawPath ? '/' + this.substituteParams(rawPath, snapshot) : '';
       return route + this.getRouteFromSnapshot(snapshot.firstChild);
     }
+  }
+
+  // Replace each ":param" segment in a route path with its actual value from the
+  // snapshot's paramMap, so a parameterized route like "/user/:id" is reported as
+  // "/user/123" instead of the raw template. Segments with no matching param value
+  // (wildcards, missing values) are left unchanged.
+  private substituteParams(path: string, snapshot: ActivatedRouteSnapshot): string {
+    return path.split('/').map((segment) => {
+      if (segment.startsWith(':')) {
+        const paramName = segment.slice(1);
+        return snapshot.paramMap?.has(paramName) ? snapshot.paramMap.get(paramName) || segment : segment;
+      }
+      return segment;
+    }).join('/');
   }
 
   private getSnapshotHierarchyAsArray(snapshots: ActivatedRouteSnapshot[]): ActivatedRouteSnapshot[] {

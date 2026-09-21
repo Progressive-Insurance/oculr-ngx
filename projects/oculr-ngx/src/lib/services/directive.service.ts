@@ -24,7 +24,7 @@ export class DirectiveService {
     const labels = elementRef.nativeElement.labels;
     let labelText = '';
     if (labels) {
-      labels.forEach((label) => (labelText += label.textContent));
+      labels.forEach((label) => (labelText += label.textContent || ''));
     }
     return labelText;
   }
